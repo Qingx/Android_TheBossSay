@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">lib</string>
+
+    <string name="retry_load_more">加载失败, 点击重试</string>
+
+    <string name="handle_video">正在处理视频</string>
+
+</resources>

@@ -1,0 +1,68 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@drawable/draw_main_background</item>
+    </style>
+
+    <!--    创建一个透明的主题-->
+    <style name="AppTheme.Transparent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- 创建一个透明的主题-->
+    <style name="AppTheme.Start">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- 图片样式 -->
+
+    <!--标题通用样式-->
+    <style name="text_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/font_16</item>
+        <item name="android:textColor">@color/text_title</item>
+    </style>
+    <!--正文通用样式(颜色较浅)-->
+    <style name="text_minor">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/font_14</item>
+        <item name="android:textColor">@color/text_minor</item>
+    </style>
+    <!--一般性描述文字通用样式(颜色浅)-->
+    <style name="text_worst">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/font_14</item>
+        <item name="android:textColor">@color/text_worst</item>
+    </style>
+
+    <!--标题通用样式-->
+    <!--正文通用样式(颜色较浅)-->
+    <!--一般性描述文字通用样式(颜色浅)-->
+
+    <style name="line_list">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/line_h</item>
+        <item name="android:background">@color/line_list</item>
+    </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
+</resources>

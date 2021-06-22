@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_holder_top"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:src="@drawable/ic_data_no_internet" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="没有网络~"
+        android:textColor="#919191"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_4"
+        android:text="点击界面重试"
+        android:textColor="@color/text_worst"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/btn_goto_net"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginTop="@dimen/padding_8"
+        android:background="@drawable/draw_blue_grey_r2"
+        android:drawableRight="@drawable/draw_arrow_right_sel"
+        android:drawablePadding="0dp"
+        android:gravity="center"
+        android:paddingLeft="@dimen/padding_16"
+        android:paddingRight="@dimen/padding_8"
+        android:text="去网络设置"
+        android:textColor="@color/text_minor"
+        android:textSize="12dp" />
+
+</LinearLayout>
