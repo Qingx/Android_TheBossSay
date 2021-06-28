@@ -36,11 +36,11 @@
     <application
         android:name=".config.TbsApp"
         android:allowBackup="true"
-        android:icon="@drawable/ic_default_photo"
+        android:icon="@drawable/ic_logo"
         android:label="@string/app_name_env"
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/ic_default_photo"
+        android:roundIcon="@drawable/ic_logo"
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">

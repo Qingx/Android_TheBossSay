@@ -6,6 +6,6 @@
         </shape>
     </item>
     <item android:gravity="center">
-        <bitmap android:src="@drawable/ic_default_photo"></bitmap>
+        <bitmap android:src="@drawable/ic_logo"></bitmap>
     </item>
 </layer-list>
