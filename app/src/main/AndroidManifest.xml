@@ -44,11 +44,12 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.start.StartActivity"
             android:screenOrientation="portrait"
