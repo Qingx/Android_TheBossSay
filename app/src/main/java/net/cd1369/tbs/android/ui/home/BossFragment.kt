@@ -6,7 +6,7 @@ import cn.wl.android.lib.ui.BaseFragment
 import net.cd1369.tbs.android.R
 
 /**
- * Created by QingHe on 2021/6/28 11:44 上午
+ * Created by Qing on 2021/6/28 11:44 上午
  * @description
  * @email Cymbidium@outlook.com
  */

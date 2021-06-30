@@ -121,7 +121,7 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
      *
      * @param loadMore 是否为分页加载更多
      */
-    protected fun loadData(loadMore: Boolean) {
+    protected open fun loadData(loadMore: Boolean) {
         if (!loadMore) {
             if (mPageParam != null) {
                 mPageParam!!.resetPage()

@@ -13,6 +13,7 @@
     <color name="colorYellow">#F7B500</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorTextDark">#222222</color>
+    <color name="colorTextDarkLight">#595959</color>
     <color name="colorTextGray">#979797</color>
     <color name="colorMainLine">#1a000000</color>
     <color name="colorPageBg">#f5f5f5</color>
