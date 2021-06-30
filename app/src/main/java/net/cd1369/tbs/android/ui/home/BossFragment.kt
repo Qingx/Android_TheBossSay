@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_boss.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
+import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit
 
 /**
@@ -61,6 +62,10 @@ class BossFragment : BaseFragment() {
                     return false
                 }
             }
+
+        button_float doClick {
+            Toasts.show("floatButton")
+        }
     }
 
     override fun loadData() {
