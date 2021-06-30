@@ -7,8 +7,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:paddingVertical="4dp"
         android:background="@drawable/draw_home_tab"
         android:paddingHorizontal="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
