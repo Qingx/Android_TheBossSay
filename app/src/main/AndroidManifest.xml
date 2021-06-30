@@ -44,6 +44,7 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
+        <activity android:name=".ui.home.SearchActivity"></activity>
         <activity
             android:name=".ui.home.HomeActivity"
             android:screenOrientation="portrait" />

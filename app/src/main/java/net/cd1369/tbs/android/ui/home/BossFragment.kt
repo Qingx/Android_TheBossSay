@@ -64,7 +64,7 @@ class BossFragment : BaseFragment() {
             }
 
         button_float doClick {
-            Toasts.show("floatButton")
+            SearchActivity.start(mActivity)
         }
     }
 
