@@ -1,46 +1,56 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.wl.android.lib.ui.BaseListFragment
+import cn.wl.android.lib.ui.BaseListActivity
+import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.activity_boss_home.*
+import kotlinx.android.synthetic.main.activity_boss_home.layout_refresh
+import kotlinx.android.synthetic.main.activity_boss_home.rv_content
+import kotlinx.android.synthetic.main.activity_boss_home.text_num
 import kotlinx.android.synthetic.main.fragment_follow.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.TestMultiEntity
-import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
-import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
+import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit
 
-/**
- * Created by Qing on 2021/6/28 11:44 上午
- * @description
- * @email Cymbidium@outlook.com
- */
-class FollowFragment : BaseListFragment() {
-    private lateinit var tabAdapter: HomeTabAdapter
-    private lateinit var cardAdapter: FollowCardAdapter
+class BossHomeActivity : BaseListActivity() {
     private lateinit var mAdapter: FollowInfoAdapter
     private var needLoading = true
-    private var mSelectTab: Int? = null
-
-    companion object {
-        fun createFragment(): FollowFragment {
-            return FollowFragment()
+    companion object{
+        fun start(context: Context?) {
+            val intent = Intent(context, BossHomeActivity::class.java)
+                .apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+            context!!.startActivity(intent)
         }
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.fragment_follow
+        return R.layout.activity_boss_home
     }
 
-    override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun initViewCreated(savedInstanceState: Bundle?) {
+        GlideApp.display(R.drawable.ic_default_photo, image_bg)
+        GlideApp.display(R.drawable.ic_test_head, image_head)
+        text_name.text = "神里凌华"
+        text_info.text = "精神信仰"
+        text_label.text = "19.9万阅读·185篇言论"
+        text_follow.text = "已追踪"
+        text_follow.isSelected = true
+        text_content.text =
+            "个人简介：府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有…"
+        text_num.text="共25篇"
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -50,35 +60,6 @@ class FollowFragment : BaseListFragment() {
             loadData(false)
         }
 
-        tabAdapter = object : HomeTabAdapter() {
-            override fun onSelect(select: Int) {
-                showLoading()
-                loadData(false)
-            }
-        }
-
-        rv_tab.adapter = tabAdapter
-        rv_tab.layoutManager =
-            object : LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false) {
-                override fun canScrollVertically(): Boolean {
-                    return false
-                }
-            }
-
-        cardAdapter = object : FollowCardAdapter() {
-            override fun onClick(item: Int) {
-                BossHomeActivity.start(mActivity)
-            }
-        }
-
-        rv_card.adapter = cardAdapter
-        rv_card.layoutManager =
-            object : LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false) {
-                override fun canScrollVertically(): Boolean {
-                    return false
-                }
-            }
-
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -86,7 +67,13 @@ class FollowFragment : BaseListFragment() {
                 }
             }
 
-        text_num.text = "共25篇"
+        image_back doClick {
+            onBackPressed()
+        }
+
+        text_content doClick {
+            BossInfoActivity.start(mActivity)
+        }
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -108,7 +95,7 @@ class FollowFragment : BaseListFragment() {
 
         val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
         val multiData = testData.map {
-            TestMultiEntity(0, it)
+            TestMultiEntity(0,it)
         }
 
         Observable.just(multiData)
@@ -118,8 +105,6 @@ class FollowFragment : BaseListFragment() {
                 showContent()
                 layout_refresh.finishRefresh()
 
-                tabAdapter.setNewData(testData)
-                cardAdapter.setNewData(testData)
                 mAdapter.setNewData(it)
                 needLoading = true
             }

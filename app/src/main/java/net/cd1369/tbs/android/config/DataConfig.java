@@ -32,6 +32,6 @@ public class DataConfig extends BaseConfig {
     }
 
     public boolean getFirstUse() {
-        return getBoolean(KEY.keyFistUse, true);
+        return getBoolean(KEY.keyFistUse, false);
     }
 }

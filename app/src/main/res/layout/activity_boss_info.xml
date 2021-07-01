@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPageBg"
+    tools:context=".ui.home.BossInfoActivity">
+
+    <FrameLayout
+        android:id="@+id/status_bar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/status_bar_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <net.cd1369.tbs.android.widget.WlCardView
+        android:id="@+id/layout_top"
+        android:layout_width="0dp"
+        android:layout_height="224dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rcv_bottomLeftRadiu="12dp"
+        app:rcv_bottomRightRadiu="12dp">
+
+        <ImageView
+            android:id="@+id/image_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_test_splash" />
+    </net.cd1369.tbs.android.widget.WlCardView>
+
+    <ImageView
+        android:id="@+id/image_back"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_back_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/status_bar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_boss"
+        android:layout_width="0dp"
+        android:layout_height="112dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/draw_white_4"
+        app:layout_constraintBottom_toBottomOf="@id/layout_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_top">
+
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/draw_boss_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="84dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_boss_info_right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.allen.library.CircleImageView
+            android:id="@+id/image_head"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_default_photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="莉莉娅"
+            android:textColor="@color/colorTextDark"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toTopOf="@id/text_info"
+            app:layout_constraintStart_toEndOf="@id/image_head"
+            app:layout_constraintTop_toTopOf="@id/image_head" />
+
+        <TextView
+            android:id="@+id/text_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="灵魂莲华"
+            android:textColor="@color/colorTextGray"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@id/image_head"
+            app:layout_constraintStart_toStartOf="@id/text_name"
+            app:layout_constraintTop_toBottomOf="@id/text_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/image_boss_head"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_boss_head"
+        app:layout_constraintBottom_toTopOf="@id/layout_boss"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_hand_left"
+        app:layout_constraintEnd_toStartOf="@id/image_boss_head"
+        app:layout_constraintTop_toTopOf="@id/layout_boss" />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_hand_right"
+        app:layout_constraintStart_toEndOf="@id/image_boss_head"
+        app:layout_constraintTop_toTopOf="@id/layout_boss" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:paddingVertical="20dp"
+        android:singleLine="true"
+        android:text="ta的生涯"
+        android:textColor="@color/colorTextDark"
+        android:textSize="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_boss" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title">
+
+        <TextView
+            android:id="@+id/text_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/draw_white_4"
+            android:gravity="start|top"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="18dp"
+            android:singleLine="false"
+            android:text="物万号资往约算事打见飞增边着必影已叫受导音须接空边单压场选济共因办标广压严机无界律运活质带日的场群第如易。又制目林他派人拉采北计前县成标把较群义极持革安做种国新观两科消解加别格认角使件金音公样还广团斯况等广计关观料多产效数认质数时想信白力划七时元平号子性小组立民。
+声么性必听我外类战处型去速复只长构于力作电构体响每导象并放好员空好结更得组切影会快划众导。
+选回西月统反领型革百是再点道除细阶调其着般调下正展设工五光流容想题大过那变品并政值手过办水设半住。构使确你从约展导各员保济拉整该较京都工带历温断列写品斯离积近花别领提见比验非整调件素清毛团高身第。
+工五光流容想题大过那变品并政值手过办水设半住。构使确你从约展导各员保济拉整该较京都工带历温断列写品斯离积近花别领提见比验非整调件素清毛团高身第。"
+            android:textColor="@color/colorTextGray"
+            android:textSize="14dp" />
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

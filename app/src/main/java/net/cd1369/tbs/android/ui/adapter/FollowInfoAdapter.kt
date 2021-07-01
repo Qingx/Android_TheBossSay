@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import androidx.recyclerview.widget.GridLayoutManager
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -11,6 +12,8 @@ import kotlinx.android.synthetic.main.item_follow_info.view.text_name
 import kotlinx.android.synthetic.main.item_follow_info.view.text_time
 import kotlinx.android.synthetic.main.item_follow_info.view.text_title
 import kotlinx.android.synthetic.main.item_follow_photo.view.image_res
+import kotlinx.android.synthetic.main.item_square_info.view.*
+import kotlinx.android.synthetic.main.item_square_photo.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.TestMultiEntity
 import net.cd1369.tbs.android.util.V
@@ -27,6 +30,7 @@ abstract class FollowInfoAdapter :
     init {
         addItemType(0, R.layout.item_follow_info)
         addItemType(1, R.layout.item_follow_photo)
+        addItemType(2, R.layout.item_square_photo)
     }
 
     override fun convert(helper: BaseViewHolder, item: TestMultiEntity) {
@@ -41,7 +45,7 @@ abstract class FollowInfoAdapter :
                 helper.V.text_hot.text = "8.2k收藏·19.9w人围观"
                 helper.V.text_time.text = "2020/5/30"
             }
-            else -> {
+            1 -> {
                 helper.V.text_title.text = "搞什么可以月入过入过万"
                 GlideApp.display(R.drawable.ic_test_head, helper.V.image_head)
                 helper.V.text_name.text = "神里凌华"
@@ -51,6 +55,22 @@ abstract class FollowInfoAdapter :
                     "领效电提算置识种是量政领效电提算置识种是量政领效电提算置识种是量政领效电提算置识种是量政"
                 helper.V.text_hot.text = "8.2k收藏·19.9w人围观"
                 helper.V.text_time.text = "2020/5/30"
+            }
+            else->{
+                helper.V.text_title.text = "继法国之后，德国也宣布不承认中国疫苗，接种者或将被拒绝入境接种者或将被拒绝入境"
+                val adapter = GridImageAdapter()
+                helper.V.rv_content.adapter = adapter
+                adapter.setNewData(mutableListOf(0, 1, 2))
+                helper.V.rv_content.layoutManager = object : GridLayoutManager(mContext, 3) {
+                    override fun canScrollHorizontally(): Boolean {
+                        return false
+                    }
+
+                    override fun canScrollVertically(): Boolean {
+                        return false
+                    }
+                }
+                helper.V.text_info.text = "广告·海南万科"
             }
         }
 

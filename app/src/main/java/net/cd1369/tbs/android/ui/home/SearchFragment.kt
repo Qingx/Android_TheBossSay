@@ -92,17 +92,16 @@ class SearchFragment : BaseListFragment() {
 
         val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7,8)
 
-        Observable.just(testData)
+        Observable.just(testData.toList())
             .observeOn(AndroidSchedulers.mainThread())
             .delay(2, TimeUnit.SECONDS)
-            .bindDefaultSub {
+            .bindListSubscribe {
                 showContent()
                 layout_refresh.finishRefresh()
-                layout_refresh.finishLoadMore()
 
                 tabAdapter.setNewData(it)
                 mAdapter.setNewData(it)
-
+//                mAdapter.loadMoreEnd(true)
                 needLoading = true
             }
     }

@@ -88,7 +88,7 @@ class SquareFragment : BaseListFragment() {
 
         val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
         val multiData = testData.map {
-            TestMultiEntity(it)
+            TestMultiEntity(1,it)
         }
 
         Observable.just(multiData)
