@@ -4,8 +4,6 @@ import android.os.Bundle
 import cn.wl.android.lib.ui.BaseActivity
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
-import net.cd1369.tbs.android.ui.home.GuideActivity
-import net.cd1369.tbs.android.ui.home.SplashActivity
 
 class StartActivity : BaseActivity() {
     override fun getLayoutResource(): Any {

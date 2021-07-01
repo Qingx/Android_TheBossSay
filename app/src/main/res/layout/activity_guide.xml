@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBg"
-    tools:context=".ui.home.GuideActivity">
+    tools:context=".ui.start.GuideActivity">
 
     <Space
         android:id="@+id/status_bar"

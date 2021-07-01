@@ -84,7 +84,7 @@ abstract class BaseActivity : BaseCommonActivity() {
         val window = mAlert!!.window
         val dm = DisplayMetrics()
         mActivity?.windowManager?.defaultDisplay?.getMetrics(dm)
-        val width = dm.widthPixels * 0.4
+        val width = dm.widthPixels * 0.8
         val height: Int = ViewGroup.LayoutParams.WRAP_CONTENT
         val params = window!!.attributes
         params.gravity = Gravity.CENTER

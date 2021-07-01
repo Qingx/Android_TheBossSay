@@ -57,18 +57,18 @@ class HomeActivity : BaseActivity() {
         })
 
         view_pager.currentItem = 0
-        view_pager.isUserInputEnabled=false
+        view_pager.isUserInputEnabled = false
 
         layout_talk doClick {
-            view_pager.currentItem = 0
+            view_pager.setCurrentItem(0, false)
         }
 
         layout_boss doClick {
-            view_pager.currentItem = 1
+            view_pager.setCurrentItem(1, false)
         }
 
         layout_mine doClick {
-            view_pager.currentItem = 2
+            view_pager.setCurrentItem(2, false)
         }
     }
 }

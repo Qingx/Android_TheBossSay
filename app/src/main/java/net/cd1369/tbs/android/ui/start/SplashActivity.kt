@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.home
+package net.cd1369.tbs.android.ui.start
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,6 +7,7 @@ import android.os.Bundle
 import cn.wl.android.lib.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.ui.home.HomeActivity
 
 class SplashActivity : BaseActivity() {
     companion object {

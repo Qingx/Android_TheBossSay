@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.home
+package net.cd1369.tbs.android.ui.start
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_guide.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.ui.adapter.GuideInfoAdapter
+import net.cd1369.tbs.android.ui.home.HomeActivity
 import net.cd1369.tbs.android.util.doClick
 
 class GuideActivity : BaseActivity() {
