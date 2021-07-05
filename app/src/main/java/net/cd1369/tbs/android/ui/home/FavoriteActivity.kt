@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_favorite.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.TestFavoriteEntity
 import net.cd1369.tbs.android.ui.adapter.FavoriteAdapter
+import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
 import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit
 
@@ -67,9 +68,17 @@ class FavoriteActivity : BaseActivity() {
         rv_content.adapter = mAdapter
 
         button_float doClick {
-            val item = TestFavoriteEntity(5, mutableListOf(0, 1, 2))
+            AddFolderDialog.showDialog(supportFragmentManager).apply {
+                this.onConfirmClick = AddFolderDialog.OnConfirmClick {
+                    val item = TestFavoriteEntity(5, mutableListOf(0, 1, 2))
+                    mAdapter.addFolder(item)
+                    this.dismiss()
+                }
+            }
+        }
 
-            mAdapter.addFolder(item)
+        image_back doClick {
+            onBackPressed()
         }
     }
 
