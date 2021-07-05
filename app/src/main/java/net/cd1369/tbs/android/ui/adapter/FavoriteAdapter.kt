@@ -31,7 +31,7 @@ abstract class FavoriteAdapter :
 
         helper.V.text_content.text = "${item.data.size}篇言论"
 
-        val adapter = object : FahiContentAdapter(item.code, ::onRemoveCallback) {
+        val adapter = object : FavoriteContentAdapter(item.code, ::onRemoveCallback) {
             override fun onContentClick(contentItem: Int) {
                 onContentItemClick(contentItem)
             }

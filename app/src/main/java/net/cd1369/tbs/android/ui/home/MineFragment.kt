@@ -42,6 +42,7 @@ class MineFragment : BaseFragment() {
             override fun onItemClick(item: MineItem) {
                 when (item) {
                     MineItem.Favorite -> onClickFavorite()
+                    MineItem.History -> onClickHistory()
                     else -> Toasts.show(item.itemName)
                 }
             }
@@ -90,7 +91,23 @@ class MineFragment : BaseFragment() {
 
     //点击我的收藏
     private fun onClickFavorite() {
-        FavoriteActivity.start(mActivity)
+        if (UserConfig.get().loginStatus) {
+            FavoriteActivity.start(mActivity)
+        } else {
+            Toasts.show("请先登录！")
+            InputPhoneActivity.start(mActivity)
+        }
+    }
+
+    //点击我的收藏
+    private fun onClickHistory() {
+        HistoryActivity.start(mActivity)
+//        if (UserConfig.get().loginStatus) {
+//            FavoriteActivity.start(mActivity)
+//        } else {
+//            Toasts.show("请先登录！")
+//            InputPhoneActivity.start(mActivity)
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
