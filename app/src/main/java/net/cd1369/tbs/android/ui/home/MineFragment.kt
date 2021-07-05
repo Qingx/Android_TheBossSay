@@ -12,6 +12,8 @@ import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
+import net.cd1369.tbs.android.ui.start.InputPhoneActivity
+import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -38,7 +40,10 @@ class MineFragment : BaseFragment() {
 
         mAdapter = object : MineItemAdapter() {
             override fun onItemClick(item: MineItem) {
-                Toasts.show(item.itemName)
+                when (item) {
+                    MineItem.Favorite -> onClickFavorite()
+                    else -> Toasts.show(item.itemName)
+                }
             }
         }
 
@@ -63,6 +68,29 @@ class MineFragment : BaseFragment() {
 
         rv_content.adapter = mAdapter
         mAdapter.setNewData(MineItem.values().toMutableList())
+
+        image_info doClick {
+            onClickInfo()
+        }
+
+        image_setting doClick {
+            onClickInfo()
+        }
+    }
+
+    //点击用户信息
+    private fun onClickInfo() {
+        if (UserConfig.get().loginStatus) {
+            UserInfoActivity.start(mActivity)
+        } else {
+            Toasts.show("请先登录！")
+            InputPhoneActivity.start(mActivity)
+        }
+    }
+
+    //点击我的收藏
+    private fun onClickFavorite() {
+        FavoriteActivity.start(mActivity)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
