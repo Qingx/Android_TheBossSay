@@ -26,7 +26,7 @@ class SplashActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        countdown(5) {
+        countdown(3) {
             text_time.text = "${it}s"
 
             if (it <= 0) {

@@ -5,5 +5,5 @@ package net.cd1369.tbs.android.event
  * @description
  * @email Cymbidium@outlook.com
  */
-class LoginEvent {
+class LoginEvent(val status: Boolean) {
 }

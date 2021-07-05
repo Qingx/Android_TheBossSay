@@ -5,16 +5,16 @@ import cn.wl.android.lib.data.core.HttpConfig;
 
 import static com.blankj.utilcode.util.SPStaticUtils.getBoolean;
 
-public class TbsConfig extends BaseConfig {
-    public TbsConfig() {
+public class UserConfig extends BaseConfig {
+    public UserConfig() {
         super("data");
     }
 
-    public static TbsConfig dataConfig;
+    public static UserConfig dataConfig;
 
-    public static TbsConfig get() {
+    public static UserConfig get() {
         if (dataConfig == null) {
-            dataConfig = new TbsConfig();
+            dataConfig = new UserConfig();
         }
         return dataConfig;
     }

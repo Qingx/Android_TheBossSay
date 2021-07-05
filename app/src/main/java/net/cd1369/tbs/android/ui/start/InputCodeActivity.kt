@@ -74,7 +74,7 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
 
         timerDelay(3000) {
             hideLoadingAlert()
-            eventBus.post(LoginEvent())
+            eventBus.post(LoginEvent(true))
             mActivity?.finish()
         }
     }
