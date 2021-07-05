@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.MineItem
@@ -16,6 +18,8 @@ import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -43,6 +47,8 @@ class MineFragment : BaseFragment() {
                 when (item) {
                     MineItem.Favorite -> onClickFavorite()
                     MineItem.History -> onClickHistory()
+                    MineItem.Contact -> ContactActivity.start(mActivity)
+                    MineItem.Clear -> onClickClear()
                     else -> Toasts.show(item.itemName)
                 }
             }
@@ -101,13 +107,24 @@ class MineFragment : BaseFragment() {
 
     //点击我的收藏
     private fun onClickHistory() {
-        HistoryActivity.start(mActivity)
-//        if (UserConfig.get().loginStatus) {
-//            FavoriteActivity.start(mActivity)
-//        } else {
-//            Toasts.show("请先登录！")
-//            InputPhoneActivity.start(mActivity)
-//        }
+        if (UserConfig.get().loginStatus) {
+            FavoriteActivity.start(mActivity)
+        } else {
+            Toasts.show("请先登录！")
+            InputPhoneActivity.start(mActivity)
+        }
+    }
+
+    private fun onClickClear() {
+        showLoadingAlert("正在清除缓存...")
+
+        Observable.just(true)
+            .observeOn(AndroidSchedulers.mainThread())
+            .delay(1500, TimeUnit.MILLISECONDS)
+            .bindDefaultSub {
+                Toasts.show("清除成功")
+                hideLoadingAlert()
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

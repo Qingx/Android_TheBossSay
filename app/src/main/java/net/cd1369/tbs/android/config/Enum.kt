@@ -30,3 +30,23 @@ enum class MineItem(val code: String, val itemName: String, @DrawableRes val ico
         }
     }
 }
+
+enum class ContactItem(val code: Int, val itemName: String, @DrawableRes val icon: Int) {
+    Contact0(0, "某篇文章冒犯了您的权益或涉及侵权", R.drawable.ic_contact0),
+    Contact1(1, "期望新增更多的BOSS", R.drawable.ic_contact1),
+    Contact2(2, "给APP提建议", R.drawable.ic_contact2),
+    Contact3(3, "更多合作", R.drawable.ic_contact3);
+
+    companion object {
+        fun get(code: Int): ContactItem {
+            val values = values()
+
+            for (value: ContactItem in values) {
+                if (value.code == code) {
+                    return value
+                }
+            }
+            return Contact0
+        }
+    }
+}

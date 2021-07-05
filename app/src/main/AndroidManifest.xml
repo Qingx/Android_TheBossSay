@@ -44,7 +44,8 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.HistoryActivity"></activity>
+        <activity android:name=".ui.home.ContactActivity" />
+        <activity android:name=".ui.home.HistoryActivity" />
         <activity android:name=".ui.home.FavoriteActivity" />
         <activity android:name=".ui.home.UserInfoActivity" />
         <activity android:name=".ui.start.InputCodeActivity" />
