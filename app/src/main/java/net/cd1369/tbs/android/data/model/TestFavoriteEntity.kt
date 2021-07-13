@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.data.entity
+package net.cd1369.tbs.android.data.model
 
 /**
  * Created by Qing on 2021/7/5 2:22 下午

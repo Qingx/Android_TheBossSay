@@ -5,7 +5,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_follow_card.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -14,26 +16,18 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 abstract class FollowCardAdapter :
-    BaseQuickAdapter<Int, BaseViewHolder>(R.layout.item_follow_card) {
-    override fun convert(helper: BaseViewHolder, item: Int) {
-        val hasIndex = helper.layoutPosition % 2 == 0
+    BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_follow_card) {
+    override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
+        GlideApp.display(item.head.avatar(), helper.V.image_head, R.drawable.ic_default_photo)
+        helper.V.text_name.text = item.name
+        helper.V.text_info.text = item.role
 
-        if (hasIndex) {
-            GlideApp.display(R.drawable.ic_default_photo, helper.V.image_head)
-            helper.V.text_name.text = "莉莉娅"
-            helper.V.text_info.text = "灵魂莲华"
-        } else {
-            GlideApp.display(R.drawable.ic_test_head, helper.V.image_head)
-            helper.V.text_name.text = "神里凌华"
-            helper.V.text_info.text = "精神信仰"
-        }
-
-        helper.V.text_red_dots.text = helper.layoutPosition.toString()
+        helper.V.text_red_dots.text = item.updateCount.toString()
 
         helper.V doClick {
             onClick(item)
         }
     }
 
-    abstract fun onClick(item: Int)
+    abstract fun onClick(item: BossInfoEntity)
 }

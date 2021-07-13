@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,15 +11,15 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -42,6 +43,8 @@ class MineFragment : BaseFragment() {
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
         eventBus.register(this)
 
+        setUserInfo()
+
         mAdapter = object : MineItemAdapter() {
             override fun onItemClick(item: MineItem) {
                 when (item) {
@@ -52,14 +55,6 @@ class MineFragment : BaseFragment() {
                     else -> Toasts.show(item.itemName)
                 }
             }
-        }
-
-        if (UserConfig.get().loginStatus) {
-            text_name.text = "清和"
-            text_id.text = "ID：101010101"
-        } else {
-            text_name.text = "请先登录！"
-            text_id.text = "游客：123456789"
         }
 
         rv_content.layoutManager =
@@ -127,16 +122,28 @@ class MineFragment : BaseFragment() {
             }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: LoginEvent) {
-        mAdapter.onRefreshLogin()
+    @SuppressLint("SetTextI18n")
+    private fun setUserInfo() {
+        val loginStatus = UserConfig.get().loginStatus
+        val entity = UserConfig.get().userEntity
 
-        if (event.status) {
-            text_name.text = "请先登录！"
-            text_id.text = "游客：123456789"
+        if (loginStatus) {
+            text_name.text = entity.nickName
+            text_id.text = "ID：${entity.id}"
         } else {
-            text_name.text = "清和"
-            text_id.text = "ID：101010101"
+            val tempId = DataConfig.get().tempId
+
+            text_name.text = "请先登录！"
+            text_id.text = "游客：${tempId.substring(0, 12)}..."
         }
+
+        text_follow_num.text = entity.traceNum.toString()
+        text_favorite_num.text = entity.collectNum.toString()
+        text_history_num.text = entity.readNum.toString()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        setUserInfo()
     }
 }

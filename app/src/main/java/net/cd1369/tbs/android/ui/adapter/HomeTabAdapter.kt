@@ -4,6 +4,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_home_tab.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 
@@ -13,28 +14,29 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 abstract class HomeTabAdapter :
-    BaseQuickAdapter<Int, BaseViewHolder>(R.layout.item_home_tab) {
-    var mSelectId: Int? = null
+    BaseQuickAdapter<BossLabelEntity, BaseViewHolder>(R.layout.item_home_tab) {
+    private var mSelectId: String = "-1"
 
-    override fun convert(helper: BaseViewHolder, item: Int) {
-        helper.V.isSelected = item == mSelectId ?: data[0]
+    override fun convert(helper: BaseViewHolder, item: BossLabelEntity) {
+        helper.V.isSelected = item.id == mSelectId
 
-        val hasIndex = helper.layoutPosition % 2 == 0
-        helper.V.text_content.text = if (hasIndex) "神里凌华" else "莉莉娅"
+        helper.V.text_content.text = if (item.id == "-1") {
+            "全部"
+        } else item.name
 
         helper.V doClick {
-            if (mSelectId != item) {
+            if (mSelectId != item.id) {
                 val lastIndex = data.indexOfFirst {
-                    it == mSelectId
+                    it.id == mSelectId
                 }
 
-                mSelectId = item
+                mSelectId = item.id
                 notifyItemChanged(lastIndex)
                 notifyItemChanged(helper.layoutPosition)
-                onSelect(item)
+                onSelect(item.id)
             }
         }
     }
 
-    abstract fun onSelect(select: Int)
+    abstract fun onSelect(select: String)
 }

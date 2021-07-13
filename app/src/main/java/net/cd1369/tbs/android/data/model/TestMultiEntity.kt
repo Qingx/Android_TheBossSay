@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.data.entity
+package net.cd1369.tbs.android.data.model
 
 import com.chad.library.adapter.base.entity.MultiItemEntity
 

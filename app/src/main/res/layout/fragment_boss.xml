@@ -69,10 +69,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_tab"
-                app:srlDragRate="0.75"
-                app:srlEnableLoadMore="true"
-                app:srlEnablePureScrollMode="true">
+                app:layout_constraintTop_toBottomOf="@id/rv_tab">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_content"
@@ -83,7 +80,6 @@
                     android:overScrollMode="never"
                     android:paddingBottom="8dp" />
             </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

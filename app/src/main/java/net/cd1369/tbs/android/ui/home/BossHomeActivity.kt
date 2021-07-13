@@ -16,9 +16,9 @@ import kotlinx.android.synthetic.main.activity_boss_home.*
 import kotlinx.android.synthetic.main.activity_boss_home.layout_refresh
 import kotlinx.android.synthetic.main.activity_boss_home.rv_content
 import kotlinx.android.synthetic.main.activity_boss_home.text_num
-import kotlinx.android.synthetic.main.fragment_follow.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.TestMultiEntity
+import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.data.model.TestMultiEntity
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit
@@ -78,7 +78,7 @@ class BossHomeActivity : BaseListActivity() {
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
-            override fun onClick(item: TestMultiEntity) {
+            override fun onClick(item: ArticleEntity) {
                 Toasts.show("${item.content}")
             }
         }.also {
@@ -89,24 +89,24 @@ class BossHomeActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore && needLoading) {
-            showLoading()
-        }
-
-        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
-        val multiData = testData.map {
-            TestMultiEntity(0,it)
-        }
-
-        Observable.just(multiData)
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindListSubscribe {
-                showContent()
-                layout_refresh.finishRefresh()
-
-                mAdapter.setNewData(it)
-                needLoading = true
-            }
+//        if (!loadMore && needLoading) {
+//            showLoading()
+//        }
+//
+//        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
+//        val multiData = testData.map {
+//            TestMultiEntity(0,it)
+//        }
+//
+//        Observable.just(multiData)
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .delay(2, TimeUnit.SECONDS)
+//            .bindListSubscribe {
+//                showContent()
+//                layout_refresh.finishRefresh()
+//
+//                mAdapter.setNewData(it)
+//                needLoading = true
+//            }
     }
 }

@@ -1,22 +1,21 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.widget.GridLayoutManager
+import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import kotlinx.android.synthetic.main.item_follow_info.view.image_head
-import kotlinx.android.synthetic.main.item_follow_info.view.text_content
-import kotlinx.android.synthetic.main.item_follow_info.view.text_hot
-import kotlinx.android.synthetic.main.item_follow_info.view.text_info
-import kotlinx.android.synthetic.main.item_follow_info.view.text_name
-import kotlinx.android.synthetic.main.item_follow_info.view.text_time
-import kotlinx.android.synthetic.main.item_follow_info.view.text_title
-import kotlinx.android.synthetic.main.item_follow_photo.view.image_res
-import kotlinx.android.synthetic.main.item_square_info.view.*
-import kotlinx.android.synthetic.main.item_square_photo.view.*
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.image_head
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_content
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_hot
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_name
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_time
+import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.TestMultiEntity
+import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -25,53 +24,59 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 abstract class FollowInfoAdapter :
-    BaseMultiItemQuickAdapter<TestMultiEntity, BaseViewHolder>(mutableListOf()) {
+    BaseMultiItemQuickAdapter<ArticleEntity, BaseViewHolder>(mutableListOf()) {
 
     init {
-        addItemType(0, R.layout.item_follow_info)
-        addItemType(1, R.layout.item_follow_photo)
-        addItemType(2, R.layout.item_square_photo)
+        addItemType(0, R.layout.item_article_onlytext_withcontent)
+        addItemType(1, R.layout.item_article_singleimg_withcontent)
     }
 
-    override fun convert(helper: BaseViewHolder, item: TestMultiEntity) {
+    @SuppressLint("SetTextI18n")
+    override fun convert(helper: BaseViewHolder, item: ArticleEntity) {
         when (helper.itemViewType) {
             0 -> {
-                helper.V.text_title.text = "搞什么副业可以月入过万"
-                GlideApp.display(R.drawable.ic_default_photo, helper.V.image_head)
-                helper.V.text_name.text = "莉莉娅"
-                helper.V.text_info.text = "灵魂莲华"
-                helper.V.text_content.text =
-                    "领效电提算场已将铁存它色置识种是量性传周么名光却次种中节志至或局会点再部技七条先位记建政领效电提算场已将铁存它色置识种是量性传周么名光却次种中节志至或局会点再部技七条先位记建政"
-                helper.V.text_hot.text = "8.2k收藏·19.9w人围观"
-                helper.V.text_time.text = "2020/5/30"
+                helper.V.text_title.text = item.title
+                GlideApp.display(
+                    item.bossVO.head.avatar(),
+                    helper.V.image_head,
+                    R.drawable.ic_default_photo
+                )
+                helper.V.text_name.text = item.bossVO.name
+                helper.V.text_info.text = item.bossVO.role
+                helper.V.text_content.text = item.descContent
+                helper.V.text_hot.text = "${item.collect}k收藏·${item.point}w人围观"
+                helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
             }
             1 -> {
-                helper.V.text_title.text = "搞什么可以月入过入过万"
-                GlideApp.display(R.drawable.ic_test_head, helper.V.image_head)
-                helper.V.text_name.text = "神里凌华"
-                helper.V.text_info.text = "精神信仰"
-                GlideApp.display(R.drawable.ic_test_splash, helper.V.image_res)
-                helper.V.text_content.text =
-                    "领效电提算置识种是量政领效电提算置识种是量政领效电提算置识种是量政领效电提算置识种是量政"
-                helper.V.text_hot.text = "8.2k收藏·19.9w人围观"
-                helper.V.text_time.text = "2020/5/30"
+                helper.V.text_title.text = item.title
+                GlideApp.display(
+                    item.bossVO.head.avatar(),
+                    helper.V.image_head,
+                    R.drawable.ic_default_photo
+                )
+                helper.V.text_name.text = item.bossVO.name
+                helper.V.text_info.text = item.bossVO.role
+                GlideApp.display(item.files!!.getOrNull(0)!!.avatar(), helper.V.image_res)
+                helper.V.text_content.text = item.descContent
+                helper.V.text_hot.text = "${item.collect}k收藏·${item.point}w人围观"
+                helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
             }
-            else->{
-                helper.V.text_title.text = "继法国之后，德国也宣布不承认中国疫苗，接种者或将被拒绝入境接种者或将被拒绝入境"
-                val adapter = GridImageAdapter()
-                helper.V.rv_content.adapter = adapter
-                adapter.setNewData(mutableListOf(0, 1, 2))
-                helper.V.rv_content.layoutManager = object : GridLayoutManager(mContext, 3) {
-                    override fun canScrollHorizontally(): Boolean {
-                        return false
-                    }
-
-                    override fun canScrollVertically(): Boolean {
-                        return false
-                    }
-                }
-                helper.V.text_info.text = "广告·海南万科"
-            }
+//            else -> {
+//                helper.V.text_title.text = item.title
+//                val adapter = GridImageAdapter()
+//                helper.V.rv_content.adapter = adapter
+//                adapter.setNewData(item.files)
+//                helper.V.rv_content.layoutManager = object : GridLayoutManager(mContext, 3) {
+//                    override fun canScrollHorizontally(): Boolean {
+//                        return false
+//                    }
+//
+//                    override fun canScrollVertically(): Boolean {
+//                        return false
+//                    }
+//                }
+//                helper.V.text_info.text = "广告·海南万科"
+//            }
         }
 
         helper.V doClick {
@@ -79,5 +84,5 @@ abstract class FollowInfoAdapter :
         }
     }
 
-    abstract fun onClick(item: TestMultiEntity)
+    abstract fun onClick(item: ArticleEntity)
 }

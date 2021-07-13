@@ -1,11 +1,14 @@
 package net.cd1369.tbs.android.ui.adapter
 
 import cn.wl.android.lib.utils.GlideApp
+import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_guide_info.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -13,41 +16,35 @@ import net.cd1369.tbs.android.util.doClick
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class GuideInfoAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.item_guide_info) {
-    private val mSelect = mutableListOf<Int>()
-    override fun convert(helper: BaseViewHolder, item: Int) {
-        helper.V.isSelected = mSelect.contains(item)
+abstract class GuideInfoAdapter :
+    BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_guide_info) {
+    private val mSelect = HashSet<String>()
 
-        val hasIndex = helper.layoutPosition % 2 == 0
+    override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
+        helper.V.isSelected = mSelect.contains(item.id)
 
-        if (hasIndex) {
-            GlideApp.display(R.drawable.ic_default_photo, helper.V.image_head)
-            helper.V.text_name.text = "莉莉娅"
-            helper.V.text_info.text = "灵魂莲华"
-        } else {
-            GlideApp.display(R.drawable.ic_test_head, helper.V.image_head)
-            helper.V.text_name.text = "神里凌华"
-            helper.V.text_info.text = "精神信仰"
-        }
+        GlideApp.display(item.head.avatar(), helper.V.image_head, R.drawable.ic_default_photo)
+        helper.V.text_name.text = item.name
+        helper.V.text_info.text = item.role
+
 
         helper.V doClick {
-            if (mSelect.contains(item)) {
-                mSelect.remove(item)
+            if (mSelect.contains(item.id)) {
+                mSelect.remove(item.id)
             } else {
-                mSelect.add(item)
+                mSelect.add(item.id)
             }
 
             notifyItemChanged(helper.layoutPosition)
         }
     }
 
-    fun addAll() {
-        mSelect.clear()
-        mSelect.addAll(data)
-
-        notifyDataSetChanged()
-
-        onAddAll(data)
+    fun addFollow() {
+        if (mSelect.isNullOrEmpty()) {
+            Toasts.show("请至少选择一位老板")
+        } else {
+            onAddFollow(mSelect.toMutableList())
+        }
     }
 
     fun clearAll() {
@@ -56,5 +53,16 @@ abstract class GuideInfoAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout
         notifyDataSetChanged()
     }
 
-    abstract fun onAddAll(data: MutableList<Int>)
+    private fun autoSelectAll() {
+        mSelect.addAll(mData.map { it.id })
+        notifyDataSetChanged()
+    }
+
+    override fun setNewData(data: MutableList<BossInfoEntity>?) {
+        super.setNewData(data)
+
+        autoSelectAll()
+    }
+
+    abstract fun onAddFollow(data: MutableList<String>)
 }

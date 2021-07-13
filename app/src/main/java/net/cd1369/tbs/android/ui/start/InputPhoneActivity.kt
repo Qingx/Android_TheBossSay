@@ -12,7 +12,8 @@ import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.ColorUtils
 import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
 import net.cd1369.tbs.android.util.Tools.isShouldHideInput
 import net.cd1369.tbs.android.util.doClick
@@ -81,12 +82,16 @@ class InputPhoneActivity : BaseActivity() {
     private fun trySendCode() {
         showLoadingAlert("正在发送验证码...")
 
-        timerDelay(3000) {
-            Toasts.show("验证码发送成功")
-            hideLoadingAlert()
+        TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), 0)
+            .bindDefaultSub(doNext = {
+                Toasts.show("验证码发送成功")
 
-            InputCodeActivity.start(mActivity, edit_input.text.toString().trim())
-        }
+                InputCodeActivity.start(mActivity, edit_input.text.toString().trim())
+            }, doFail = {
+                Toasts.show("验证码发送失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
     }
 
     fun isInputAvailable(needToast: Boolean): Boolean {
@@ -135,7 +140,7 @@ class InputPhoneActivity : BaseActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: LoginEvent) {
+    fun eventBus(event: RefreshUserEvent) {
         mActivity?.finish()
     }
 }

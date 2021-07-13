@@ -12,7 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_favorite.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.TestFavoriteEntity
+import net.cd1369.tbs.android.data.model.TestFavoriteEntity
 import net.cd1369.tbs.android.ui.adapter.FavoriteAdapter
 import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
 import net.cd1369.tbs.android.util.doClick

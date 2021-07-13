@@ -6,14 +6,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_boss.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.doClick
-import java.util.concurrent.TimeUnit
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -23,6 +28,9 @@ import java.util.concurrent.TimeUnit
 class BossFragment : BaseFragment() {
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: BossInfoAdapter
+
+    private var mSelectTab: String? = null
+    private var needLoading = true
 
     companion object {
         fun createFragment(): BossFragment {
@@ -35,10 +43,26 @@ class BossFragment : BaseFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+        eventBus.register(this)
+
+        layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
+        layout_refresh.setHeaderHeight(60f)
+
+        layout_refresh.setOnRefreshListener {
+            needLoading = false
+            loadData()
+        }
+
         tabAdapter = object : HomeTabAdapter() {
-            override fun onSelect(select: Int) {
-                showLoading()
-                loadData()
+            override fun onSelect(select: String) {
+                mSelectTab = select
+                layout_refresh.autoRefresh()
+            }
+        }
+
+        mAdapter = object : BossInfoAdapter() {
+            override fun onClick(item: BossInfoEntity) {
+                Toasts.show(item.id)
             }
         }
 
@@ -50,11 +74,6 @@ class BossFragment : BaseFragment() {
                 }
             }
 
-        mAdapter = object : BossInfoAdapter() {
-            override fun onClick(item: Int) {
-                Toasts.show("$item")
-            }
-        }
         rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
@@ -71,20 +90,40 @@ class BossFragment : BaseFragment() {
     override fun loadData() {
         super.loadData()
 
-        showLoading()
+        if (needLoading) showLoading()
 
-        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
+        if (DataConfig.get().bossLabels.isNullOrEmpty()) {
+            TbsApi.boss().obtainBossLabels()
+                .flatMap {
+                    it.add(0, BossLabelEntity.empty)
+                    mSelectTab = it[0].id
+                    DataConfig.get().bossLabels = it
 
-        Observable.just(testData)
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindDefaultSub {
-                showContent()
+                    TbsApi.boss().obtainFollowBossList(mSelectTab, false)
+                }.bindDefaultSub(doNext = {
+                    tabAdapter.setNewData(DataConfig.get().bossLabels)
+                    mAdapter.setNewData(it)
+                }, doLast = {
+                    showContent()
 
-                tabAdapter.mSelectId = testData[0]
+                    layout_refresh.finishRefresh()
+                })
+        } else {
+            TbsApi.boss().obtainFollowBossList(mSelectTab, false)
+                .onErrorReturn { mutableListOf() }
+                .bindDefaultSub(doNext = {
+                    tabAdapter.setNewData(DataConfig.get().bossLabels)
+                    mAdapter.setNewData(it)
+                }, doLast = {
+                    showContent()
 
-                tabAdapter.setNewData(testData)
-                mAdapter.setNewData(it)
-            }
+                    layout_refresh.finishRefresh()
+                })
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        loadData()
     }
 }
