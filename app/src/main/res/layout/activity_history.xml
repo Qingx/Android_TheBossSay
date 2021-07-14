@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:singleLine="true"
-            android:text="阅读记录"
+            tools:text="阅读记录"
             android:textColor="@color/colorTextDark"
             android:textSize="16dp"
             android:textStyle="bold"

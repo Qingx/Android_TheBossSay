@@ -80,6 +80,10 @@ class MineFragment : BaseFragment() {
         image_setting doClick {
             onClickInfo()
         }
+
+        layout_history doClick {
+            TodayHistoryActivity.start(mActivity)
+        }
     }
 
     //点击用户信息

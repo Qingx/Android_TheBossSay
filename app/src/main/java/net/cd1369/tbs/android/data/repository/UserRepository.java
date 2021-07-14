@@ -2,12 +2,16 @@ package net.cd1369.tbs.android.data.repository;
 
 
 import net.cd1369.tbs.android.config.DataConfig;
+import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
+import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 import net.cd1369.tbs.android.data.service.UserService;
 
 import java.util.List;
 
+import cn.wl.android.lib.core.Page;
+import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import cn.wl.android.lib.utils.Lists;
 import io.reactivex.Observable;
@@ -216,6 +220,35 @@ public class UserRepository extends BaseRepository<UserService> {
                 }
         );
         return getService().obtainOptionArticle(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 阅读记录
+     *
+     * @param pageParam
+     * @param today
+     * @return
+     */
+    public Observable<Page<HistoryEntity>> obtainHistory(PageParam pageParam, boolean today) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            jo.put("today", today);
+        });
+
+        return getService().obtainHistory(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 删除阅读记录
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainRemoveHistory(String id) {
+        return getService().obtainRemoveHistory(id)
                 .compose(combine())
                 .compose(success());
     }

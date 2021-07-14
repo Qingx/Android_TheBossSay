@@ -62,6 +62,11 @@ public class DateFormat {
                 DATEFORMAT_MMz_ddz_HHmm);
     }
 
+    public static String getHHmm(long time) {
+        return TimeUtils.date2String(new Date(time),
+                DATEFORMAT_HHmm);
+    }
+
     /**
      * 获取中文模式下的时间格式
      *

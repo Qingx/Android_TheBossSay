@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,17 +14,19 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_history.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
 import net.cd1369.tbs.android.util.doClick
 
-class HistoryActivity : BaseListActivity() {
+class TodayHistoryActivity : BaseListActivity() {
     private lateinit var mAdapter: HistoryContentAdapter
     private var needLoading = true
+    private var number = UserConfig.get().userEntity.readNum ?: 0
 
     companion object {
         fun start(context: Context?) {
-            val intent = Intent(context, HistoryActivity::class.java)
+            val intent = Intent(context, TodayHistoryActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
@@ -35,8 +38,9 @@ class HistoryActivity : BaseListActivity() {
         return R.layout.activity_history
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        text_title.text = "阅读记录"
+        text_title.text = "阅读记录($number)"
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -82,7 +86,7 @@ class HistoryActivity : BaseListActivity() {
             if (needLoading) showLoading()
         }
 
-        TbsApi.user().obtainHistory(pageParam, false)
+        TbsApi.user().obtainHistory(pageParam, true)
             .onErrorReturn {
                 Page.empty()
             }.bindPageSubscribe(loadMore = loadMore, doNext = {
@@ -96,13 +100,19 @@ class HistoryActivity : BaseListActivity() {
             })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun removeHistory(id: String, doRemove: (id: String) -> Unit) {
         showLoadingAlert("尝试删除...")
 
         TbsApi.user().obtainRemoveHistory(id)
             .bindDefaultSub(doNext = {
                 doRemove(id)
+
+                number -= 1
+                text_title.text = "阅读记录($number)"
+
                 eventBus.post(RefreshUserEvent())
+
                 Toasts.show("删除成功")
             }, doDone = {
                 hideLoadingAlert()
