@@ -62,7 +62,7 @@ class BossFragment : BaseFragment() {
 
         mAdapter = object : BossInfoAdapter() {
             override fun onClick(item: BossInfoEntity) {
-                Toasts.show(item.id)
+                BossHomeActivity.start(mActivity, entity = item)
             }
         }
 
@@ -84,6 +84,10 @@ class BossFragment : BaseFragment() {
 
         button_float doClick {
             SearchActivity.start(mActivity)
+        }
+
+        image_search doClick {
+            SearchBossActivity.start(mActivity)
         }
     }
 

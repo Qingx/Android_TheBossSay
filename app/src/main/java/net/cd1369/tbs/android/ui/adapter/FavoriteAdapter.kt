@@ -8,6 +8,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_favorite.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.FavoriteEntity
 import net.cd1369.tbs.android.data.model.TestFavoriteEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
@@ -18,28 +19,16 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 abstract class FavoriteAdapter :
-    BaseQuickAdapter<TestFavoriteEntity, BaseViewHolder>(R.layout.item_favorite) {
-    private val mSelect = mutableListOf<Int>()
+    BaseQuickAdapter<FavoriteEntity, BaseViewHolder>(R.layout.item_favorite) {
+    private val mSelect = mutableListOf<String>()
 
     @SuppressLint("SetTextI18n")
-    override fun convert(helper: BaseViewHolder, item: TestFavoriteEntity) {
-        helper.V.rv_content.isVisible = mSelect.contains(item.code)
+    override fun convert(helper: BaseViewHolder, item: FavoriteEntity) {
+        helper.V.rv_content.isVisible = mSelect.contains(item.id)
 
-        helper.V.text_name.text = if (item.code == 0) {
-            "默认收藏夹"
-        } else "收藏夹${item.code}"
+        helper.V.text_name.text = item.name
 
-        helper.V.text_content.text = "${item.data.size}篇言论"
-
-        val adapter = object : FavoriteContentAdapter(item.code, ::onRemoveCallback) {
-            override fun onContentClick(contentItem: Int) {
-                onContentItemClick(contentItem)
-            }
-
-            override fun onContentDelete(contentItem: Int, onRemove: (item: Int) -> Unit) {
-                onContentItemDelete(contentItem, onRemove)
-            }
-        }
+        helper.V.text_content.text = "${item.list?.size ?: 0}篇言论"
 
         helper.V.rv_content.layoutManager =
             object : LinearLayoutManager(mContext, RecyclerView.VERTICAL, false) {
@@ -52,59 +41,39 @@ abstract class FavoriteAdapter :
                 }
             }
 
+        val adapter = object : FavoriteContentAdapter() {
+            override fun onContentClick(articleId: String) {
+                onContentItemClick(articleId)
+            }
+
+            override fun onContentDelete(
+                articleId: String,
+                doRemove: (id: String) -> Unit
+            ) {
+                onContentItemDelete(articleId, doRemove)
+            }
+        }
+
         helper.V.rv_content.adapter = adapter
-        adapter.setNewData(item.data)
+        adapter.setNewData(item.list ?: mutableListOf())
 
         helper.V.layout_content doClick {
-            if (mSelect.contains(item.code)) {
-                mSelect.remove(item.code)
+            if (mSelect.contains(item.id)) {
+                mSelect.remove(item.id)
             } else {
-                mSelect.add(item.code)
+                mSelect.add(item.id)
             }
             notifyItemChanged(helper.layoutPosition)
         }
 
         helper.V.text_delete doClick {
-            onItemDelete(item.code, ::removeFolder)
+            onItemDelete(item.id)
         }
     }
 
-    abstract fun onContentItemClick(contentItem: Int)
+    abstract fun onContentItemClick(articleId: String)
 
-    abstract fun onItemDelete(parentItem: Int, onRemove: ((item: Int) -> Unit))
+    abstract fun onItemDelete(folderId: String)
 
-    abstract fun onContentItemDelete(
-        contentItem: Int,
-        onRemove: ((item: Int) -> Unit)
-    )
-
-    fun onRemoveCallback(parentItem: Int, contentItem: Int) {
-        val position = mData.indexOfFirst {
-            it.code == parentItem
-        }
-
-        if (position != -1) {
-            mData[position].data.remove(contentItem)
-            notifyItemChanged(position)
-        }
-    }
-
-    private fun removeFolder(parentItem: Int) {
-        val position = mData.indexOfFirst {
-            it.code == parentItem
-        }
-
-        if (position != -1) {
-            remove(position)
-        }
-    }
-
-    fun addFolder(item: TestFavoriteEntity) {
-        addData(item)
-    }
-
-    override fun setNewData(data: MutableList<TestFavoriteEntity>?) {
-        super.setNewData(data)
-        mSelect.clear()
-    }
+    abstract fun onContentItemDelete(articleId: String, doRemove: (id: String) -> Unit)
 }

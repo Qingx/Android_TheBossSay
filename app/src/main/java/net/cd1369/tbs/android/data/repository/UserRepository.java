@@ -2,10 +2,14 @@ package net.cd1369.tbs.android.data.repository;
 
 
 import net.cd1369.tbs.android.config.DataConfig;
+import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 import net.cd1369.tbs.android.data.service.UserService;
 
+import java.util.List;
+
 import cn.wl.android.lib.data.repository.BaseRepository;
+import cn.wl.android.lib.utils.Lists;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 
@@ -131,6 +135,87 @@ public class UserRepository extends BaseRepository<UserService> {
         });
 
         return getService().obtainChangePhone(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 获取用户收藏夹列表
+     *
+     * @return
+     */
+    public Observable<List<FavoriteEntity>> obtainFavoriteList() {
+        return getService().obtainFavoriteList()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 创建收藏夹
+     *
+     * @param name
+     * @return
+     */
+    public Observable<FavoriteEntity> obtainCreateFavorite(String name) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("name", name);
+        });
+
+        return getService().obtainCreateFavorite(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 删除收藏夹
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainRemoveFolder(String id) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("id", id);
+        });
+
+        return getService().obtainRemoveFolder(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 取消收藏文章
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainCancelFavoriteArticle(String id) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("target", false);
+            jo.put("type", 1);
+        });
+
+        return getService().obtainOptionArticle(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 收藏文章
+     *
+     * @param folderId
+     * @param articleId
+     * @return
+     */
+    public Observable<Boolean> obtainFavoriteArticle(String folderId, String articleId) {
+        RequestBody body = bodyFromCreator(jo -> {
+                    jo.put("groupId", folderId);
+                    jo.put("sourceId", articleId);
+                    jo.put("target", true);
+                    jo.put("type", 1);
+                }
+        );
+        return getService().obtainOptionArticle(body)
                 .compose(combine())
                 .compose(success());
     }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import io.reactivex.Observable
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_mine.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
+import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
@@ -100,10 +102,10 @@ class MineFragment : BaseFragment() {
         }
     }
 
-    //点击我的收藏
+    //点击历史记录
     private fun onClickHistory() {
         if (UserConfig.get().loginStatus) {
-            FavoriteActivity.start(mActivity)
+            HistoryActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
             InputPhoneActivity.start(mActivity)
@@ -144,6 +146,12 @@ class MineFragment : BaseFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: RefreshUserEvent) {
-        setUserInfo()
+        TbsApi.user().obtainRefreshUser().bindDefaultSub {
+            HttpConfig.saveToken(it.token)
+
+            UserConfig.get().userEntity = it.userInfo
+
+            setUserInfo()
+        }
     }
 }

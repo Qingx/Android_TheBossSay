@@ -13,12 +13,12 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_history.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
+import net.cd1369.tbs.android.ui.adapter.FavoriteContentAdapter
 import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit
 
 class HistoryActivity : BaseListActivity() {
-    private lateinit var mAdapter: HistoryContentAdapter
+    private lateinit var mAdapter: FavoriteContentAdapter
     private var needLoading = true
 
     companion object {
@@ -59,13 +59,11 @@ class HistoryActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : HistoryContentAdapter() {
-            override fun onDeleteClick(item: Int, doRemove: (item: Int) -> Unit) {
-                doRemove.invoke(item)
+        return object : FavoriteContentAdapter() {
+            override fun onContentClick(articleId: String) {
             }
 
-            override fun onItemClick(item: Int) {
-                Toasts.show(item)
+            override fun onContentDelete(articleId: String, doRemove: (id: String) -> Unit) {
             }
         }.also {
             mAdapter = it
@@ -75,24 +73,5 @@ class HistoryActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore) {
-            pageParam?.resetPage()
-        }
-
-        if (needLoading && !loadMore) showLoading()
-
-
-        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
-
-        Observable.just(testData.toList())
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindListSubscribe {
-                showContent()
-                layout_refresh.finishRefresh()
-
-                mAdapter.setNewData(it)
-                needLoading = true
-            }
     }
 }

@@ -404,15 +404,17 @@ fun getTimeHasDifference(diff: Long): String {
     return "${days}天${hours}小时${minutes}分钟${seconds}秒"
 }
 
-internal fun String.avatar(): String {
-    if (!this.startsWith("http")) {
-        return if (this.startsWith('/')) {
-            WLConfig.getDownUrl() + this.substring(1)
-        } else {
-            WLConfig.getDownUrl() + this
+internal fun String?.avatar(): String {
+    if (!this.isNullOrEmpty()) {
+        if (!this.startsWith("http")) {
+            return if (this.startsWith('/')) {
+                WLConfig.getDownUrl() + this.substring(1)
+            } else {
+                WLConfig.getDownUrl() + this
+            }
         }
     }
-    return this
+    return this ?:""
 }
 
 ///**

@@ -14,6 +14,7 @@ import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
+import retrofit2.http.PUT;
 
 /**
  * Created by Xiang on 2021/6/22 15:21
@@ -110,6 +111,94 @@ public class BossRepository extends BaseRepository<BossService> {
         });
 
         return getService().obtainAllArticle(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取所有boss 分页
+     *
+     * @param pageParam
+     * @param label
+     * @return
+     */
+    public Observable<Page<BossInfoEntity>> obtainAllBossList(PageParam pageParam, String label) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            if (!label.equals("-1")) {
+                List<String> list = new ArrayList<>();
+                list.add(label);
+                jo.put("labels", list);
+            }
+        });
+
+        return getService().obtainAllBossList(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 搜索boss
+     *
+     * @param pageParam
+     * @param searchText
+     * @return
+     */
+    public Observable<Page<BossInfoEntity>> obtainSearchBossList(PageParam pageParam, String searchText) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            if (searchText != null && !searchText.equals("")) {
+                jo.put("name", searchText);
+            }
+        });
+
+        return getService().obtainAllBossList(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 搜索文章
+     *
+     * @param pageParam
+     * @param searchText
+     * @return
+     */
+    public Observable<Page<ArticleEntity>> obtainSearchArticle(PageParam pageParam, String searchText) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            if (searchText != null && !searchText.equals("")) {
+                jo.put("name", searchText);
+            }
+        });
+
+        return getService().obtainAllArticle(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取boss的文章列表
+     *
+     * @param pageParam
+     * @param bossId
+     * @return
+     */
+    public Observable<Page<ArticleEntity>> obtainBossArticleList(PageParam pageParam, String bossId) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            jo.put("bossId", bossId);
+        });
+
+        return getService().obtainAllArticle(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取boss详情
+     *
+     * @param id
+     * @return
+     */
+    public Observable<BossInfoEntity> obtainBossDetail(String id) {
+        return getService().obtainBossDetail(id)
                 .compose(combine())
                 .compose(rebase());
     }

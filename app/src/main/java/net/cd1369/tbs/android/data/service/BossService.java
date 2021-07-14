@@ -12,6 +12,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by Xiang on 2021/4/25 15:20
@@ -63,4 +64,22 @@ public interface BossService {
      */
     @POST("/api/article/list")
     Observable<WLPage<ArticleEntity>> obtainAllArticle(@Body RequestBody body);
+
+    /**
+     * 获取所有boss列表 分页
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/boss/list")
+    Observable<WLPage<BossInfoEntity>> obtainAllBossList(@Body RequestBody body);
+
+    /**
+     * 获取boss详情
+     *
+     * @param id
+     * @return
+     */
+    @GET("/api/boss/details/{id}")
+    Observable<WLData<BossInfoEntity>> obtainBossDetail(@Path("id") String id);
 }

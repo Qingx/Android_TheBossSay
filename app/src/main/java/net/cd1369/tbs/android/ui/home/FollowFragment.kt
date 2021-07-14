@@ -73,7 +73,7 @@ class FollowFragment : BaseListFragment() {
 
         cardAdapter = object : FollowCardAdapter() {
             override fun onClick(item: BossInfoEntity) {
-                BossHomeActivity.start(mActivity)
+                BossHomeActivity.start(mActivity, entity = item)
             }
         }
 

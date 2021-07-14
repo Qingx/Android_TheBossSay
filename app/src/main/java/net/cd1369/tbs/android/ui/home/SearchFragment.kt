@@ -5,22 +5,19 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.wl.android.lib.ui.BaseFragment
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.fragment_follow.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.fragment_search.layout_refresh
-import kotlinx.android.synthetic.main.fragment_search.rv_content
-import kotlinx.android.synthetic.main.fragment_search.rv_tab
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Qing on 2021/6/30 3:49 下午
@@ -31,6 +28,7 @@ class SearchFragment : BaseListFragment() {
     private lateinit var tabAdapter: SearchTabAdapter
     private lateinit var mAdapter: SearchInfoAdapter
     private var needLoading = true
+    private var mSelectTab = ""
 
     companion object {
         fun createFragment(): SearchFragment {
@@ -53,7 +51,8 @@ class SearchFragment : BaseListFragment() {
         }
 
         tabAdapter = object : SearchTabAdapter() {
-            override fun onClick(item: Int) {
+            override fun onClick(item: String) {
+                mSelectTab = item
                 layout_refresh.autoRefresh()
             }
         }
@@ -77,7 +76,7 @@ class SearchFragment : BaseListFragment() {
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SearchInfoAdapter() {
-            override fun onClickFollow(item: Int) {
+            override fun onClickFollow(item: BossInfoEntity) {
                 Toasts.show("$item")
             }
         }.also {
@@ -88,22 +87,53 @@ class SearchFragment : BaseListFragment() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore && needLoading) showLoading()
+        if (!loadMore) {
+            pageParam?.resetPage()
 
-        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7,8)
+            if (needLoading) showLoading()
 
-        Observable.just(testData.toList())
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindListSubscribe {
-                showContent()
-                layout_refresh.finishRefresh()
+            if (DataConfig.get().bossLabels.isNullOrEmpty()) {
+                TbsApi.boss().obtainBossLabels()
+                    .flatMap {
+                        it.add(0, BossLabelEntity.empty)
+                        mSelectTab = it[0].id
+                        DataConfig.get().bossLabels = it
 
-                tabAdapter.setNewData(it)
-                mAdapter.setNewData(it)
-//                mAdapter.loadMoreEnd(true)
-                needLoading = true
+                        TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
+                            .onErrorReturn {
+                                Page.empty()
+                            }
+                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+                        mAdapter.setNewData(it)
+                    }, doDone = {
+                        showContent()
+
+                        layout_refresh.finishRefresh()
+                    })
+            } else {
+                mSelectTab = DataConfig.get().bossLabels[0].id
+                TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
+                    .onErrorReturn {
+                        Page.empty()
+                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+                        mAdapter.setNewData(it)
+                    }, doDone = {
+                        showContent()
+
+                        layout_refresh.finishRefresh()
+                    })
             }
+        } else {
+            TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
+                .onErrorReturn {
+                    Page.empty()
+                }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                    mAdapter.addData(it)
+                }, doDone = {
+                    layout_refresh.finishLoadMore()
+                })
+        }
     }
-
 }

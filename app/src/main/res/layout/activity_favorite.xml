@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:singleLine="true"
-            android:text="我的收藏（0）"
+            tools:text="我的收藏"
             android:textColor="@color/colorTextDark"
             android:textSize="16dp"
             android:textStyle="bold"

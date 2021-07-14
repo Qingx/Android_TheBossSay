@@ -44,7 +44,9 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.start.ChangePhoneActivity"></activity>
+        <activity android:name=".ui.home.SearchArticleActivity"></activity>
+        <activity android:name=".ui.home.SearchBossActivity" />
+        <activity android:name=".ui.start.ChangePhoneActivity" />
         <activity android:name=".ui.start.ConfirmPhoneActivity" />
         <activity android:name=".ui.home.ContactActivity" />
         <activity android:name=".ui.home.HistoryActivity" />

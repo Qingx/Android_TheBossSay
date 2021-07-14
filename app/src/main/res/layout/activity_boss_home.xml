@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorPageBg"
     android:layout_height="match_parent"
+    android:background="@color/colorPageBg"
     tools:context=".ui.home.BossHomeActivity">
 
     <net.cd1369.tbs.android.widget.WlCardView
@@ -27,16 +27,16 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
+                android:src="@drawable/ic_boss_top_bg"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_default_photo" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="24dp">
+                android:paddingBottom="8dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_title_bar"
@@ -49,9 +49,10 @@
 
                     <ImageView
                         android:id="@+id/image_back"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="6dp"
+                        android:paddingVertical="10dp"
                         android:src="@drawable/ic_back_white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
@@ -111,25 +112,6 @@
                     tools:text="莉莉娅" />
 
                 <TextView
-                    android:id="@+id/text_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/draw_dark_light_6"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="2dp"
-                    android:singleLine="true"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="12dp"
-                    app:layout_constraintBottom_toBottomOf="@id/text_name"
-                    app:layout_constraintStart_toEndOf="@id/text_name"
-                    app:layout_constraintTop_toTopOf="@id/text_name"
-                    tools:text="灵魂莲华" />
-
-                <TextView
                     android:id="@+id/text_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,20 +145,39 @@
                     tools:text="追踪" />
 
                 <TextView
+                    android:id="@+id/text_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/draw_dark_light_6"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:singleLine="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12dp"
+                    app:layout_constraintStart_toEndOf="@id/image_head"
+                    app:layout_constraintTop_toTopOf="@id/text_follow"
+                    tools:text="灵魂莲华" />
+
+                <TextView
                     android:id="@+id/text_content"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
                     android:ellipsize="end"
                     android:gravity="start|top"
-                    android:maxLines="3"
+                    android:maxLines="2"
                     android:singleLine="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="12dp"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/text_name"
-                    app:layout_constraintTop_toTopOf="@id/text_follow"
+                    app:layout_constraintTop_toBottomOf="@id/text_info"
                     tools:text="个人简介：府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有…" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

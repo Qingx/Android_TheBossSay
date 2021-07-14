@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_search.*
 import net.cd1369.tbs.android.R
@@ -16,6 +15,7 @@ import net.cd1369.tbs.android.util.doClick
 
 class SearchActivity : BaseActivity() {
     val fragments = mutableListOf<Fragment>()
+    val resultFragment = SearchResultFragment.createFragment()
 
     companion object {
         fun start(context: Context?) {
@@ -35,12 +35,13 @@ class SearchActivity : BaseActivity() {
         super.beforeCreateView(savedInstanceState)
 
         fragments.add(SearchFragment.createFragment())
-        fragments.add(SearchResultFragment.createFragment())
+        fragments.add(resultFragment)
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
 
         edit_input.hint = "大家都在搜莉莉娅"
+
 
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
             override fun getItemCount(): Int {
@@ -58,8 +59,9 @@ class SearchActivity : BaseActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE && !edit_input.text.toString()
                     .isNullOrEmpty()
             ) {
-                eventBus.post(SearchEvent(edit_input.text.toString()))
                 view_pager.setCurrentItem(1, false)
+                resultFragment.eventSearch(edit_input.text.toString())
+                eventBus.post(SearchEvent(edit_input.text.toString()))
             }
             false
         }

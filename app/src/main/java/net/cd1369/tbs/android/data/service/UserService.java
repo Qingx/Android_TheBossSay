@@ -1,8 +1,11 @@
 package net.cd1369.tbs.android.data.service;
 
+import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 
 import cn.wl.android.lib.core.WLData;
+import cn.wl.android.lib.core.WLList;
+import cn.wl.android.lib.core.WLPage;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -78,4 +81,39 @@ public interface UserService {
      */
     @POST("/api/account/check-change")
     Observable<WLData<Object>> obtainChangePhone(@Body RequestBody body);
+
+    /**
+     * 获取用户收藏夹列表
+     *
+     * @return
+     */
+    @GET("/api/collect/list")
+    Observable<WLList<FavoriteEntity>> obtainFavoriteList();
+
+    /**
+     * 创建收藏夹
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/collect/commit")
+    Observable<WLData<FavoriteEntity>> obtainCreateFavorite(@Body RequestBody body);
+
+    /**
+     * 删除收藏夹
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/collect/delete")
+    Observable<WLData<Object>> obtainRemoveFolder(@Body RequestBody body);
+
+    /**
+     * @param body
+     * @return
+     */
+    @POST("/api/article/options")
+    Observable<WLData<Object>> obtainOptionArticle(@Body RequestBody body);
+
+
 }

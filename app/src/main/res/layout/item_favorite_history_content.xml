@@ -13,6 +13,7 @@
             android:id="@+id/line_gray"
             android:layout_width="0dp"
             android:layout_height="1dp"
+            android:background="@color/colorMainLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,11 +32,12 @@
                 android:id="@+id/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="start|center_vertical"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:singleLine="false"
                 android:textColor="@color/colorTextDark"
-                android:textSize="14dp"
+                android:textSize="13dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,8 +45,8 @@
 
             <com.allen.library.CircleImageView
                 android:id="@+id/image_head"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_title"
@@ -58,7 +60,7 @@
                 android:gravity="start|center_vertical"
                 android:singleLine="true"
                 android:textColor="@color/colorTextGray"
-                android:textSize="14dp"
+                android:textSize="13dp"
                 app:layout_constraintBottom_toBottomOf="@id/image_head"
                 app:layout_constraintStart_toEndOf="@id/image_head"
                 app:layout_constraintTop_toTopOf="@id/image_head"
@@ -86,6 +88,6 @@
         android:gravity="center"
         android:text="取消收藏"
         android:textColor="@color/colorWhite"
-        android:textSize="14dp" />
+        android:textSize="13dp" />
 
 </com.mcxtzhang.swipemenulib.SwipeMenuLayout>
