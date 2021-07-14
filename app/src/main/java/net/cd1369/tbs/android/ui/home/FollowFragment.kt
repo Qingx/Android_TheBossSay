@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewStub
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.ErrorBean
@@ -13,6 +16,7 @@ import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_follow.*
+import kotlinx.android.synthetic.main.header_follow.*
 import kotlinx.android.synthetic.main.header_follow.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
@@ -27,6 +31,7 @@ import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.random.Random
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -34,11 +39,14 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class FollowFragment : BaseListFragment() {
+    private var mRootHeight: Int = 0
     private var headerView: View? = null
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var cardAdapter: FollowCardAdapter
     private lateinit var mAdapter: FollowInfoAdapter
     private lateinit var mBossCards: MutableList<BossInfoEntity>
+
+    private var mEmptyView: View? = null
 
     private var mSelectTab: String? = null
     private var needLoading = true
@@ -105,6 +113,27 @@ class FollowFragment : BaseListFragment() {
 
         val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_card_view, null)
         cardAdapter.emptyView = emptyView
+
+        layout_refresh.post {
+            mRootHeight = layout_refresh.height
+        }
+    }
+
+    private fun showContentEmpty(show: Boolean) {
+        if (mEmptyView == null) {
+            mEmptyView = vs_follow_empty.inflate()
+
+            var sumHeight = headerView?.rv_tab?.height ?: 0
+            sumHeight += headerView?.rv_card?.height ?: 0
+            sumHeight += headerView?.layout_title?.height ?: 0
+
+            val h = mRootHeight - sumHeight
+            mEmptyView!!.updateLayoutParams {
+                this.height = h
+            }
+        }
+
+        mEmptyView?.isVisible = show
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -167,6 +196,8 @@ class FollowFragment : BaseListFragment() {
 
                         headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
                         mAdapter.setNewData(it)
+
+                        showContentEmpty(mAdapter.data.isNullOrEmpty())
                     }, doDone = {
                         showContent()
 
