@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="当前还没有追踪的老板！"
-        android:textColor="#80000000"
+        android:textColor="@color/colorTextGray"
         android:textSize="14dp"
         app:layout_constraintBottom_toTopOf="@id/text_add"
         app:layout_constraintEnd_toEndOf="parent"

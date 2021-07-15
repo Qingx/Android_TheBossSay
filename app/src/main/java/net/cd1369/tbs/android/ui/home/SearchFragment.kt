@@ -16,8 +16,14 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
+import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
+import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Qing on 2021/6/30 3:49 下午
@@ -41,6 +47,7 @@ class SearchFragment : BaseListFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+        eventBus.register(this)
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -76,12 +83,66 @@ class SearchFragment : BaseListFragment() {
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SearchInfoAdapter() {
+            override fun onItemClick(item: BossInfoEntity) {
+                BossHomeActivity.start(mActivity, item)
+            }
+
             override fun onClickFollow(item: BossInfoEntity) {
-                Toasts.show("$item")
+                if (item.isCollect) {
+                    cancelFollow(item.id)
+                } else followBoss(item.id)
             }
         }.also {
             mAdapter = it
         }
+    }
+
+    /**
+     * 取消追踪boss
+     * @param id String
+     */
+    private fun cancelFollow(id: String) {
+        showLoadingAlert("尝试取消...")
+
+        TbsApi.boss().obtainCancelFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                mAdapter.doFollowChange(id, false)
+                eventBus.post(RefreshUserEvent())
+                layout_refresh.autoRefresh()
+
+                CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
+            }, doFail = {
+                Toasts.show("取消失败，${it.msg}")
+            }, doLast = {
+                hideLoadingAlert()
+            })
+    }
+
+    /**
+     * 追踪boss
+     * @param id String
+     */
+    private fun followBoss(id: String) {
+        showLoadingAlert("尝试追踪...")
+
+        TbsApi.boss().obtainFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                mAdapter.doFollowChange(id, true)
+                eventBus.post(RefreshUserEvent())
+                layout_refresh.autoRefresh()
+
+                SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
+                    .apply {
+                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
+                            Toasts.show("开启推送")
+                            this.dismiss()
+                        }
+                    }
+            }, doFail = {
+                Toasts.show("追踪失败，${it.msg}")
+            }, doLast = {
+                hideLoadingAlert()
+            })
     }
 
     override fun loadData(loadMore: Boolean) {
@@ -135,5 +196,15 @@ class SearchFragment : BaseListFragment() {
                     layout_refresh.finishLoadMore()
                 })
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        layout_refresh.autoRefresh()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: FollowBossEvent) {
+        layout_refresh.autoRefresh()
     }
 }

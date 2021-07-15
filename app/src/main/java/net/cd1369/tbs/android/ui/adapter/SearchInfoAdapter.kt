@@ -27,7 +27,23 @@ abstract class SearchInfoAdapter :
         helper.V.layout_follow doClick {
             onClickFollow(item)
         }
+
+        helper.V doClick {
+            onItemClick(item)
+        }
     }
 
+    abstract fun onItemClick(item: BossInfoEntity)
+
     abstract fun onClickFollow(item: BossInfoEntity)
+
+    fun doFollowChange(id: String, status: Boolean) {
+        val position = mData.indexOfFirst {
+            id == it.id
+        }
+
+        mData[position].isCollect = status
+
+        notifyItemChanged(position)
+    }
 }

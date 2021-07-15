@@ -82,4 +82,13 @@ public interface BossService {
      */
     @GET("/api/boss/details/{id}")
     Observable<WLData<BossInfoEntity>> obtainBossDetail(@Path("id") String id);
+
+    /**
+     * 获取文章详情
+     *
+     * @param id
+     * @return
+     */
+    @GET("/api/article/details/{id}")
+    Observable<WLData<ArticleEntity>> obtainDetailArticle(@Path("id") String id);
 }

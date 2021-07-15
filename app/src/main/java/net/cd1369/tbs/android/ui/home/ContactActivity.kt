@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -27,8 +28,9 @@ class ContactActivity : BaseActivity() {
         return R.layout.activity_contact
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        text_mail.text = "xxxxxxx@.com"
+        text_mail.text = "cd1369@1369net.com"
 
         val adapter = ContactItemAdapter()
         rv_content.layoutManager =

@@ -9,7 +9,7 @@ data class BossInfoEntity(
     val head: String,
     val id: String,
     val info: String,
-    val isCollect: Boolean,
+    var isCollect: Boolean,
     val isPoint: Boolean,
     val name: String,
     val point: Int? = 0,

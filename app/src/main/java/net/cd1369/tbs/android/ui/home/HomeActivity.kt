@@ -9,7 +9,10 @@ import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class HomeActivity : BaseActivity() {
     val fragments = mutableListOf<Fragment>()
@@ -37,6 +40,7 @@ class HomeActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        eventBus.register(this)
 
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
             override fun getItemCount(): Int {
@@ -70,5 +74,10 @@ class HomeActivity : BaseActivity() {
         layout_mine doClick {
             view_pager.setCurrentItem(2, false)
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: JumpBossEvent) {
+        view_pager.setCurrentItem(1, true)
     }
 }

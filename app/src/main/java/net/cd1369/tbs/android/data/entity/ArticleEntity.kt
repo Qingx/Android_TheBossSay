@@ -11,7 +11,7 @@ data class ArticleEntity(
     val descContent: String,
     val files: List<String>? = listOf(),
     val id: String,
-    val isCollect: Boolean? = false,
+    var isCollect: Boolean? = false,
     val isPoint: Boolean? = false,
     val point: Int? = 0,
     val status: Int,

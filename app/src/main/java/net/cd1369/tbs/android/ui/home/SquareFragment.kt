@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +41,7 @@ class SquareFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SquareInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                Toasts.show(item.id)
+                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
             }
         }.also {
             mAdapter = it
@@ -74,12 +75,17 @@ class SquareFragment : BaseListFragment() {
                 }
             }
 
+        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
                     return false
                 }
             }
+
+
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+        mAdapter.emptyView = emptyView
     }
 
     override fun loadData(loadMore: Boolean) {

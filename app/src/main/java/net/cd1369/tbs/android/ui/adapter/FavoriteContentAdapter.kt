@@ -30,7 +30,7 @@ abstract class FavoriteContentAdapter :
             onContentDelete(item.id, ::removeItem)
         }
 
-        helper.V doClick {
+        helper.V.layout_content doClick {
             onContentClick(item.id)
         }
     }

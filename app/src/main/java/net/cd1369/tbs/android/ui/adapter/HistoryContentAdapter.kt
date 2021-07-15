@@ -28,13 +28,15 @@ abstract class HistoryContentAdapter(val today: Boolean) :
             if (today) DateFormat.getHHmm(item.updateTime) else DateFormat.date2yymmdd(item.updateTime)
         GlideApp.display(item.bossHead, helper.V.image_head, R.drawable.ic_default_photo)
 
+        helper.V.layout_content doClick {
+            onContentClick(item.articleId)
+        }
+
         helper.V.text_delete doClick {
             onContentDelete(item.id, ::removeItem)
         }
 
-        helper.V doClick {
-            onContentClick(item.articleId)
-        }
+
     }
 
     private fun removeItem(id: String) {

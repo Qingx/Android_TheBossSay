@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewStub
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.wl.android.lib.core.ErrorBean
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.Toasts
@@ -28,10 +26,9 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
-import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
+import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import kotlin.random.Random
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -139,7 +136,7 @@ class FollowFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                Toasts.show(item.id)
+                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
             }
         }.also {
             mAdapter = it
@@ -183,13 +180,21 @@ class FollowFragment : BaseListFragment() {
                         showContent()
 
                         layout_refresh.finishRefresh()
+
+                        showContentEmpty(mAdapter.data.isNullOrEmpty())
                     })
             } else {
                 TbsApi.boss().obtainFollowBossList(mSelectTab, true)
+                    .onErrorReturn {
+                        mutableListOf()
+                    }
                     .flatMap {
                         mBossCards = it
 
                         TbsApi.boss().obtainFollowArticle(pageParam)
+                            .onErrorReturn {
+                                Page.empty()
+                            }
                     }.bindPageSubscribe(loadMore = loadMore, doNext = {
                         tabAdapter.setNewData(DataConfig.get().bossLabels)
                         cardAdapter.setNewData(mBossCards)
@@ -197,11 +202,12 @@ class FollowFragment : BaseListFragment() {
                         headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
                         mAdapter.setNewData(it)
 
-                        showContentEmpty(mAdapter.data.isNullOrEmpty())
                     }, doDone = {
                         showContent()
 
                         layout_refresh.finishRefresh()
+
+                        showContentEmpty(mAdapter.data.isNullOrEmpty())
                     })
             }
         } else {

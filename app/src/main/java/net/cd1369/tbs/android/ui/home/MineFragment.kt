@@ -16,10 +16,12 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.jumpSysShare
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
@@ -44,8 +46,6 @@ class MineFragment : BaseFragment() {
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
         eventBus.register(this)
-
-        setUserInfo()
 
         mAdapter = object : MineItemAdapter() {
             override fun onItemClick(item: MineItem) {
@@ -73,6 +73,8 @@ class MineFragment : BaseFragment() {
         rv_content.adapter = mAdapter
         mAdapter.setNewData(MineItem.values().toMutableList())
 
+        mAdapter.onRefreshLogin()
+
         image_info doClick {
             onClickInfo()
         }
@@ -83,6 +85,18 @@ class MineFragment : BaseFragment() {
 
         layout_history doClick {
             TodayHistoryActivity.start(mActivity)
+        }
+
+        layout_favorite doClick {
+            onClickFavorite()
+        }
+
+        layout_follow doClick {
+            eventBus.post(JumpBossEvent())
+        }
+
+        image_share doClick {
+            jumpSysShare(mActivity, "https://www.bilibili.com/")
         }
     }
 
@@ -146,10 +160,17 @@ class MineFragment : BaseFragment() {
         text_follow_num.text = entity.traceNum.toString()
         text_favorite_num.text = entity.collectNum.toString()
         text_history_num.text = entity.readNum.toString()
+
+        mAdapter.onRefreshLogin()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: RefreshUserEvent) {
+        loadData()
+    }
+
+    override fun loadData() {
+        super.loadData()
         TbsApi.user().obtainRefreshUser().bindDefaultSub {
             HttpConfig.saveToken(it.token)
 
