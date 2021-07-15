@@ -41,13 +41,13 @@ public class WLDataInterceptor implements Interceptor {
 
             if (WLConfig.isDebug()) {
                 Log.e("OkHttp", " sign -> " + sign);
-                Log.e("OkHttp", " token ->" + token);
+                Log.e("OkHttp", " Authorization ->" + token);
             }
 
             String versionName = AppUtils.getAppVersionName();
 
             requestBuilder
-                    .addHeader("token", token)
+                    .addHeader("Authorization", token)
                     .addHeader("version", versionName)
                     .addHeader("sign", sign);
         }

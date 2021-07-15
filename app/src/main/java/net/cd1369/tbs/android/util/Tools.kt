@@ -31,7 +31,10 @@ import com.google.gson.JsonElement
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.abs
 
 /**
@@ -40,6 +43,10 @@ import kotlin.math.abs
  * @email Cymbidium@outlook.com
  */
 object Tools {
+
+    fun createTempId(): String {
+        return "temp${UUID.randomUUID().leastSignificantBits}".replace("-", "")
+    }
 
     internal fun <T> T?.logE(
         tag: String = "OkHttp",
@@ -350,6 +357,34 @@ fun getTimeDifference(startTime: Long, endTime: Long = Times.current()): String 
     }
 }
 
+fun getUpdateTime(startTime: Long): String {
+    val endTime = Times.current()
+
+    if (endTime >= startTime) {
+        val diff = endTime - startTime
+        val days =
+            diff / (1000 * 60 * 60 * 24)
+        val hours =
+            (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        val minutes =
+            (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60)) / (1000 * 60)
+        val seconds =
+            (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60) - minutes * (1000 * 60)) / 1000
+
+        return if (days > 0) {
+            "${days}天前更新"
+        } else if (hours > 0) {
+            "最近${hours}小时更新"
+        } else if (minutes > 0) {
+            "${minutes}分钟前更新"
+        } else {
+            "${seconds}秒前更新"
+        }
+    } else {
+        return "时间戳异常"
+    }
+}
+
 /**
  * 获取时间差并转换为xx天xx小时xx分钟xx秒
  * @param startTime Long
@@ -369,15 +404,17 @@ fun getTimeHasDifference(diff: Long): String {
     return "${days}天${hours}小时${minutes}分钟${seconds}秒"
 }
 
-internal fun String.avatar(): String {
-    if (!this.startsWith("http")) {
-        return if (this.startsWith('/')) {
-            WLConfig.getDownUrl() + this.substring(1)
-        } else {
-            WLConfig.getDownUrl() + this
+internal fun String?.avatar(): String {
+    if (!this.isNullOrEmpty()) {
+        if (!this.startsWith("http")) {
+            return if (this.startsWith('/')) {
+                WLConfig.getDownUrl() + this.substring(1)
+            } else {
+                WLConfig.getDownUrl() + this
+            }
         }
     }
-    return this
+    return this ?: ""
 }
 
 ///**
@@ -512,14 +549,11 @@ fun createQrCodeWith(
     return ZXingUtils.createQRImage(content, 480, 480, center)
 }
 
-///**
-// * 获取微信支付分
-// * @param token String
-// */
-//internal fun getWechatScore(token: String) {
-//    val req = WXOpenBusinessView.Req()
-//    req.businessType = "wxpayScoreEnable"
-//    req.query = "apply_permissions_token=$token"
-//    req.extInfo = "{\"miniProgramType\": 0}"
-//    RCApp.getWeChatApi().sendReq(req)
-//}
+fun jumpSysShare(context: Context, content: String) {
+    val shareIntent = Intent()
+    shareIntent.action = Intent.ACTION_SEND
+    shareIntent.type = "text/plain"
+    shareIntent.putExtra(Intent.EXTRA_TEXT, content)
+//    shareIntent = Intent.createChooser(shareIntent, "Here is the title of Select box")
+    context.startActivity(shareIntent)
+}

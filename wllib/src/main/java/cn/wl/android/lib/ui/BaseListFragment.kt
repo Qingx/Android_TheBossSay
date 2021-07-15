@@ -73,7 +73,7 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
             if (mAdapter == null) {
                 mAdapter = createAdapter()
                 mAdapter!!.setLoadMoreView(LoadView { mAdapter!!.loadMoreComplete() })
-                mAdapter!!.setOnLoadMoreListener(this)
+                mAdapter!!.setOnLoadMoreListener(this, rvContent)
             }
             return mAdapter
         }
@@ -182,6 +182,13 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
             })
     }
 
+    protected fun <T> Observable<Page<T>>.bindPageSubscribe(
+        loadMore: Boolean,
+        doFail: ((error: ErrorBean) -> Unit)? = null,
+        doDone: ((fromMiss: Boolean) -> Unit)? = null,
+        doNext: (data: List<T>) -> Unit,
+    ) = bindPageSub(loadMore, this, doNext, doFail, doDone)
+
     /**
      * 绑定分页数据
      *
@@ -267,6 +274,9 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
      */
     private fun tryNextPageParam(dataSource: Page<*>) {
         val param = mPageParam
+
+        param?.total = dataSource.total
+        param?.totalPage = dataSource.pages
         param?.nextPage(dataSource.current)
     }
 

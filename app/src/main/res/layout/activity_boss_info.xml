@@ -32,15 +32,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_test_splash" />
+            android:src="@drawable/ic_mine_bg" />
     </net.cd1369.tbs.android.widget.WlCardView>
 
     <ImageView
         android:id="@+id/image_back"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:padding="10dp"
         android:src="@drawable/ic_back_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_bar" />
@@ -77,10 +77,10 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_default_photo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_default_photo" />
 
         <TextView
             android:id="@+id/text_name"
@@ -91,12 +91,12 @@
             android:gravity="start|center_vertical"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="莉莉娅"
             android:textColor="@color/colorTextDark"
             android:textSize="24dp"
             app:layout_constraintBottom_toTopOf="@id/text_info"
             app:layout_constraintStart_toEndOf="@id/image_head"
-            app:layout_constraintTop_toTopOf="@id/image_head" />
+            app:layout_constraintTop_toTopOf="@id/image_head"
+            tools:text="莉莉娅" />
 
         <TextView
             android:id="@+id/text_info"
@@ -106,12 +106,12 @@
             android:gravity="start|center_vertical"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="灵魂莲华"
             android:textColor="@color/colorTextGray"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@id/image_head"
             app:layout_constraintStart_toStartOf="@id/text_name"
-            app:layout_constraintTop_toBottomOf="@id/text_name" />
+            app:layout_constraintTop_toBottomOf="@id/text_name"
+            tools:text="灵魂莲华" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -175,12 +175,12 @@
             android:paddingHorizontal="16dp"
             android:paddingVertical="18dp"
             android:singleLine="false"
-            android:text="物万号资往约算事打见飞增边着必影已叫受导音须接空边单压场选济共因办标广压严机无界律运活质带日的场群第如易。又制目林他派人拉采北计前县成标把较群义极持革安做种国新观两科消解加别格认角使件金音公样还广团斯况等广计关观料多产效数认质数时想信白力划七时元平号子性小组立民。
+            android:textColor="@color/colorTextGray"
+            android:textSize="14dp"
+            tools:text="物万号资往约算事打见飞增边着必影已叫受导音须接空边单压场选济共因办标广压严机无界律运活质带日的场群第如易。又制目林他派人拉采北计前县成标把较群义极持革安做种国新观两科消解加别格认角使件金音公样还广团斯况等广计关观料多产效数认质数时想信白力划七时元平号子性小组立民。
 声么性必听我外类战处型去速复只长构于力作电构体响每导象并放好员空好结更得组切影会快划众导。
 选回西月统反领型革百是再点道除细阶调其着般调下正展设工五光流容想题大过那变品并政值手过办水设半住。构使确你从约展导各员保济拉整该较京都工带历温断列写品斯离积近花别领提见比验非整调件素清毛团高身第。
-工五光流容想题大过那变品并政值手过办水设半住。构使确你从约展导各员保济拉整该较京都工带历温断列写品斯离积近花别领提见比验非整调件素清毛团高身第。"
-            android:textColor="@color/colorTextGray"
-            android:textSize="14dp" />
+工五光流容想题大过那变品并政值手过办水设半住。构使确你从约展导各员保济拉整该较京都工带历温断列写品斯离积近花别领提见比验非整调件素清毛团高身第。" />
 
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

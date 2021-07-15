@@ -1,24 +1,29 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
+import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.event.JumpBossEvent
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.jumpSysShare
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -54,14 +59,6 @@ class MineFragment : BaseFragment() {
             }
         }
 
-        if (UserConfig.get().loginStatus) {
-            text_name.text = "清和"
-            text_id.text = "ID：101010101"
-        } else {
-            text_name.text = "请先登录！"
-            text_id.text = "游客：123456789"
-        }
-
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -76,12 +73,30 @@ class MineFragment : BaseFragment() {
         rv_content.adapter = mAdapter
         mAdapter.setNewData(MineItem.values().toMutableList())
 
+        mAdapter.onRefreshLogin()
+
         image_info doClick {
             onClickInfo()
         }
 
         image_setting doClick {
             onClickInfo()
+        }
+
+        layout_history doClick {
+            TodayHistoryActivity.start(mActivity)
+        }
+
+        layout_favorite doClick {
+            onClickFavorite()
+        }
+
+        layout_follow doClick {
+            eventBus.post(JumpBossEvent())
+        }
+
+        image_share doClick {
+            jumpSysShare(mActivity, "https://www.bilibili.com/")
         }
     }
 
@@ -105,10 +120,10 @@ class MineFragment : BaseFragment() {
         }
     }
 
-    //点击我的收藏
+    //点击历史记录
     private fun onClickHistory() {
         if (UserConfig.get().loginStatus) {
-            FavoriteActivity.start(mActivity)
+            HistoryActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
             InputPhoneActivity.start(mActivity)
@@ -127,16 +142,41 @@ class MineFragment : BaseFragment() {
             }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: LoginEvent) {
-        mAdapter.onRefreshLogin()
+    @SuppressLint("SetTextI18n")
+    private fun setUserInfo() {
+        val loginStatus = UserConfig.get().loginStatus
+        val entity = UserConfig.get().userEntity
 
-        if (event.status) {
-            text_name.text = "请先登录！"
-            text_id.text = "游客：123456789"
+        if (loginStatus) {
+            text_name.text = entity.nickName
+            text_id.text = "ID：${entity.id}"
         } else {
-            text_name.text = "清和"
-            text_id.text = "ID：101010101"
+            val tempId = DataConfig.get().tempId
+
+            text_name.text = "请先登录！"
+            text_id.text = "游客：${tempId.substring(0, 12)}..."
+        }
+
+        text_follow_num.text = entity.traceNum.toString()
+        text_favorite_num.text = entity.collectNum.toString()
+        text_history_num.text = entity.readNum.toString()
+
+        mAdapter.onRefreshLogin()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        loadData()
+    }
+
+    override fun loadData() {
+        super.loadData()
+        TbsApi.user().obtainRefreshUser().bindDefaultSub {
+            HttpConfig.saveToken(it.token)
+
+            UserConfig.get().userEntity = it.userInfo
+
+            setUserInfo()
         }
     }
 }

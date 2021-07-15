@@ -1,21 +1,24 @@
 package net.cd1369.tbs.android.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_square.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.TestMultiEntity
+import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -25,6 +28,8 @@ import java.util.concurrent.TimeUnit
 class SquareFragment : BaseListFragment() {
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: SquareInfoAdapter
+
+    private var mSelectTab: String? = null
     private var needLoading = true
 
     companion object {
@@ -35,8 +40,8 @@ class SquareFragment : BaseListFragment() {
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SquareInfoAdapter() {
-            override fun onClick(item: TestMultiEntity) {
-                Toasts.show("${item.content}")
+            override fun onClick(item: ArticleEntity) {
+                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
             }
         }.also {
             mAdapter = it
@@ -57,9 +62,8 @@ class SquareFragment : BaseListFragment() {
         }
 
         tabAdapter = object : HomeTabAdapter() {
-            override fun onSelect(select: Int) {
-                showLoading()
-                loadData(false)
+            override fun onSelect(select: String) {
+                layout_refresh.autoRefresh()
             }
         }
 
@@ -71,38 +75,70 @@ class SquareFragment : BaseListFragment() {
                 }
             }
 
+        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
                     return false
                 }
             }
+
+
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+        mAdapter.emptyView = emptyView
     }
 
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore && needLoading) {
-            showLoading()
-        }
+        if (!loadMore) {
+            pageParam?.resetPage()
 
-        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
-        val multiData = testData.map {
-            TestMultiEntity(1,it)
-        }
+            if (needLoading) showLoading()
 
-        Observable.just(multiData)
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindListSubscribe {
-                showContent()
-                layout_refresh.finishRefresh()
+            if (DataConfig.get().getBossLabels().isNullOrEmpty()) {
+                TbsApi.boss().obtainBossLabels()
+                    .flatMap {
+                        it.add(0, BossLabelEntity.empty)
+                        mSelectTab = it[0].id
+                        DataConfig.get().bossLabels = it
 
-                tabAdapter.mSelectId = testData[0]
+                        TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
+                            .onErrorReturn {
+                                Page.empty()
+                            }
+                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
 
-                tabAdapter.setNewData(testData)
-                mAdapter.setNewData(it)
-                needLoading = true
+                        mAdapter.setNewData(it)
+                    }, doDone = {
+                        showContent()
+
+                        layout_refresh.finishRefresh()
+                    })
+            } else {
+                TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
+                    .onErrorReturn {
+                        Page.empty()
+                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+
+                        mAdapter.setNewData(it)
+                    }, doDone = {
+                        showContent()
+
+                        layout_refresh.finishRefresh()
+                    })
             }
+        } else {
+            TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
+                .onErrorReturn {
+                    Page.empty()
+                }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                    mAdapter.addData(it)
+                }, doDone = {
+                    layout_refresh.finishLoadMore()
+                })
+        }
     }
 }

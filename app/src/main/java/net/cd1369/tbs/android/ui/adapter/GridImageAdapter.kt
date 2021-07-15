@@ -6,17 +6,15 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_grid_image.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.avatar
 
 /**
  * Created by Qing on 2021/6/30 11:31 上午
  * @description
  * @email Cymbidium@outlook.com
  */
-class GridImageAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.item_grid_image) {
-    override fun convert(helper: BaseViewHolder, item: Int) {
-        GlideApp.display(
-            if (helper.layoutPosition % 2 == 0) R.drawable.ic_default_photo else R.drawable.ic_test_head,
-            helper.V.image_res
-        )
+class GridImageAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_grid_image) {
+    override fun convert(helper: BaseViewHolder, item: String) {
+        GlideApp.display(item.avatar(), helper.V.image_res)
     }
 }

@@ -5,35 +5,29 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.avatar
 
 /**
  * Created by Qing on 2021/6/30 12:43 下午
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class BossInfoAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.item_boss_info) {
-    override fun convert(helper: BaseViewHolder, item: Int) {
-        val hasIndex = helper.layoutPosition % 2 == 0
-        GlideApp.display(R.drawable.ic_boss_label, helper.V.image_label)
+abstract class BossInfoAdapter :
+    BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_boss_info) {
+    override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
 
-        if (hasIndex) {
-            GlideApp.display(R.drawable.ic_default_photo, helper.V.image_head)
-            helper.V.text_name.text = "莉莉娅"
-            helper.V.text_time.text = "最近1小时更新"
-            helper.V.text_info.text = "灵魂莲华"
-        } else {
-            GlideApp.display(R.drawable.ic_test_head, helper.V.image_head)
-            helper.V.text_name.text = "神里凌华"
-            helper.V.text_time.text = "最近2小时更新"
-            helper.V.text_info.text = "精神信仰"
-        }
+        GlideApp.display(item.head.avatar(), helper.V.image_head, R.drawable.ic_default_photo)
+        GlideApp.display(R.drawable.ic_boss_label, helper.V.image_label)
+        helper.V.text_name.text = item.name
+        helper.V.text_info.text = item.role
+        helper.V.text_time.text = getUpdateTime(item.updateTime)
 
         helper.V doClick {
             onClick(item)
         }
     }
 
-    abstract fun onClick(item: Int)
+    abstract fun onClick(item: BossInfoEntity)
 }

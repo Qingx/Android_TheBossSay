@@ -1,10 +1,13 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
@@ -16,21 +19,36 @@ import kotlinx.android.synthetic.main.activity_boss_home.*
 import kotlinx.android.synthetic.main.activity_boss_home.layout_refresh
 import kotlinx.android.synthetic.main.activity_boss_home.rv_content
 import kotlinx.android.synthetic.main.activity_boss_home.text_num
-import kotlinx.android.synthetic.main.fragment_follow.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.TestMultiEntity
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.model.TestMultiEntity
+import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
+import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.jumpSysShare
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
 
 class BossHomeActivity : BaseListActivity() {
     private lateinit var mAdapter: FollowInfoAdapter
     private var needLoading = true
-    companion object{
-        fun start(context: Context?) {
+    private lateinit var entity: BossInfoEntity
+
+    companion object {
+        fun start(context: Context?, entity: BossInfoEntity) {
             val intent = Intent(context, BossHomeActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtras(Bundle().apply {
+                        putSerializable("entity", entity)
+                    })
                 }
             context!!.startActivity(intent)
         }
@@ -40,17 +58,16 @@ class BossHomeActivity : BaseListActivity() {
         return R.layout.activity_boss_home
     }
 
+    override fun beforeCreateView(savedInstanceState: Bundle?) {
+        super.beforeCreateView(savedInstanceState)
+
+        entity = intent.getSerializableExtra("entity") as BossInfoEntity
+    }
+
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        GlideApp.display(R.drawable.ic_default_photo, image_bg)
-        GlideApp.display(R.drawable.ic_test_head, image_head)
-        text_name.text = "神里凌华"
-        text_info.text = "精神信仰"
-        text_label.text = "19.9万阅读·185篇言论"
-        text_follow.text = "已追踪"
-        text_follow.isSelected = true
-        text_content.text =
-            "个人简介：府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有…"
-        text_num.text="共25篇"
+        eventBus.register(this)
+
+        setUserInfo()
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -60,6 +77,7 @@ class BossHomeActivity : BaseListActivity() {
             loadData(false)
         }
 
+        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -67,19 +85,76 @@ class BossHomeActivity : BaseListActivity() {
                 }
             }
 
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+        mAdapter.emptyView = emptyView
+
+        text_follow doClick {
+            if (entity.isCollect) {
+                cancelFollow(entity.id)
+            } else followBoss(entity.id)
+        }
+
         image_back doClick {
             onBackPressed()
         }
 
         text_content doClick {
-            BossInfoActivity.start(mActivity)
+            BossInfoActivity.start(mActivity, entity)
         }
+
+        image_share doClick {
+            jumpSysShare(mActivity, "https://www.bilibili.com/")
+        }
+    }
+
+    /**
+     * 取消追踪boss
+     * @param id String
+     */
+    private fun cancelFollow(id: String) {
+        showLoadingAlert("尝试取消...")
+
+        TbsApi.boss().obtainCancelFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                eventBus.post(RefreshUserEvent())
+
+                entity.isCollect = false
+                text_follow.isSelected = false
+                text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+
+            }, doFail = {
+                Toasts.show("取消失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    /**
+     * 追踪boss
+     * @param id String
+     */
+    private fun followBoss(id: String) {
+        showLoadingAlert("尝试追踪...")
+
+        TbsApi.boss().obtainFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                eventBus.post(RefreshUserEvent())
+
+                entity.isCollect = true
+                text_follow.isSelected = true
+                text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+
+            }, doFail = {
+                Toasts.show("追踪失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
-            override fun onClick(item: TestMultiEntity) {
-                Toasts.show("${item.content}")
+            override fun onClick(item: ArticleEntity) {
+                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
             }
         }.also {
             mAdapter = it
@@ -89,24 +164,54 @@ class BossHomeActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore && needLoading) {
-            showLoading()
+        if (!loadMore) {
+            pageParam?.resetPage()
+
+            if (needLoading) showLoading()
         }
 
-        val testData = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
-        val multiData = testData.map {
-            TestMultiEntity(0,it)
-        }
-
-        Observable.just(multiData)
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindListSubscribe {
+        TbsApi.boss().obtainBossArticleList(pageParam, entity.id)
+            .onErrorReturn {
+                Page.empty()
+            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                if (loadMore) mAdapter.addData(it)
+                else mAdapter.setNewData(it)
+            }, doDone = {
                 showContent()
-                layout_refresh.finishRefresh()
 
-                mAdapter.setNewData(it)
-                needLoading = true
-            }
+                layout_refresh.finishRefresh()
+                layout_refresh.finishLoadMore()
+            })
+    }
+
+    private fun refreshBoss() {
+        TbsApi.boss().obtainBossDetail(entity.id)
+            .bindDefaultSub(doNext = {
+                entity = it
+                setUserInfo()
+            })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setUserInfo() {
+        GlideApp.display(entity.head.avatar(), image_head, R.drawable.ic_default_photo)
+        text_name.text = entity.name
+        text_info.text = entity.role
+        text_label.text = "${entity.collect ?: 0}万阅读·${entity.totalCount ?: 0}185篇言论"
+        text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+        text_follow.isSelected = entity.isCollect
+        text_content.text =
+            "个人简介：${entity.info}"
+        text_num.text = "共${entity.totalCount}篇"
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: FollowBossEvent) {
+        refreshBoss()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        refreshBoss()
     }
 }

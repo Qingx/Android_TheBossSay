@@ -4,6 +4,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_search_tab.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 
@@ -12,32 +13,31 @@ import net.cd1369.tbs.android.util.doClick
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class SearchTabAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.item_search_tab) {
-    private var mSelectIndex = 0
-    override fun convert(helper: BaseViewHolder, item: Int) {
-        helper.V.isSelected = mSelectIndex == helper.layoutPosition
+abstract class SearchTabAdapter :
+    BaseQuickAdapter<BossLabelEntity, BaseViewHolder>(R.layout.item_search_tab) {
+    private var mSelectId = "-1"
+    override fun convert(helper: BaseViewHolder, item: BossLabelEntity) {
+        helper.V.isSelected = mSelectId == item.id
 
-        val hasIndex = helper.layoutPosition % 2 == 0
 
-        helper.V.text_content.text = if (helper.layoutPosition == 0) {
+        helper.V.text_content.text = if (item.id == "-1") {
             "为你推荐"
-        } else {
-            if (hasIndex) "混子上单" else "草食打野"
-        }
+        } else item.name
 
         helper.V doClick {
-            val currentIndex = helper.layoutPosition
-            if (currentIndex != mSelectIndex) {
-                val lastIndex = mSelectIndex
-                mSelectIndex = currentIndex
+            if (mSelectId != item.id) {
+                val lastIndex = data.indexOfFirst {
+                    it.id == mSelectId
+                }
+                mSelectId = item.id
 
-                notifyItemChanged(mSelectIndex)
                 notifyItemChanged(lastIndex)
+                notifyItemChanged(helper.layoutPosition)
 
-                onClick(item)
+                onClick(item.id)
             }
         }
     }
 
-    abstract fun onClick(item: Int)
+    abstract fun onClick(item: String)
 }

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import cn.wl.android.lib.utils.Toasts
-import kotlinx.android.synthetic.main.dialog_add_folder.*
+import kotlinx.android.synthetic.main.dialog_change_name.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 
@@ -32,7 +32,7 @@ class ChangeNameDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_add_folder, container, false)
+        return inflater.inflate(R.layout.dialog_change_name, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

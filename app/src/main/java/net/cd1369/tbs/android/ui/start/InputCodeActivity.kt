@@ -5,13 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import com.jyn.vcview.VerificationCodeView
 import kotlinx.android.synthetic.main.activity_input_code.*
+import kotlinx.android.synthetic.main.activity_input_code.image_back
+import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.event.LoginEvent
-import net.cd1369.tbs.android.ui.home.HomeActivity
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.startShakeAnim
 
@@ -72,11 +76,19 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
     private fun tryLogin(code: String) {
         showLoadingAlert("尝试登录...")
 
-        timerDelay(3000) {
-            hideLoadingAlert()
-            eventBus.post(LoginEvent(true))
-            mActivity?.finish()
-        }
+        TbsApi.user().obtainSignPhone(phoneNumber, code)
+            .bindDefaultSub(doNext = {
+                HttpConfig.saveToken(it.token)
+                UserConfig.get().loginStatus = true
+                UserConfig.get().userEntity = it.userInfo
+
+                eventBus.post(RefreshUserEvent())
+                mActivity?.finish()
+            }, doFail = {
+                codeError()
+            }, doDone = {
+                hideLoadingAlert()
+            })
     }
 
     @SuppressLint("SetTextI18n")
@@ -93,11 +105,16 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
     private fun trySendCode() {
         showLoadingAlert("正在发送验证码...")
 
-        timerDelay(3000) {
-            Toasts.show("验证码发送成功")
-            hideLoadingAlert()
-            countDown()
-        }
+        TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), 0)
+            .bindDefaultSub(doNext = {
+                Toasts.show("验证码发送成功")
+
+                countDown()
+            }, doFail = {
+                Toasts.show("验证码发送失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
     }
 
     private fun codeError() {

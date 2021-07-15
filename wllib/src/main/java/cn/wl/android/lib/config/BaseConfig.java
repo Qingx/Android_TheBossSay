@@ -2,6 +2,11 @@ package cn.wl.android.lib.config;
 
 import android.text.TextUtils;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
 import cn.wl.android.lib.utils.Gsons;
 import cn.wl.android.lib.utils.SPUtils;
 
@@ -142,6 +147,28 @@ public class BaseConfig {
 
         try {
             return Gsons.getGson().fromJson(json, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 获取json保存的对象
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public final <T> List<T> getList(String key) {
+        String json = sp.getString(key, "");
+
+        if (TextUtils.isEmpty(json)) return null;
+
+        try {
+            Type type = new TypeToken<List<T>>() {
+            }.getType();
+            return Gsons.getGson().fromJson(json, type);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

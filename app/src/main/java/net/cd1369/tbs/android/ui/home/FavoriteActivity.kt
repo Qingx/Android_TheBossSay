@@ -7,20 +7,24 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseActivity
+import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_favorite.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.TestFavoriteEntity
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FavoriteAdapter
 import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
 import net.cd1369.tbs.android.util.doClick
-import java.util.concurrent.TimeUnit
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class FavoriteActivity : BaseActivity() {
     private lateinit var mAdapter: FavoriteAdapter
     private var needLoading = true
+    private var totalNum = UserConfig.get().userEntity.collectNum
 
     companion object {
         fun start(context: Context?) {
@@ -36,7 +40,12 @@ class FavoriteActivity : BaseActivity() {
         return R.layout.activity_favorite
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        eventBus.register(this)
+
+        text_title.text = "我的收藏($totalNum)"
+
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
 
@@ -53,26 +62,25 @@ class FavoriteActivity : BaseActivity() {
             }
 
         mAdapter = object : FavoriteAdapter() {
-            override fun onContentItemClick(contentItem: Int) {
-
+            override fun onContentItemClick(articleId: String) {
+                ArticleActivity.start(mActivity, articleId, true)
             }
 
-            override fun onItemDelete(parentItem: Int, onRemove: (item: Int) -> Unit) {
-                onRemove.invoke(parentItem)
+            override fun onItemDelete(folderId: String) {
+                removeFolder(folderId)
             }
 
-            override fun onContentItemDelete(contentItem: Int, onRemove: (item: Int) -> Unit) {
-                onRemove.invoke(contentItem)
+            override fun onContentItemDelete(articleId: String, doRemove: (id: String) -> Unit) {
+                removeArticle(articleId, doRemove)
             }
+
         }
         rv_content.adapter = mAdapter
 
         button_float doClick {
             AddFolderDialog.showDialog(supportFragmentManager).apply {
                 this.onConfirmClick = AddFolderDialog.OnConfirmClick {
-                    val item = TestFavoriteEntity(5, mutableListOf(0, 1, 2))
-                    mAdapter.addFolder(item)
-                    this.dismiss()
+                    createFolder(it, this)
                 }
             }
         }
@@ -85,32 +93,86 @@ class FavoriteActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     override fun loadData() {
         super.loadData()
-
-        val testData = mutableListOf(
-            TestFavoriteEntity(0, mutableListOf(0, 1, 2)),
-            TestFavoriteEntity(1, mutableListOf(0, 1)),
-            TestFavoriteEntity(2, mutableListOf(0, 1, 2, 3)),
-            TestFavoriteEntity(3, mutableListOf(0, 1, 2, 3, 4)),
-            TestFavoriteEntity(4, mutableListOf(0, 1, 2, 3, 4, 5, 6)),
-        )
-
         if (needLoading) showLoading()
 
-        Observable.just(testData)
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(2, TimeUnit.SECONDS)
-            .bindDefaultSub {
-                showContent()
-                layout_refresh.finishRefresh()
+        TbsApi.user().obtainFavoriteList()
+            .onErrorReturn { mutableListOf() }
+            .bindDefaultSub(doNext = {
+                val flatMap: List<ArticleEntity> = it.flatMap { e ->
+                    e.list ?: mutableListOf()
+                }
+                totalNum = flatMap.size
+
+                text_title.text = "我的收藏($totalNum)"
 
                 mAdapter.setNewData(it)
-                needLoading = true
+            }, doDone = {
+                showContent()
+                layout_refresh.finishRefresh()
+            })
+    }
 
-                val list = it.flatMap { data ->
-                    data.data
+    private fun createFolder(name: String, dialog: AddFolderDialog) {
+        showLoadingAlert("尝试新建...")
+
+        TbsApi.user().obtainCreateFavorite(name)
+            .bindDefaultSub(doNext = {
+                mAdapter.addData(it)
+                dialog.dismiss()
+            }, doDone = {
+                hideLoadingAlert()
+            }, doFail = {
+                Toasts.show("新建失败")
+            })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun removeFolder(id: String) {
+        showLoadingAlert("尝试删除...")
+
+        TbsApi.user().obtainRemoveFolder(id)
+            .bindDefaultSub(doNext = {
+                val position = mAdapter?.data.indexOfFirst {
+                    it.id == id
                 }
+                totalNum = totalNum!! - (mAdapter.data[position].list?.size ?: 0)
+                text_title.text = "我的收藏($totalNum)"
 
-                text_title.text = "我的收藏（${list.size})"
-            }
+                mAdapter.remove(position)
+
+                eventBus.post(RefreshUserEvent())
+
+                Toasts.show("删除成功")
+            }, doFail = {
+                Toasts.show("删除失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun removeArticle(id: String, doRemove: (id: String) -> Unit) {
+        showLoadingAlert("尝试取消收藏...")
+
+        TbsApi.user().obtainCancelFavoriteArticle(id)
+            .bindDefaultSub(doNext = {
+                doRemove.invoke(id)
+
+                totalNum = totalNum!! - 1
+                text_title.text = "我的收藏($totalNum)"
+
+                eventBus.post(RefreshUserEvent())
+
+                Toasts.show("取消成功")
+            }, doFail = {
+                Toasts.show("取消失败")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        loadData()
     }
 }

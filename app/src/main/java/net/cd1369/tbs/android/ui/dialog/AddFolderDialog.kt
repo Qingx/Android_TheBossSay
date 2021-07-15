@@ -77,7 +77,7 @@ class AddFolderDialog : DialogFragment() {
         fun onConfirm(content: String)
     }
 
-    fun isInputAvailable(): Boolean {
+    private fun isInputAvailable(): Boolean {
         if (edit_input.text.toString().trim().isNullOrEmpty()) {
             Toasts.show("请输入名字")
             return false

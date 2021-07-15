@@ -5,10 +5,16 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_talk.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -74,6 +80,10 @@ class TalkFragment : BaseFragment() {
 
         text_square doClick {
             view_pager.currentItem = 1
+        }
+
+        image_search doClick {
+            SearchArticleActivity.start(mActivity)
         }
     }
 }

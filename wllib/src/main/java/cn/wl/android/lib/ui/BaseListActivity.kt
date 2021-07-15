@@ -277,6 +277,9 @@ abstract class BaseListActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshLi
      */
     private fun tryNextPageParam(dataSource: Page<*>) {
         val param = mPageParam
+
+        param?.total = dataSource.total
+        param?.totalPage = dataSource.pages
         param?.nextPage(dataSource.current)
     }
 
