@@ -53,7 +53,6 @@ public class TbsApp extends MultiDexApplication {
     }
 
     /**
-     *
      * @param entity
      * @param tempId
      */
@@ -72,6 +71,7 @@ public class TbsApp extends MultiDexApplication {
                     .doOnNext(t -> doUserRefresh(t, tempId))
                     .map(t -> t.getToken());
         })
+                .retry(3)
                 .replay(1)
                 .refCount(16, TimeUnit.SECONDS);
 
