@@ -50,7 +50,7 @@ public class DataConfig extends BaseConfig {
     }
 
     public String getTempId() {
-        return getString(KEY.keyTempId, Tools.INSTANCE.createTempId());
+        return getString(KEY.keyTempId, "");
     }
 
     public void setBossLabels(List<BossLabelEntity> labels) {

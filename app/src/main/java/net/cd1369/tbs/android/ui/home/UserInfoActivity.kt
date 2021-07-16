@@ -124,10 +124,7 @@ class UserInfoActivity : BaseActivity() {
         }
 
         text_logout doClick {
-//            showLoadingAlert("正在清理数据...")
-
-            val tempId = Tools.createTempId()
-            DataConfig.get().tempId = tempId
+            DataConfig.get().tempId = ""
             UserConfig.get().clear()
 
             HttpConfig.reset()

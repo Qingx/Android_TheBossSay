@@ -1,5 +1,7 @@
 package net.cd1369.tbs.android.config;
 
+import android.text.TextUtils;
+
 import androidx.multidex.MultiDexApplication;
 
 import com.blankj.utilcode.util.Utils;
@@ -53,6 +55,7 @@ public class TbsApp extends MultiDexApplication {
     }
 
     /**
+     *
      * @param entity
      * @param tempId
      */
@@ -64,13 +67,19 @@ public class TbsApp extends MultiDexApplication {
 
     public static class RetryHolder {
 
-        public static final Observable<String> mTempRetry = Observable.defer(() -> {
-            String tempId = Tools.INSTANCE.createTempId();
+        public static final Observable<String> mTempRetry = Observable
+                .defer(() -> {
+                    String tempId = DataConfig.get().getTempId();
 
-            return TbsApi.INSTANCE.user().obtainTempLogin(tempId)
-                    .doOnNext(t -> doUserRefresh(t, tempId))
-                    .map(t -> t.getToken());
-        })
+                    if (TextUtils.isEmpty(tempId)) {
+                        tempId = Tools.INSTANCE.createTempId();
+                    }
+
+                    String finalTempId = tempId;
+                    return TbsApi.INSTANCE.user().obtainTempLogin(tempId)
+                            .doOnNext(t -> doUserRefresh(t, finalTempId))
+                            .map(t -> t.getToken());
+                })
                 .retry(3)
                 .replay(1)
                 .refCount(16, TimeUnit.SECONDS);
