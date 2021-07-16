@@ -14,13 +14,13 @@ import cn.wl.android.lib.config.DataConfig;
  */
 public final class HttpConfig {
 
-    public static final String EMPTY_TOKEN = "EMPTY_TOKEN";
+    public static final String EMPTY_TOKEN = "DEFAULT_TOKEN";
     public static final String EMPTY_SIGN = "EMPTY_SIGN";
     public static final String REPORT_ID = "REPORT_ID";
 
     private volatile static String mTokenRef;
-    private static final AtomicReference<String> mSignRef = new AtomicReference<>(EMPTY_SIGN);
 
+    private static final AtomicReference<String> mSignRef = new AtomicReference<>(EMPTY_SIGN);
     private static final AtomicReference<String> mReportId = new AtomicReference<>(REPORT_ID);
 
     /**

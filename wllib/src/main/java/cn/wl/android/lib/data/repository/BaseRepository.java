@@ -23,6 +23,7 @@ import cn.wl.android.lib.miss.BaseMiss;
 import cn.wl.android.lib.miss.EmptyMiss;
 import cn.wl.android.lib.miss.LoginMiss;
 import cn.wl.android.lib.miss.NetMiss;
+import cn.wl.android.lib.miss.TempLoginMiss;
 import cn.wl.android.lib.utils.Gsons;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -211,8 +212,7 @@ public class BaseRepository<Ser> {
     protected <T> ObservableTransformer<T, T> combine() {
         return upstream -> upstream
                 .subscribeOn(Schedulers.io())
-                .compose(checkNetwork())
-                .delay(500, TimeUnit.MILLISECONDS, true);
+                .compose(checkNetwork());
     }
 
     /**
@@ -258,7 +258,7 @@ public class BaseRepository<Ser> {
 
                 return Observable.error(miss);
             }
-        });
+        }).compose(BaseApi.retryTemp());
     }
 
     /**
@@ -286,7 +286,7 @@ public class BaseRepository<Ser> {
 
                 return Observable.error(miss);
             }
-        });
+        }).compose(BaseApi.retryTemp());
     }
 
     /**
@@ -309,6 +309,8 @@ public class BaseRepository<Ser> {
                 LoginMiss loginMiss = new LoginMiss();
                 EventBus.getDefault().post(loginMiss);
                 return loginMiss;
+            case TempLoginMiss.LOGIN_MISS_CODE:
+                return new TempLoginMiss();
         }
 
         return new BaseMiss(source.getCode(), source.getMsg());
