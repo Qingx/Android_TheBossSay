@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -82,6 +83,9 @@ class BossFragment : BaseFragment() {
                 }
             }
 
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_view, null)
+        mAdapter.emptyView = emptyView
+
         button_float doClick {
             SearchActivity.start(mActivity)
         }
@@ -104,6 +108,9 @@ class BossFragment : BaseFragment() {
                     DataConfig.get().bossLabels = it
 
                     TbsApi.boss().obtainFollowBossList(mSelectTab, false)
+                        .onErrorReturn {
+                            mutableListOf()
+                        }
                 }.bindDefaultSub(doNext = {
                     tabAdapter.setNewData(DataConfig.get().bossLabels)
                     mAdapter.setNewData(it)

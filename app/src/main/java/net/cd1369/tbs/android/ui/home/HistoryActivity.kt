@@ -3,22 +3,24 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_history.*
+import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.ui.adapter.FavoriteContentAdapter
+import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
 import net.cd1369.tbs.android.util.doClick
-import java.util.concurrent.TimeUnit
 
 class HistoryActivity : BaseListActivity() {
-    private lateinit var mAdapter: FavoriteContentAdapter
+    private lateinit var mAdapter: HistoryContentAdapter
     private var needLoading = true
 
     companion object {
@@ -36,14 +38,17 @@ class HistoryActivity : BaseListActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        text_title.text = "阅读记录"
+
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
 
         layout_refresh.setOnRefreshListener {
             needLoading = false
-            loadData()
+            loadData(false)
         }
 
+        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -51,7 +56,9 @@ class HistoryActivity : BaseListActivity() {
                 }
             }
 
-        rv_content.adapter = mAdapter
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+        emptyView.text_notice.text = "暂无历史记录"
+        mAdapter.emptyView = emptyView
 
         image_back doClick {
             onBackPressed()
@@ -59,11 +66,13 @@ class HistoryActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : FavoriteContentAdapter() {
+        return object : HistoryContentAdapter(false) {
             override fun onContentClick(articleId: String) {
+                ArticleActivity.start(mActivity, articleId, false)
             }
 
-            override fun onContentDelete(articleId: String, doRemove: (id: String) -> Unit) {
+            override fun onContentDelete(historyId: String, doRemove: (id: String) -> Unit) {
+                removeHistory(historyId, doRemove)
             }
         }.also {
             mAdapter = it
@@ -73,5 +82,38 @@ class HistoryActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
+        if (!loadMore) {
+            pageParam?.resetPage()
+
+            if (needLoading) showLoading()
+        }
+
+        TbsApi.user().obtainHistory(pageParam, false)
+            .onErrorReturn {
+                Page.empty()
+            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                if (loadMore) mAdapter.addData(it)
+                else mAdapter.setNewData(it)
+            }, doDone = {
+                showContent()
+
+                layout_refresh.finishRefresh()
+                layout_refresh.finishLoadMore()
+            })
+    }
+
+    private fun removeHistory(id: String, doRemove: (id: String) -> Unit) {
+        showLoadingAlert("尝试删除...")
+
+        TbsApi.user().obtainRemoveHistory(id)
+            .bindDefaultSub(doNext = {
+                doRemove(id)
+                eventBus.post(RefreshUserEvent())
+                Toasts.show("删除成功")
+            }, doDone = {
+                hideLoadingAlert()
+            }, doFail = {
+                Toasts.show("删除失败，${it.msg}")
+            })
     }
 }

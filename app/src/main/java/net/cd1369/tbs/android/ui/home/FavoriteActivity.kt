@@ -18,6 +18,8 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FavoriteAdapter
 import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class FavoriteActivity : BaseActivity() {
     private lateinit var mAdapter: FavoriteAdapter
@@ -40,6 +42,7 @@ class FavoriteActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        eventBus.register(this)
 
         text_title.text = "我的收藏($totalNum)"
 
@@ -60,7 +63,7 @@ class FavoriteActivity : BaseActivity() {
 
         mAdapter = object : FavoriteAdapter() {
             override fun onContentItemClick(articleId: String) {
-                Toasts.show(articleId)
+                ArticleActivity.start(mActivity, articleId, true)
             }
 
             override fun onItemDelete(folderId: String) {
@@ -166,5 +169,10 @@ class FavoriteActivity : BaseActivity() {
             }, doDone = {
                 hideLoadingAlert()
             })
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        loadData()
     }
 }

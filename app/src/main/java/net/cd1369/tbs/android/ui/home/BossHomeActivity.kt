@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
@@ -24,9 +25,13 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.model.TestMultiEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
+import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.jumpSysShare
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
@@ -80,6 +85,15 @@ class BossHomeActivity : BaseListActivity() {
                 }
             }
 
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+        mAdapter.emptyView = emptyView
+
+        text_follow doClick {
+            if (entity.isCollect) {
+                cancelFollow(entity.id)
+            } else followBoss(entity.id)
+        }
+
         image_back doClick {
             onBackPressed()
         }
@@ -87,12 +101,60 @@ class BossHomeActivity : BaseListActivity() {
         text_content doClick {
             BossInfoActivity.start(mActivity, entity)
         }
+
+        image_share doClick {
+            jumpSysShare(mActivity, "https://www.bilibili.com/")
+        }
+    }
+
+    /**
+     * 取消追踪boss
+     * @param id String
+     */
+    private fun cancelFollow(id: String) {
+        showLoadingAlert("尝试取消...")
+
+        TbsApi.boss().obtainCancelFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                eventBus.post(RefreshUserEvent())
+
+                entity.isCollect = false
+                text_follow.isSelected = false
+                text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+
+            }, doFail = {
+                Toasts.show("取消失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    /**
+     * 追踪boss
+     * @param id String
+     */
+    private fun followBoss(id: String) {
+        showLoadingAlert("尝试追踪...")
+
+        TbsApi.boss().obtainFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                eventBus.post(RefreshUserEvent())
+
+                entity.isCollect = true
+                text_follow.isSelected = true
+                text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+
+            }, doFail = {
+                Toasts.show("追踪失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                Toasts.show(item.id)
+                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
             }
         }.also {
             mAdapter = it
@@ -145,6 +207,11 @@ class BossHomeActivity : BaseListActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: FollowBossEvent) {
+        refreshBoss()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
         refreshBoss()
     }
 }

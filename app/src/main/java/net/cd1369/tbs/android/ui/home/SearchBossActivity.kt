@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,6 +66,8 @@ class SearchBossActivity : BaseListActivity() {
                     return false
                 }
             }
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_search, null)
+        mAdapter.emptyView = emptyView
 
         image_cancel doClick {
             if (!edit_input.text.toString().isNullOrEmpty()) {

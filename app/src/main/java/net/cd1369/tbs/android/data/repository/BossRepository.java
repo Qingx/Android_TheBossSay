@@ -202,4 +202,52 @@ public class BossRepository extends BaseRepository<BossService> {
                 .compose(combine())
                 .compose(rebase());
     }
+
+    /**
+     * 追踪boss
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainFollowBoss(String id) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("type", 1);
+            jo.put("target", true);
+        });
+
+        return getService().obtainGuideFollow(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 取消追踪boss
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainCancelFollowBoss(String id) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("type", 1);
+            jo.put("target", false);
+        });
+
+        return getService().obtainGuideFollow(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 获取文章详情
+     *
+     * @param id
+     * @return
+     */
+    public Observable<ArticleEntity> obtainDetailArticle(String id) {
+        return getService().obtainDetailArticle(id)
+                .compose(combine())
+                .compose(rebase());
+    }
 }

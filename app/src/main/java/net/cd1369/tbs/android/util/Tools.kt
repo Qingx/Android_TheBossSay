@@ -414,7 +414,7 @@ internal fun String?.avatar(): String {
             }
         }
     }
-    return this ?:""
+    return this ?: ""
 }
 
 ///**
@@ -547,4 +547,13 @@ fun createQrCodeWith(
 ): Bitmap? {
     val center = BitmapFactory.decodeResource(resources, centerImage)
     return ZXingUtils.createQRImage(content, 480, 480, center)
+}
+
+fun jumpSysShare(context: Context, content: String) {
+    val shareIntent = Intent()
+    shareIntent.action = Intent.ACTION_SEND
+    shareIntent.type = "text/plain"
+    shareIntent.putExtra(Intent.EXTRA_TEXT, content)
+//    shareIntent = Intent.createChooser(shareIntent, "Here is the title of Select box")
+    context.startActivity(shareIntent)
 }

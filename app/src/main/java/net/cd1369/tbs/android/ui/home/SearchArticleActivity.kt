@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_search_boss.*
+import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
@@ -40,7 +42,7 @@ class SearchArticleActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                Toasts.show(item.id)
+                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
             }
         }.also {
             mAdapter = it
@@ -76,6 +78,9 @@ class SearchArticleActivity : BaseListActivity() {
                     return false
                 }
             }
+
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_search, null)
+        mAdapter.emptyView = emptyView
 
         image_cancel doClick {
             if (!edit_input.text.toString().isNullOrEmpty()) {

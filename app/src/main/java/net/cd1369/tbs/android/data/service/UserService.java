@@ -1,6 +1,8 @@
 package net.cd1369.tbs.android.data.service;
 
+import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
+import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 
 import cn.wl.android.lib.core.WLData;
@@ -11,6 +13,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by Xiang on 2021/4/25 15:20
@@ -109,6 +112,8 @@ public interface UserService {
     Observable<WLData<Object>> obtainRemoveFolder(@Body RequestBody body);
 
     /**
+     * 操作文章
+     *
      * @param body
      * @return
      */
@@ -116,4 +121,21 @@ public interface UserService {
     Observable<WLData<Object>> obtainOptionArticle(@Body RequestBody body);
 
 
+    /**
+     * 阅读记录
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/article/read-history")
+    Observable<WLPage<HistoryEntity>> obtainHistory(@Body RequestBody body);
+
+    /**
+     * 删除阅读记录
+     *
+     * @param id
+     * @return
+     */
+    @GET("/api/article/del-read/{id}")
+    Observable<WLData<Object>> obtainRemoveHistory(@Path("id") String id);
 }

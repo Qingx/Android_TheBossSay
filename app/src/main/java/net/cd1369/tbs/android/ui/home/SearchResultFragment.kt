@@ -5,19 +5,23 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
-import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.SpanUtils
 import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.ColorUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_search_result.*
+import kotlinx.android.synthetic.main.fragment_search_result.layout_refresh
+import kotlinx.android.synthetic.main.fragment_search_result.rv_content
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.event.SearchEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
-import net.cd1369.tbs.android.util.Tools.logE
+import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
+import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -55,12 +59,66 @@ class SearchResultFragment : BaseListFragment() {
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SearchInfoAdapter() {
+            override fun onItemClick(item: BossInfoEntity) {
+                BossHomeActivity.start(mActivity, item)
+            }
+
             override fun onClickFollow(item: BossInfoEntity) {
-                Toasts.show(item.id)
+                if (item.isCollect) {
+                    cancelFollow(item.id)
+                } else followBoss(item.id)
             }
         }.also {
             mAdapter = it
         }
+    }
+
+    /**
+     * 取消追踪boss
+     * @param id String
+     */
+    private fun cancelFollow(id: String) {
+        showLoadingAlert("尝试取消...")
+
+        TbsApi.boss().obtainCancelFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                mAdapter.doFollowChange(id, false)
+                eventBus.post(RefreshUserEvent())
+                layout_refresh.autoRefresh()
+
+                CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
+            }, doFail = {
+                Toasts.show("取消失败，${it.msg}")
+            }, doLast = {
+                hideLoadingAlert()
+            })
+    }
+
+    /**
+     * 追踪boss
+     * @param id String
+     */
+    private fun followBoss(id: String) {
+        showLoadingAlert("尝试追踪...")
+
+        TbsApi.boss().obtainFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                mAdapter.doFollowChange(id, true)
+                eventBus.post(RefreshUserEvent())
+                layout_refresh.autoRefresh()
+
+                SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
+                    .apply {
+                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
+                            Toasts.show("开启推送")
+                            this.dismiss()
+                        }
+                    }
+            }, doFail = {
+                Toasts.show("追踪失败，${it.msg}")
+            }, doLast = {
+                hideLoadingAlert()
+            })
     }
 
     override fun loadData(loadMore: Boolean) {
@@ -107,6 +165,16 @@ class SearchResultFragment : BaseListFragment() {
     fun eventBus(event: SearchEvent) {
         searchText = event.content
 
+        loadData(false)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        loadData(false)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: FollowBossEvent) {
         loadData(false)
     }
 }
