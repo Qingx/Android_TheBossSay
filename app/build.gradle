@@ -77,7 +77,11 @@ android {
 
             buildConfigField("String", "FILE_URL", "\"http://file-tr.hii-m.net/\"")
             buildConfigField("String", "DOWN_URL", "\"http://download-tr.hii-m.net/\"")
-            buildConfigField("String", "BASE_URL", "\"http://192.168.1.106:8086/\"") //李波
+
+//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.106:8086/\"") //李波
+//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.115:8086/\"") //熊
+            buildConfigField("String", "BASE_URL", "\"http://123.56.250.71:8086/\"") //阿里云
+            buildConfigField("String", "WS_URL", "\"ws://192.168.1.88:8072/webSocket\"")
 
             manifestPlaceholders = [
                     APP_Channel  : "DEV",

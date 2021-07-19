@@ -86,7 +86,7 @@ class InputPhoneActivity : BaseActivity() {
             .bindDefaultSub(doNext = {
                 Toasts.show("验证码发送成功")
 
-                InputCodeActivity.start(mActivity, edit_input.text.toString().trim())
+                InputCodeActivity.start(mActivity, edit_input.text.toString().trim(),it)
             }, doFail = {
                 Toasts.show("验证码发送失败，${it.msg}")
             }, doDone = {

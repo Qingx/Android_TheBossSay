@@ -92,7 +92,7 @@ class UserInfoActivity : BaseActivity() {
                                     Toasts.show("验证码发送成功")
 
                                     this?.dismiss()
-                                    ConfirmPhoneActivity.start(mActivity, phone)
+                                    ConfirmPhoneActivity.start(mActivity, phone, it)
                                 }, doFail = {
                                     Toasts.show("发送失败，${it.msg}")
                                 }, doDone = {
