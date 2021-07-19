@@ -47,7 +47,7 @@ public interface UserService {
      * @return
      */
     @POST("/api/account/send-code")
-    Observable<WLData<Object>> obtainSendCode(@Body RequestBody body);
+    Observable<WLData<String>> obtainSendCode(@Body RequestBody body);
 
     /**
      * 验证码登录

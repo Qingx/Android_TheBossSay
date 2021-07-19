@@ -18,13 +18,15 @@ import org.greenrobot.eventbus.ThreadMode
 
 class ConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
     private lateinit var phoneNumber: String
+    private lateinit var rnd: String
 
     companion object {
-        fun start(context: Context?, phone: String) {
+        fun start(context: Context?, phone: String, rnd: String) {
             val intent = Intent(context, ConfirmPhoneActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra("phone", phone)
+                    putExtra("rnd", rnd)
                 }
             context!!.startActivity(intent)
         }
@@ -38,6 +40,7 @@ class ConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishLi
         super.beforeCreateView(savedInstanceState)
 
         phoneNumber = intent.getStringExtra("phone") as String
+        rnd = intent.getStringExtra("rnd") as String
     }
 
     @SuppressLint("SetTextI18n")
@@ -62,7 +65,7 @@ class ConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishLi
     override fun onComplete(view: View?, content: String?) {
         showLoadingAlert("正在验证...")
 
-        TbsApi.user().obtainConfirmPhone(phoneNumber, content).bindDefaultSub(doDone = {
+        TbsApi.user().obtainConfirmPhone(phoneNumber, content, rnd).bindDefaultSub(doDone = {
             Toasts.show("验证成功")
             ChangePhoneActivity.start(mActivity)
             mActivity?.finish()

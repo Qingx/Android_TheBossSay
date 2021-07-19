@@ -61,7 +61,7 @@ public class UserRepository extends BaseRepository<UserService> {
      * @param type  0 登录 1验证当前手机号 2修改手机号
      * @return
      */
-    public Observable<Boolean> obtainSendCode(String phone, int type) {
+    public Observable<String> obtainSendCode(String phone, int type) {
         RequestBody body = bodyFromCreator(jo -> {
             jo.put("call", phone);
             jo.put("type", type);
@@ -69,7 +69,7 @@ public class UserRepository extends BaseRepository<UserService> {
 
         return getService().obtainSendCode(body)
                 .compose(combine())
-                .compose(success());
+                .compose(rebase());
     }
 
     /**
@@ -79,11 +79,12 @@ public class UserRepository extends BaseRepository<UserService> {
      * @param code
      * @return
      */
-    public Observable<TokenEntity> obtainSignPhone(String phone, String code) {
+    public Observable<TokenEntity> obtainSignPhone(String phone, String code, String rnd) {
         RequestBody body = bodyFromCreator(jo -> {
             jo.put("call", phone);
             jo.put("code", code);
             jo.put("deviceId", DataConfig.get().getTempId());
+            jo.put("rnd", rnd);
         });
 
         return getService().obtainSignPhone(body)
@@ -114,10 +115,11 @@ public class UserRepository extends BaseRepository<UserService> {
      * @param code
      * @return
      */
-    public Observable<Boolean> obtainConfirmPhone(String phone, String code) {
+    public Observable<Boolean> obtainConfirmPhone(String phone, String code, String rnd) {
         RequestBody body = bodyFromCreator(jo -> {
             jo.put("call", phone);
             jo.put("code", code);
+            jo.put("rnd", rnd);
         });
 
         return getService().obtainConfirmPhone(body)
@@ -132,10 +134,11 @@ public class UserRepository extends BaseRepository<UserService> {
      * @param code
      * @return
      */
-    public Observable<Boolean> obtainChangePhone(String phone, String code) {
+    public Observable<Boolean> obtainChangePhone(String phone, String code, String rnd) {
         RequestBody body = bodyFromCreator(jo -> {
             jo.put("call", phone);
             jo.put("code", code);
+            jo.put("rnd", rnd);
         });
 
         return getService().obtainChangePhone(body)

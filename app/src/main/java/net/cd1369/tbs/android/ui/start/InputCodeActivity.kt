@@ -21,13 +21,15 @@ import net.cd1369.tbs.android.util.startShakeAnim
 
 class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
     private lateinit var phoneNumber: String
+    private lateinit var rnd: String
 
     companion object {
-        fun start(context: Context?, phoneNumber: String) {
+        fun start(context: Context?, phoneNumber: String, rnd: String) {
             val intent = Intent(context, InputCodeActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra("phoneNumber", phoneNumber)
+                    putExtra("rnd", rnd)
                 }
             context!!.startActivity(intent)
         }
@@ -41,11 +43,12 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
         super.beforeCreateView(savedInstanceState)
 
         phoneNumber = intent.getStringExtra("phoneNumber") as String
+        rnd = intent.getStringExtra("rnd") as String
     }
 
     @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        text_time.text = "30s"
+        text_time.text = "60s"
 
         code_view.requestFocus()
         code_view.onCodeFinishListener = this
@@ -76,7 +79,7 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
     private fun tryLogin(code: String) {
         showLoadingAlert("尝试登录...")
 
-        TbsApi.user().obtainSignPhone(phoneNumber, code)
+        TbsApi.user().obtainSignPhone(phoneNumber, code, rnd)
             .bindDefaultSub(doNext = {
                 HttpConfig.saveToken(it.token)
                 UserConfig.get().loginStatus = true
@@ -93,7 +96,7 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
 
     @SuppressLint("SetTextI18n")
     private fun countDown() {
-        countdown(30) {
+        countdown(60) {
             text_time.text = "${it}s"
 
             if (it <= 0) {
@@ -107,6 +110,7 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
 
         TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), 0)
             .bindDefaultSub(doNext = {
+                rnd = it
                 Toasts.show("验证码发送成功")
 
                 countDown()

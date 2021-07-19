@@ -15,7 +15,6 @@ import com.jyn.vcview.VerificationCodeView
 import kotlinx.android.synthetic.main.activity_change_phone.*
 import kotlinx.android.synthetic.main.activity_change_phone.edit_input
 import kotlinx.android.synthetic.main.activity_change_phone.text_confirm
-import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
@@ -25,6 +24,7 @@ import net.cd1369.tbs.android.util.doClick
 
 class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
     private var phoneNumber: String? = null
+    private var rnd: String? = null
 
     companion object {
         fun start(context: Context?) {
@@ -83,7 +83,7 @@ class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishL
     override fun onComplete(view: View?, content: String?) {
         showLoadingAlert("正在更新...")
 
-        TbsApi.user().obtainChangePhone(phoneNumber, content)
+        TbsApi.user().obtainChangePhone(phoneNumber, content, rnd)
             .bindDefaultSub(doNext = {
                 val entity = UserConfig.get().userEntity
                 entity.phone = phoneNumber!!
@@ -106,6 +106,7 @@ class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishL
             TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), 2)
                 .bindDefaultSub(doNext = {
                     phoneNumber = edit_input.text.toString().trim()
+                    rnd = it
 
                     Toasts.show("发送成功")
                     code_view.requestFocus()
@@ -122,7 +123,7 @@ class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishL
 
     @SuppressLint("SetTextI18n")
     private fun countDown() {
-        countdown(30) {
+        countdown(60) {
             text_time.text = "${it}s"
 
             if (it <= 0) {
