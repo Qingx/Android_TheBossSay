@@ -13,6 +13,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.UserInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.ChangeNameDialog
@@ -123,31 +124,21 @@ class UserInfoActivity : BaseActivity() {
         }
 
         text_logout doClick {
-            showLoadingAlert("正在清理数据...")
+            DataConfig.get().tempId = ""
+            UserConfig.get().clear()
 
-            val tempId = Tools.createTempId()
-            TbsApi.user().obtainTempLogin(tempId)
-                .bindDefaultSub(doNext = {
-                    DataConfig.get().tempId = tempId
-                    UserConfig.get().clear()
+            HttpConfig.reset()
+            // TODO: 添加数据
+            UserConfig.get().userEntity = UserEntity.empty
 
-                    HttpConfig.saveToken(it.token)
-                    UserConfig.get().userEntity = it.userInfo
-
-                    Toasts.show("退出成功")
-                    mActivity?.finish()
-                    eventBus.post(RefreshUserEvent())
-                }, doFail = {
-                    Toasts.show("数据同步失败，${it.msg}")
-                }, doDone = {
-                    hideLoadingAlert()
-                })
+            Toasts.show("退出成功")
+            eventBus.post(RefreshUserEvent())
+            mActivity?.finish()
         }
 
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
-        mAdapter.notifyDataSetChanged()
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        fun eventBus(event: RefreshUserEvent) {
+            mAdapter.notifyDataSetChanged()
+        }
     }
 }

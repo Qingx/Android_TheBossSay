@@ -14,6 +14,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.ui.home.HomeActivity
 
 class SplashActivity : BaseActivity() {
+
     companion object {
         fun start(context: Context?) {
             val intent = Intent(context, SplashActivity::class.java)
@@ -39,21 +40,21 @@ class SplashActivity : BaseActivity() {
             }
         }
 
-        val loginStatus = UserConfig.get().loginStatus
+//        val loginStatus = UserConfig.get().loginStatus
 
-        if (loginStatus) {
-            TbsApi.user().obtainRefreshUser().bindDefaultSub {
-                HttpConfig.saveToken(it.token)
-
-                UserConfig.get().userEntity = it.userInfo
-            }
-        } else {
-            val tempId = DataConfig.get().tempId
-            TbsApi.user().obtainTempLogin(tempId).bindDefaultSub {
-                HttpConfig.saveToken(it.token)
-
-                UserConfig.get().userEntity = it.userInfo
-            }
-        }
+//        if (loginStatus) {
+//            TbsApi.user().obtainRefreshUser().bindDefaultSub {
+//                HttpConfig.saveToken(it.token)
+//
+//                UserConfig.get().userEntity = it.userInfo
+//            }
+//        } else {
+//            val tempId = DataConfig.get().tempId
+//            TbsApi.user().obtainTempLogin(tempId).bindDefaultSub {
+//                HttpConfig.saveToken(it.token)
+//
+//                UserConfig.get().userEntity = it.userInfo
+//            }
+//        }
     }
 }

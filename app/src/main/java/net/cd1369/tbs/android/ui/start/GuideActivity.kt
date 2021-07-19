@@ -118,30 +118,32 @@ class GuideActivity : BaseActivity() {
             override fun onAddFollow(data: MutableList<String>) {
                 showLoadingAlert("搜寻并追踪...")
 
-                var entity: UserEntity? = null
+                // TODO: 用户信息
+                var entity = UserEntity.empty
 
-                val tempId = Tools.createTempId()
-                TbsApi.user().obtainTempLogin(tempId).flatMap {
-                    DataConfig.get().tempId = tempId
-                    HttpConfig.saveToken(it.token)
-                    entity = it.userInfo
+//                val tempId = Tools.createTempId()
+//                TbsApi.user().obtainTempLogin(tempId).flatMap {
+//                    DataConfig.get().tempId = tempId
+//                    HttpConfig.saveToken(it.token)
+//                    entity = it.userInfo
+//                }
 
-                    TbsApi.boss().obtainGuideFollow(data)
-                }.bindDefaultSub(doNext = {
-                    Toasts.show("追踪成功")
-                    hideLoadingAlert()
+                TbsApi.boss().obtainGuideFollow(data)
+                    .bindDefaultSub(doNext = {
+                        Toasts.show("追踪成功")
+                        hideLoadingAlert()
 
-                    entity!!.collectNum = data.size
-                    UserConfig.get().userEntity = entity
+                        entity!!.collectNum = data.size
+                        UserConfig.get().userEntity = entity
 
-                    DataConfig.get().firstUse = false
-                    HomeActivity.start(mActivity)
-                    mActivity?.finish()
-                }, doFail = {
-                    hideLoadingAlert()
-                    it.msg.logE()
-                    Toasts.show(it.msg)
-                })
+                        DataConfig.get().firstUse = false
+                        HomeActivity.start(mActivity)
+                        mActivity?.finish()
+                    }, doFail = {
+                        hideLoadingAlert()
+                        it.msg.logE()
+                        Toasts.show(it.msg)
+                    })
             }
         }
 

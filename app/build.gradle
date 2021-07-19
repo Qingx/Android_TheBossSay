@@ -95,9 +95,7 @@ android {
 
             buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
             buildConfigField("String", "DOWN_URL", "\"http://192.144.169.58:8888/\"")
-
-            buildConfigField("String", "BASE_URL", "\"http://124.70.72.199:8765/\"")
-            buildConfigField("String", "WS_URL", "\"ws://192.168.1.88:8072/webSocket\"")
+            buildConfigField("String", "BASE_URL", "\"http://123.56.250.71:8086/\"") //阿里云
 
             manifestPlaceholders = [
                     APP_Channel  : "UAT",
