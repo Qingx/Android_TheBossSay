@@ -18,10 +18,10 @@ import kotlinx.android.synthetic.main.header_follow.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.model.FollowVal
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
@@ -36,9 +36,11 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class FollowFragment : BaseListFragment() {
+
     private var version: Long = 0L
     private var mRootHeight: Int = 0
     private var headerView: View? = null
+
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var cardAdapter: FollowCardAdapter
     private lateinit var mAdapter: FollowInfoAdapter
@@ -50,6 +52,8 @@ class FollowFragment : BaseListFragment() {
     private var needLoading = true
 
     companion object {
+        private val mValueCache = hashMapOf<String, FollowVal>()
+
         fun createFragment(): FollowFragment {
             return FollowFragment()
         }
@@ -71,9 +75,26 @@ class FollowFragment : BaseListFragment() {
         }
 
         tabAdapter = object : HomeTabAdapter() {
-            override fun onSelect(select: String) {
-                mSelectTab = select
-                layout_refresh.autoRefresh()
+            override fun onSelect(labelId: String) {
+                val followVal = FollowVal(pageParam, cardAdapter.data, mAdapter.data)
+                mValueCache[mSelectTab ?: ""] = followVal
+
+                mSelectTab = labelId
+                val value = mValueCache[labelId]
+
+                if (value != null) {
+                    val boss = value.boss
+                    val data = value.data
+                    val param = value.param
+
+                    cardAdapter.setNewData(boss)
+                    mAdapter.setNewData(data)
+                    pageParam?.set(param)
+
+                    tryCompleteStatus(true)
+                } else {
+                    layout_refresh.autoRefresh()
+                }
             }
         }
 
@@ -179,7 +200,7 @@ class FollowFragment : BaseListFragment() {
                     cardAdapter.setNewData(mBossCards)
 
                     headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
-                    mAdapter.setNewData(it)
+                    mAdapter.setNewData(it.shuffled())
                 }, doDone = {
                     showContent()
 
