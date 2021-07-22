@@ -135,10 +135,10 @@ class UserInfoActivity : BaseActivity() {
             eventBus.post(RefreshUserEvent())
             mActivity?.finish()
         }
+    }
 
-        @Subscribe(threadMode = ThreadMode.MAIN)
-        fun eventBus(event: RefreshUserEvent) {
-            mAdapter.notifyDataSetChanged()
-        }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        mAdapter.notifyDataSetChanged()
     }
 }

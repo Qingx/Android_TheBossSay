@@ -1,12 +1,11 @@
 package net.cd1369.tbs.android.config;
 
+import net.cd1369.tbs.android.data.database.BossLabelDaoManager;
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
-import net.cd1369.tbs.android.util.Tools;
 
 import java.util.List;
 
 import cn.wl.android.lib.config.BaseConfig;
-import retrofit2.http.PUT;
 
 /**
  * Created by Xiang on 2021/06/22 15:27
@@ -31,11 +30,13 @@ public class DataConfig extends BaseConfig {
     interface KEY {
         String keyFistUse = "KEY_FIRST_USE";
         String keyTempId = "KEY_TEMP_ID";
+        String keyUpdateTime = "KEY_UPDATE_TIME";
     }
 
     private boolean firstUse; //是否第一次使用app
     private String tempId; //设备id
     private List<BossLabelEntity> bossLabels;
+    private Long updateTime;
 
     public void setFirstUse(boolean firstUse) {
         putBoolean(KEY.keyFistUse, firstUse);
@@ -53,11 +54,15 @@ public class DataConfig extends BaseConfig {
         return getString(KEY.keyTempId, "");
     }
 
-    public void setBossLabels(List<BossLabelEntity> labels) {
-        this.bossLabels = labels;
+    public List<BossLabelEntity> getBossLabels() {
+        return BossLabelDaoManager.getInstance().getAllLabel();
     }
 
-    public List<BossLabelEntity> getBossLabels() {
-        return this.bossLabels;
+    public void setUpdateTime(Long time) {
+        putLong(KEY.keyUpdateTime, time);
+    }
+
+    public Long getUpdateTime() {
+        return getLong(KEY.keyUpdateTime, 1);
     }
 }

@@ -15,10 +15,8 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
-import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
 import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
 import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
-import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
@@ -27,16 +25,18 @@ import net.cd1369.tbs.android.util.jumpSysShare
 
 class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
-    private var isCollect: Boolean? = null
     private lateinit var entity: ArticleEntity
+    private var isCollect: Boolean? = null
 
     companion object {
-        fun start(context: Context?, id: String, isCollect: Boolean) {
+        fun start(context: Context?, id: String, entity: ArticleEntity = ArticleEntity.empty) {
             val intent = Intent(context, ArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra("id", id)
-                    putExtra("isCollect", isCollect)
+                    putExtras(Bundle().apply {
+                        putString("articleId", id)
+                        putSerializable("articleEntity", entity)
+                    })
                 }
             context!!.startActivity(intent)
         }
@@ -49,8 +49,9 @@ class ArticleActivity : BaseActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        articleId = intent.getStringExtra("id") as String
-        isCollect = intent.getBooleanExtra("isCollect", false)
+        articleId = intent.getStringExtra("articleId") as String
+        entity = intent.getSerializableExtra("articleEntity") as ArticleEntity
+        isCollect = entity.isCollect
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
@@ -67,12 +68,6 @@ class ArticleActivity : BaseActivity() {
             }
         }
 
-        layout_follow doClick {
-            if (entity.bossVO.isCollect) {
-                cancelFavorite()
-            } else doFavorite()
-        }
-
         button_float doClick {
             layout_scroll.smoothScrollTo(0, 0)
         }
@@ -80,22 +75,31 @@ class ArticleActivity : BaseActivity() {
         image_share doClick {
             jumpSysShare(mActivity, "https://www.bilibili.com/")
         }
+
+        image_back doClick {
+            onBackPressed()
+        }
     }
 
     override fun loadData() {
         super.loadData()
 
-        showLoading()
+        if (entity == ArticleEntity.empty) {
+            showLoading()
 
-        TbsApi.boss().obtainDetailArticle(articleId)
-            .bindDefaultSub(doNext = {
-                isCollect = it.isCollect
-                entity = it
+            TbsApi.boss().obtainDetailArticle(articleId)
+                .bindDefaultSub(doNext = {
+                    isCollect = it.isCollect
+                    entity = it
 
-                setInfo(it)
-            }, doDone = {
-                showContent()
-            })
+                    setInfo(it)
+                }, doDone = {
+                    showContent()
+                })
+        }else{
+            setInfo(entity)
+        }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -108,8 +112,6 @@ class ArticleActivity : BaseActivity() {
         text_name.text = it.bossVO.name
         text_role.text = it.bossVO.role
         layout_content.isSelected = it.bossVO.isCollect
-        image_add.isVisible = !it.bossVO.isCollect
-        text_follow.text = if (it.bossVO.isCollect) "已追踪" else "追踪TA"
 
         text_content.text =
             "${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${
@@ -201,52 +203,6 @@ class ArticleActivity : BaseActivity() {
                                 })
                         }
                     }
-            })
-    }
-
-    private fun cancelFavorite() {
-        showLoadingAlert("尝试取消...")
-
-        TbsApi.boss().obtainCancelFollowBoss(entity.bossVO.id)
-            .bindDefaultSub(doNext = {
-                eventBus.post(RefreshUserEvent())
-
-                entity.bossVO.isCollect = false
-                layout_content.isSelected = false
-                image_add.isVisible = true
-                text_follow.text = "追踪TA"
-
-                CancelFollowDialog.showDialog(supportFragmentManager, "cancelFollowBoss")
-            }, doFail = {
-                Toasts.show("取消失败，${it.msg}")
-            }, doDone = {
-                hideLoadingAlert()
-            })
-    }
-
-    private fun doFavorite() {
-        showLoadingAlert("尝试追踪...")
-
-        TbsApi.boss().obtainFollowBoss(entity.bossVO.id)
-            .bindDefaultSub(doNext = {
-                eventBus.post(RefreshUserEvent())
-
-                entity.bossVO.isCollect = true
-                layout_content.isSelected = true
-                image_add.isVisible = false
-                text_follow.text = "已追踪"
-
-                SuccessFollowDialog.showDialog(supportFragmentManager, "successFollowBoss")
-                    .apply {
-                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
-                            Toasts.show("开启推送")
-                            this.dismiss()
-                        }
-                    }
-            }, doFail = {
-                Toasts.show("追踪失败，${it.msg}")
-            }, doDone = {
-                hideLoadingAlert()
             })
     }
 }

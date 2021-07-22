@@ -7,16 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
-import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_square.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
-import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
 
@@ -41,7 +40,7 @@ class SquareFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SquareInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
+                ArticleActivity.start(mActivity, item.id, item)
             }
         }.also {
             mAdapter = it
@@ -100,8 +99,8 @@ class SquareFragment : BaseListFragment() {
                 TbsApi.boss().obtainBossLabels()
                     .flatMap {
                         it.add(0, BossLabelEntity.empty)
+                        BossLabelDaoManager.getInstance().insertList(it)
                         mSelectTab = it[0].id
-                        DataConfig.get().bossLabels = it
 
                         TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
                             .onErrorReturn {

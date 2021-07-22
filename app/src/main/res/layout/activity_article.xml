@@ -172,40 +172,6 @@
                 app:layout_constraintStart_toEndOf="@id/text_name"
                 app:layout_constraintTop_toTopOf="@id/text_name" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_follow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/draw_load_accent_16"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                app:layout_constraintBottom_toBottomOf="@id/image_head"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/image_head">
-
-                <ImageView
-                    android:id="@+id/image_add"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/ic_boss_follow_add"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/text_follow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/image_add"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="已追踪" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <TextView
                 android:id="@+id/text_content"
                 android:layout_width="0dp"

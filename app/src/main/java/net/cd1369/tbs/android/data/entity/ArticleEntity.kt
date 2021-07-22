@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.data.entity
 
 import com.chad.library.adapter.base.entity.MultiItemEntity
+import java.io.Serializable
 
 data class ArticleEntity(
     val bossId: String,
@@ -16,7 +17,7 @@ data class ArticleEntity(
     val point: Int? = 0,
     val status: Int,
     val title: String
-) : MultiItemEntity {
+) : MultiItemEntity, Serializable {
     override fun getItemType(): Int {
         return when {
             files.isNullOrEmpty() -> {
@@ -29,5 +30,23 @@ data class ArticleEntity(
                 2
             }
         }
+    }
+
+    companion object {
+        var empty = ArticleEntity(
+            "",
+            BossInfoEntity.empty,
+            0,
+            "",
+            0,
+            "",
+            mutableListOf(),
+            "",
+            false,
+            false,
+            0,
+            0,
+            ""
+        )
     }
 }
