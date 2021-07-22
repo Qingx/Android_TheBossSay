@@ -6,6 +6,7 @@ import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Generated;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by Xiang on 2021/7/22 13:04
@@ -103,5 +104,31 @@ public class BossLabelEntity implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BossLabelEntity that = (BossLabelEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "BossLabelEntity{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", keyValue='" + keyValue + '\'' +
+                ", createTime=" + createTime +
+                ", parentId='" + parentId + '\'' +
+                ", sort=" + sort +
+                ", type=" + type +
+                '}';
     }
 }

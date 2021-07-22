@@ -18,6 +18,7 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
+import net.cd1369.tbs.android.util.LabelManager
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -25,6 +26,7 @@ import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
  * @email Cymbidium@outlook.com
  */
 class SquareFragment : BaseListFragment() {
+    private var version: Long = 0L
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: SquareInfoAdapter
 
@@ -95,40 +97,28 @@ class SquareFragment : BaseListFragment() {
 
             if (needLoading) showLoading()
 
-            if (DataConfig.get().getBossLabels().isNullOrEmpty()) {
-                TbsApi.boss().obtainBossLabels()
-                    .flatMap {
+            LabelManager.obtainLabels()
+                .flatMap {
+                    if (LabelManager.needUpdate(version)) {
+                        version = LabelManager.getVersion()
+
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+
                         it.add(0, BossLabelEntity.empty)
-                        BossLabelDaoManager.getInstance().insertList(it)
                         mSelectTab = it[0].id
+                    }
 
-                        TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
-                            .onErrorReturn {
-                                Page.empty()
-                            }
-                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+                    TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
+                        .onErrorReturn {
+                            Page.empty()
+                        }
+                }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                    mAdapter.setNewData(it)
+                }, doDone = {
+                    showContent()
 
-                        mAdapter.setNewData(it)
-                    }, doDone = {
-                        showContent()
-
-                        layout_refresh.finishRefresh()
-                    })
-            } else {
-                TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
-                    .onErrorReturn {
-                        Page.empty()
-                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                        tabAdapter.setNewData(DataConfig.get().bossLabels)
-
-                        mAdapter.setNewData(it)
-                    }, doDone = {
-                        showContent()
-
-                        layout_refresh.finishRefresh()
-                    })
-            }
+                    layout_refresh.finishRefresh()
+                })
         } else {
             TbsApi.boss().obtainAllArticle(pageParam, mSelectTab)
                 .onErrorReturn {

@@ -13,6 +13,7 @@ import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.home.HomeActivity
+import net.cd1369.tbs.android.util.LabelManager
 
 class SplashActivity : BaseActivity() {
 
@@ -34,12 +35,10 @@ class SplashActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         val firstUse = DataConfig.get().firstUse
 
-        TbsApi.boss().obtainBossLabels()
-            .onErrorReturn { mutableListOf() }
+        LabelManager.obtainLabels()
             .flatMap {
                 if (!it.isNullOrEmpty()) {
                     it.add(0, BossLabelEntity.empty)
-                    BossLabelDaoManager.getInstance().insertList(it)
                 }
 
                 TbsApi.boss().obtainAllBoss(DataConfig.get().updateTime)

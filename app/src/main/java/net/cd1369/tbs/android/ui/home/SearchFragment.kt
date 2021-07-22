@@ -23,6 +23,7 @@ import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
 import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
 import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.util.LabelManager
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class SearchFragment : BaseListFragment() {
+    private var version: Long = 0L
     private lateinit var tabAdapter: SearchTabAdapter
     private lateinit var mAdapter: SearchInfoAdapter
     private var needLoading = true
@@ -154,39 +156,28 @@ class SearchFragment : BaseListFragment() {
 
             if (needLoading) showLoading()
 
-            if (DataConfig.get().bossLabels.isNullOrEmpty()) {
-                TbsApi.boss().obtainBossLabels()
-                    .flatMap {
+            LabelManager.obtainLabels()
+                .flatMap {
+                    if (LabelManager.needUpdate(version)) {
+                        version = LabelManager.getVersion()
+
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+
                         it.add(0, BossLabelEntity.empty)
-                        BossLabelDaoManager.getInstance().insertList(it)
                         mSelectTab = it[0].id
+                    }
 
-                        TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
-                            .onErrorReturn {
-                                Page.empty()
-                            }
-                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                        tabAdapter.setNewData(DataConfig.get().bossLabels)
-                        mAdapter.setNewData(it)
-                    }, doDone = {
-                        showContent()
+                    TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
+                        .onErrorReturn {
+                            Page.empty()
+                        }
+                }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                    mAdapter.setNewData(it)
+                }, doDone = {
+                    showContent()
 
-                        layout_refresh.finishRefresh()
-                    })
-            } else {
-                mSelectTab = DataConfig.get().bossLabels[0].id
-                TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
-                    .onErrorReturn {
-                        Page.empty()
-                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                        tabAdapter.setNewData(DataConfig.get().bossLabels)
-                        mAdapter.setNewData(it)
-                    }, doDone = {
-                        showContent()
-
-                        layout_refresh.finishRefresh()
-                    })
-            }
+                    layout_refresh.finishRefresh()
+                })
         } else {
             TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
                 .onErrorReturn {

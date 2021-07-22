@@ -26,6 +26,7 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
+import net.cd1369.tbs.android.util.LabelManager
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -35,6 +36,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class FollowFragment : BaseListFragment() {
+    private var version: Long = 0L
     private var mRootHeight: Int = 0
     private var headerView: View? = null
     private lateinit var tabAdapter: HomeTabAdapter
@@ -151,64 +153,40 @@ class FollowFragment : BaseListFragment() {
 
             if (needLoading) showLoading()
 
-            if (DataConfig.get().bossLabels.isNullOrEmpty()) {
-                TbsApi.boss().obtainBossLabels()
-                    .flatMap {
+            LabelManager.obtainLabels()
+                .flatMap {
+                    if (LabelManager.needUpdate(version)) {
+                        version = LabelManager.getVersion()
+
+                        tabAdapter.setNewData(DataConfig.get().bossLabels)
+
                         it.add(0, BossLabelEntity.empty)
-                        BossLabelDaoManager.getInstance().insertList(it)
                         mSelectTab = it[0].id
-
-                        TbsApi.boss().obtainFollowBossList(mSelectTab, true)
-                            .onErrorReturn {
-                                mutableListOf()
-                            }
-                    }.flatMap {
-                        mBossCards = it
-
-                        TbsApi.boss().obtainFollowArticle(pageParam)
-                            .onErrorReturn {
-                                Page.empty()
-                            }
-                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                        tabAdapter.setNewData(DataConfig.get().bossLabels)
-                        cardAdapter.setNewData(mBossCards)
-
-                        headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
-                        mAdapter.setNewData(it)
-                    }, doDone = {
-                        showContent()
-
-                        layout_refresh.finishRefresh()
-
-                        showContentEmpty(mAdapter.data.isNullOrEmpty())
-                    })
-            } else {
-                TbsApi.boss().obtainFollowBossList(mSelectTab, true)
-                    .onErrorReturn {
-                        mutableListOf()
                     }
-                    .flatMap {
-                        mBossCards = it
 
-                        TbsApi.boss().obtainFollowArticle(pageParam)
-                            .onErrorReturn {
-                                Page.empty()
-                            }
-                    }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                        tabAdapter.setNewData(DataConfig.get().bossLabels)
-                        cardAdapter.setNewData(mBossCards)
+                    TbsApi.boss().obtainFollowBossList(mSelectTab, true)
+                        .onErrorReturn {
+                            mutableListOf()
+                        }
+                }.flatMap {
+                    mBossCards = it
 
-                        headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
-                        mAdapter.setNewData(it)
+                    TbsApi.boss().obtainFollowArticle(pageParam)
+                        .onErrorReturn {
+                            Page.empty()
+                        }
+                }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                    cardAdapter.setNewData(mBossCards)
 
-                    }, doDone = {
-                        showContent()
+                    headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
+                    mAdapter.setNewData(it)
+                }, doDone = {
+                    showContent()
 
-                        layout_refresh.finishRefresh()
+                    layout_refresh.finishRefresh()
 
-                        showContentEmpty(mAdapter.data.isNullOrEmpty())
-                    })
-            }
+                    showContentEmpty(mAdapter.data.isNullOrEmpty())
+                })
         } else {
             TbsApi.boss().obtainFollowArticle(pageParam)
                 .bindPageSubscribe(loadMore = loadMore, doNext = {
