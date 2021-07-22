@@ -91,4 +91,13 @@ public interface BossService {
      */
     @GET("/api/article/details/{id}")
     Observable<WLData<ArticleEntity>> obtainDetailArticle(@Path("id") String id);
+
+    /**
+     * 获取全部boss
+     *
+     * @param time
+     * @return
+     */
+    @GET("/api/boss/all-list/{time}")
+    Observable<WLList<BossInfoEntity>> obtainAllBoss(@Path("time") Long time);
 }

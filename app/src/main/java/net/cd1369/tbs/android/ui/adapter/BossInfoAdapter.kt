@@ -7,7 +7,6 @@ import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.*
-import net.cd1369.tbs.android.util.avatar
 
 /**
  * Created by Qing on 2021/6/30 12:43 下午

@@ -11,9 +11,7 @@ class StartActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        if (DataConfig.get().firstUse) {
-            GuideActivity.start(mActivity)
-        } else SplashActivity.start(mActivity)
+        SplashActivity.start(mActivity)
 
         mActivity?.finish()
     }

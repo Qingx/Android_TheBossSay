@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -22,15 +23,19 @@ import android.widget.EditText
 import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
 import cn.wl.android.lib.config.WLConfig
-import cn.wl.android.lib.utils.Gsons
-import cn.wl.android.lib.utils.Times
-import cn.wl.android.lib.utils.Toasts
+import cn.wl.android.lib.utils.*
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseViewHolder
 import com.google.gson.JsonElement
+import com.irozon.sneaker.Sneaker
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.layout_push_message.view.*
+import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.TbsApp.getContext
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -417,32 +422,31 @@ internal fun String?.avatar(): String {
     return this ?: ""
 }
 
-///**
-// * 极光推送
-// * @param type String
-// * @param title CharSequence
-// * @param content CharSequence
-// */
-//fun showSneaker(type: String, title: CharSequence, content: CharSequence) {
-//    val topActivity = ActStack.get().topActivity ?: return
-//    val sneaker = Sneaker.with(topActivity)
-//
-//    val view = LayoutInflater.from(getContext())
-//        .inflate(R.layout.layout_push_message, sneaker.getView(), false)
-//    view.layout_card.layoutParams.width =
-//        ScreenUtils.getScreenWidth() - ConvertUtils.dp2px(32f)
-//
-//    GlideApp.displayHead(PushMessage.get(type).icon, view.image_type)
-//    view.text_title.text = title
-//    view.text_content.text = content
-//
-//    view.layout_card doClick {
-//        MessageCenterActivity.start(getContext())
-//    }
-//
-//    sneaker.setDuration(3500)
-//    sneaker.sneakCustom(view)
-//}
+/**
+ * 极光推送
+ * @param title CharSequence
+ * @param content CharSequence
+ */
+fun showSneaker(title: CharSequence, content: CharSequence, articleId: String) {
+    val topActivity = ActStack.get().topActivity ?: return
+    val sneaker = Sneaker.with(topActivity)
+
+    val view = LayoutInflater.from(getContext())
+        .inflate(R.layout.layout_push_message, sneaker.getView(), false)
+    view.layout_card.layoutParams.width =
+        ScreenUtils.getScreenWidth() - ConvertUtils.dp2px(32f)
+
+    GlideApp.displayHead(R.drawable.ic_logo, view.image_type)
+    view.text_title.text = title
+    view.text_content.text = content
+
+    view.layout_card doClick {
+        ArticleActivity.start(getContext(), id = articleId)
+    }
+
+    sneaker.setDuration(3500)
+    sneaker.sneakCustom(view)
+}
 
 ///**
 // * 切换定位

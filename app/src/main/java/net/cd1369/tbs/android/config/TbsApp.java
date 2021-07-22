@@ -13,6 +13,7 @@ import net.cd1369.tbs.android.util.Tools;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.wl.android.lib.config.WLConfig;
 import cn.wl.android.lib.data.core.HttpConfig;
 import cn.wl.android.lib.data.repository.BaseApi;
@@ -35,6 +36,10 @@ public class TbsApp extends MultiDexApplication {
         BaseApi.mProvider = () -> RetryHolder.mTempRetry;
 
         Utils.init(this);
+
+        JPushInterface.setDebugMode(BuildConfig.DEBUG);
+        JPushInterface.init(mContext);
+
         WLConfig.init(mContext, BuildConfig.DEBUG);
         WLConfig.initHttp(new WLConfig.UrlProvider() {
             @Override

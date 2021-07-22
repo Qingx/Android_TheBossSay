@@ -31,7 +31,7 @@ abstract class FavoriteContentAdapter :
         }
 
         helper.V.layout_content doClick {
-            onContentClick(item.id)
+            onContentClick(item)
         }
     }
 
@@ -43,7 +43,7 @@ abstract class FavoriteContentAdapter :
         notifyDataSetChanged()
     }
 
-    abstract fun onContentClick(articleId: String)
+    abstract fun onContentClick(entity: ArticleEntity)
 
     abstract fun onContentDelete(
         articleId: String,

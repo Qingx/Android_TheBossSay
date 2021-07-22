@@ -13,8 +13,6 @@ import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_boss_home.*
 import kotlinx.android.synthetic.main.activity_boss_home.layout_refresh
 import kotlinx.android.synthetic.main.activity_boss_home.rv_content
@@ -23,18 +21,14 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.data.model.TestMultiEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
-import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
-import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.jumpSysShare
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.concurrent.TimeUnit
 
 class BossHomeActivity : BaseListActivity() {
     private lateinit var mAdapter: FollowInfoAdapter
@@ -154,7 +148,7 @@ class BossHomeActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
+                ArticleActivity.start(mActivity, item.id, item)
             }
         }.also {
             mAdapter = it

@@ -42,7 +42,7 @@ class SearchArticleActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item.isCollect!!)
+                ArticleActivity.start(mActivity, item.id, item)
             }
         }.also {
             mAdapter = it

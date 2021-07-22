@@ -8,6 +8,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_favorite.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.FavoriteEntity
 import net.cd1369.tbs.android.data.model.TestFavoriteEntity
 import net.cd1369.tbs.android.util.V
@@ -42,8 +43,8 @@ abstract class FavoriteAdapter :
             }
 
         val adapter = object : FavoriteContentAdapter() {
-            override fun onContentClick(articleId: String) {
-                onContentItemClick(articleId)
+            override fun onContentClick(entity: ArticleEntity) {
+                onContentItemClick(entity)
             }
 
             override fun onContentDelete(
@@ -71,7 +72,7 @@ abstract class FavoriteAdapter :
         }
     }
 
-    abstract fun onContentItemClick(articleId: String)
+    abstract fun onContentItemClick(entity: ArticleEntity)
 
     abstract fun onItemDelete(folderId: String)
 

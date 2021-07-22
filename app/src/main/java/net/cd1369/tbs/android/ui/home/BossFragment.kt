@@ -6,12 +6,12 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
-import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_boss.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
@@ -104,8 +104,8 @@ class BossFragment : BaseFragment() {
             TbsApi.boss().obtainBossLabels()
                 .flatMap {
                     it.add(0, BossLabelEntity.empty)
+                    BossLabelDaoManager.getInstance().insertList(it)
                     mSelectTab = it[0].id
-                    DataConfig.get().bossLabels = it
 
                     TbsApi.boss().obtainFollowBossList(mSelectTab, false)
                         .onErrorReturn {

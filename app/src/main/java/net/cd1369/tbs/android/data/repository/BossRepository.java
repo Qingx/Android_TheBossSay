@@ -14,7 +14,6 @@ import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
-import retrofit2.http.PUT;
 
 /**
  * Created by Xiang on 2021/6/22 15:21
@@ -247,6 +246,18 @@ public class BossRepository extends BaseRepository<BossService> {
      */
     public Observable<ArticleEntity> obtainDetailArticle(String id) {
         return getService().obtainDetailArticle(id)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取全部boss
+     *
+     * @param time
+     * @return
+     */
+    public Observable<List<BossInfoEntity>> obtainAllBoss(Long time) {
+        return getService().obtainAllBoss(time)
                 .compose(combine())
                 .compose(rebase());
     }
