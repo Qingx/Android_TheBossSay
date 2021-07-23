@@ -171,4 +171,6 @@ dependencies {
     implementation "io.github.flayone:advance-csj:${advanceVersion}_3613"
     implementation "io.github.flayone:advance-bd:${advanceVersion}_596"
     implementation "io.github.flayone:advance-ks:${advanceVersion}_339"
+
+    implementation 'com.github.gzu-liyujiang:Android_CN_OAID:4.2.1'
 }

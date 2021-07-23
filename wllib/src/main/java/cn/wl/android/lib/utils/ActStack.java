@@ -2,6 +2,7 @@ package cn.wl.android.lib.utils;
 
 import android.app.Activity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -54,6 +55,20 @@ public class ActStack {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 退出app
+     */
+    public void exitApp() {
+        ArrayList<Activity> arrayList = new ArrayList(mActivityStack);
+        mActivityStack.clear();
+
+        for (Activity activity : arrayList) {
+            activity.finish();
+        }
+
+        System.exit(0);
     }
 
 }

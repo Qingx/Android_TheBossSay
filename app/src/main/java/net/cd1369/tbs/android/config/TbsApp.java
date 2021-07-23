@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication;
 
 import com.advance.AdvanceSDK;
 import com.blankj.utilcode.util.Utils;
+import com.github.gzuliyujiang.oaid.DeviceID;
 import com.mercury.sdk.core.config.MercuryAD;
 
 import net.cd1369.tbs.android.BuildConfig;
@@ -33,6 +34,9 @@ public class TbsApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
+        // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
+        DeviceID.register(this);
+
         mContext = this;
 
         BaseApi.mProvider = () -> RetryHolder.mTempRetry;
@@ -40,7 +44,7 @@ public class TbsApp extends MultiDexApplication {
         Utils.init(this);
 
         //必要配置：初始化聚合SDK，三个参数依次为context上下文，appId媒体id，isDebug调试模式开关
-        AdvanceSDK.initSDK(this,"100171",BuildConfig.DEBUG);
+        AdvanceSDK.initSDK(this, Const.AD_ID, BuildConfig.DEBUG);
         //推荐配置：允许Mercury预缓存素材
         MercuryAD.needPreLoadMaterial(true);
 
@@ -67,7 +71,6 @@ public class TbsApp extends MultiDexApplication {
     }
 
     /**
-     *
      * @param entity
      * @param tempId
      */

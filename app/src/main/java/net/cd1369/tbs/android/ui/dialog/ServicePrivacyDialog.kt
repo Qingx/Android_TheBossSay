@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import cn.wl.android.lib.utils.ActStack
 import cn.wl.android.lib.utils.SpanUtils
 import com.blankj.utilcode.util.ColorUtils
 import kotlinx.android.synthetic.main.dialog_service_privacy.*
@@ -24,7 +25,7 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 class ServicePrivacyDialog : DialogFragment() {
-    private var doConfirm: Runnable? = null
+     var doConfirm: Runnable? = null
 
     companion object{
         fun showDialog(fragmentManager: FragmentManager, tag: String): ServicePrivacyDialog {
@@ -89,9 +90,12 @@ class ServicePrivacyDialog : DialogFragment() {
                 .create()
 
         text_cancel doClick {
+            dismiss()
+            ActStack.get().exitApp()
         }
 
         text_confirm doClick {
+            dismiss()
             doConfirm?.run()
         }
     }

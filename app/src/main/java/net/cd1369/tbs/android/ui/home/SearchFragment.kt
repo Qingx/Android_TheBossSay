@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.Toasts
+import com.advance.AdvanceBanner
+import com.advance.AdvanceBannerListener
+import com.advance.model.AdvanceError
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_search.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
@@ -27,17 +30,19 @@ import net.cd1369.tbs.android.util.LabelManager
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+
 /**
  * Created by Qing on 2021/6/30 3:49 下午
  * @description
  * @email Cymbidium@outlook.com
  */
-class SearchFragment : BaseListFragment() {
+class SearchFragment : BaseListFragment(), AdvanceBannerListener {
     private var version: Long = 0L
     private lateinit var tabAdapter: SearchTabAdapter
     private lateinit var mAdapter: SearchInfoAdapter
     private var needLoading = true
     private var mSelectTab = ""
+    private var advanceBanner: AdvanceBanner? = null
 
     companion object {
         fun createFragment(): SearchFragment {
@@ -82,6 +87,16 @@ class SearchFragment : BaseListFragment() {
                     return false
                 }
             }
+
+        //rl是banner的父布局，用来展示广告
+        //rl是banner的父布局，用来展示广告
+        advanceBanner = AdvanceBanner(mActivity, ll_ad, Const.BANNER_ID)
+        //推荐：核心事件监听回调
+        //推荐：核心事件监听回调
+        advanceBanner?.setAdListener(this)
+        //必须：请求策略并请求和展示广告
+        //必须：请求策略并请求和展示广告
+        advanceBanner?.loadStrategy()
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -190,6 +205,12 @@ class SearchFragment : BaseListFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        advanceBanner?.destroy()
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: RefreshUserEvent) {
         layout_refresh.autoRefresh()
@@ -198,5 +219,29 @@ class SearchFragment : BaseListFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: FollowBossEvent) {
         layout_refresh.autoRefresh()
+    }
+
+    override fun onAdFailed(p0: AdvanceError?) {
+
+    }
+
+    override fun onSdkSelected(p0: String?) {
+
+    }
+
+    override fun onAdShow() {
+
+    }
+
+    override fun onAdClicked() {
+
+    }
+
+    override fun onDislike() {
+
+    }
+
+    override fun onAdLoaded() {
+
     }
 }

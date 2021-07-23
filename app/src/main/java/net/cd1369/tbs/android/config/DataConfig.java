@@ -32,13 +32,27 @@ public class DataConfig extends BaseConfig {
         String keyTempId = "KEY_TEMP_ID";
         String keyUpdateTime = "KEY_UPDATE_TIME";
         String keyHotSearch = "KEY_HOT_SEARCH";
+        String keyNeedService = "keyNeedService";
     }
 
     private boolean firstUse; //是否第一次使用app
     private String tempId; //设备id
-    private List<BossLabelEntity> bossLabels;
     private Long updateTime;
     private String hotSearch;
+    private List<BossLabelEntity> bossLabels;
+
+    /**
+     * 判断是否需要显示服务
+     *
+     * @param isNeed
+     */
+    public void setNeedService(boolean isNeed) {
+        putBoolean(KEY.keyNeedService, isNeed);
+    }
+
+    public boolean isNeedService() {
+        return getBoolean(KEY.keyNeedService, true);
+    }
 
     public void setFirstUse(boolean firstUse) {
         putBoolean(KEY.keyFistUse, firstUse);
