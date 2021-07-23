@@ -57,6 +57,8 @@ class ArticleActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         image_collect.isSelected = isCollect!!
 
+        tryReadArticle(articleId!!)
+
         image_collect doClick {
             if (UserConfig.get().loginStatus) {
                 if (isCollect!!) {
@@ -96,7 +98,7 @@ class ArticleActivity : BaseActivity() {
                 }, doDone = {
                     showContent()
                 })
-        }else{
+        } else {
             setInfo(entity)
         }
 
@@ -204,5 +206,14 @@ class ArticleActivity : BaseActivity() {
                         }
                     }
             })
+    }
+
+    /**
+     * 尝试阅读记录文章
+     * @param articleId String
+     */
+    private fun tryReadArticle(articleId: String) {
+        TbsApi.user().obtainReadArticle(articleId)
+            .bindDefaultSub { }
     }
 }

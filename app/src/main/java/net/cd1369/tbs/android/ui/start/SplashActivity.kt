@@ -37,7 +37,7 @@ class SplashActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         val firstUse = DataConfig.get().firstUse
 
-        Log.e("OkHttp", PhoneUtils.getIMEI())
+//        Log.e("OkHttp", PhoneUtils.getIMEI())
 
         LabelManager.obtainLabels()
             .flatMap {

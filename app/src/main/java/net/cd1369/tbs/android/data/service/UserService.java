@@ -138,4 +138,13 @@ public interface UserService {
      */
     @GET("/api/article/del-read/{id}")
     Observable<WLData<Object>> obtainRemoveHistory(@Path("id") String id);
+
+    /**
+     * 阅读文章
+     *
+     * @param id
+     * @return
+     */
+    @GET("/api/article/read/{id}")
+    Observable<WLData<Object>> obtainReadArticle(@Path("id") String id);
 }
