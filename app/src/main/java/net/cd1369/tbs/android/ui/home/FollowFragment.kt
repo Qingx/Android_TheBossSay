@@ -9,6 +9,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
+import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
@@ -76,7 +77,7 @@ class FollowFragment : BaseListFragment() {
 
         tabAdapter = object : HomeTabAdapter() {
             override fun onSelect(labelId: String) {
-                val followVal = FollowVal(pageParam, cardAdapter.data, mAdapter.data)
+                val followVal = FollowVal(PageParam.copy(pageParam), cardAdapter.data, mAdapter.data)
                 mValueCache[mSelectTab ?: ""] = followVal
 
                 mSelectTab = labelId

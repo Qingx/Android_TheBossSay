@@ -5,15 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseFragment
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_boss.*
+import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
+import kotlinx.android.synthetic.main.fragment_boss.rv_content
+import kotlinx.android.synthetic.main.fragment_boss.rv_tab
+import kotlinx.android.synthetic.main.fragment_square.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.model.FollowVal
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
@@ -36,6 +42,9 @@ class BossFragment : BaseFragment() {
     private var needLoading = true
 
     companion object {
+
+        private val mValueCache = hashMapOf<String, FollowVal>()
+
         fun createFragment(): BossFragment {
             return BossFragment()
         }
@@ -57,9 +66,21 @@ class BossFragment : BaseFragment() {
         }
 
         tabAdapter = object : HomeTabAdapter() {
-            override fun onSelect(select: String) {
-                mSelectTab = select
-                layout_refresh.autoRefresh()
+            override fun onSelect(labelId: String) {
+                val followVal = FollowVal(null, mAdapter.data, null)
+                mValueCache[mSelectTab ?: ""] = followVal
+
+                mSelectTab = labelId
+
+                val value = mValueCache[labelId]
+
+                if (value != null) {
+                    val data = value.boss
+
+                    mAdapter.setNewData(data)
+                } else {
+                    layout_refresh.autoRefresh()
+                }
             }
         }
 
