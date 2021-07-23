@@ -9,6 +9,7 @@
         android:id="@+id/layout_content"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:background="@color/colorPageBg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,11 +57,11 @@
             android:layout_marginEnd="12dp"
             android:gravity="end|center_vertical"
             android:singleLine="true"
+            android:text="请先登录"
             android:textColor="@color/colorTextGray"
             android:textSize="14dp"
             app:layout_constraintBaseline_toBaselineOf="@id/text_name"
-            app:layout_constraintEnd_toStartOf="@id/image_arrow"
-            android:text="请先登录" />
+            app:layout_constraintEnd_toStartOf="@id/image_arrow" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

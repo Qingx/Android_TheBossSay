@@ -255,4 +255,16 @@ public class UserRepository extends BaseRepository<UserService> {
                 .compose(combine())
                 .compose(success());
     }
+
+    /**
+     * 阅读文章
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainReadArticle(String id) {
+        return getService().obtainReadArticle(id)
+                .compose(combine())
+                .compose(success());
+    }
 }
