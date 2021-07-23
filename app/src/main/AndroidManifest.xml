@@ -18,6 +18,9 @@
         android:protectionLevel="signature"
         tools:node="remove" />
 
+    <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加-->
+    <uses-sdk tools:overrideLibrary="com.bun.miitmdid,com.advance.supplier.ks,com.kwad.sdk" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

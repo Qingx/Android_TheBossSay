@@ -4,7 +4,9 @@ import android.text.TextUtils;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.advance.AdvanceSDK;
 import com.blankj.utilcode.util.Utils;
+import com.mercury.sdk.core.config.MercuryAD;
 
 import net.cd1369.tbs.android.BuildConfig;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
@@ -36,6 +38,11 @@ public class TbsApp extends MultiDexApplication {
         BaseApi.mProvider = () -> RetryHolder.mTempRetry;
 
         Utils.init(this);
+
+        //必要配置：初始化聚合SDK，三个参数依次为context上下文，appId媒体id，isDebug调试模式开关
+        AdvanceSDK.initSDK(this,"100171",BuildConfig.DEBUG);
+        //推荐配置：允许Mercury预缓存素材
+        MercuryAD.needPreLoadMaterial(true);
 
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(mContext);

@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import cn.wl.android.lib.ui.BaseActivity
+import com.blankj.utilcode.util.PhoneUtils
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
@@ -31,9 +33,11 @@ class SplashActivity : BaseActivity() {
         return R.layout.activity_splash
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "MissingPermission")
     override fun initViewCreated(savedInstanceState: Bundle?) {
         val firstUse = DataConfig.get().firstUse
+
+        Log.e("OkHttp", PhoneUtils.getIMEI())
 
         LabelManager.obtainLabels()
             .flatMap {
