@@ -20,6 +20,8 @@ public class PageParam {
     private int total;
     private int totalPage;
 
+    private List<OrderBy> orderBy;      // 排序规则
+
     public int getTotal() {
         return total;
     }
@@ -36,7 +38,6 @@ public class PageParam {
         this.totalPage = totalPage;
     }
 
-    private List<OrderBy> orderBy;      // 排序规则
 
     /**
      * 创建一个默认的分页参数
@@ -55,10 +56,29 @@ public class PageParam {
         this.orderBy.add(orderBy);
     }
 
-
-
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public void set(PageParam source) {
+        this.current = source.current;
+        this.size = source.size;
+
+        this.total = source.total;
+        this.totalPage = source.totalPage;
+    }
+
+    /**
+     * 创建自定义分页属性
+     *
+     * @param source
+     * @return
+     */
+    public static PageParam copy(PageParam source) {
+        PageParam param = create();
+        param.set(source);
+
+        return param;
     }
 
     /**

@@ -5,18 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseFragment
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_boss.*
+import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
+import kotlinx.android.synthetic.main.fragment_boss.rv_content
+import kotlinx.android.synthetic.main.fragment_boss.rv_tab
+import kotlinx.android.synthetic.main.fragment_square.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.model.FollowVal
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
+import net.cd1369.tbs.android.util.LabelManager
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -30,10 +37,14 @@ class BossFragment : BaseFragment() {
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: BossInfoAdapter
 
+    private var version = 0L
     private var mSelectTab: String? = null
     private var needLoading = true
 
     companion object {
+
+        private val mValueCache = hashMapOf<String, FollowVal>()
+
         fun createFragment(): BossFragment {
             return BossFragment()
         }
@@ -55,9 +66,21 @@ class BossFragment : BaseFragment() {
         }
 
         tabAdapter = object : HomeTabAdapter() {
-            override fun onSelect(select: String) {
-                mSelectTab = select
-                layout_refresh.autoRefresh()
+            override fun onSelect(labelId: String) {
+                val followVal = FollowVal(null, mAdapter.data, null)
+                mValueCache[mSelectTab ?: ""] = followVal
+
+                mSelectTab = labelId
+
+                val value = mValueCache[labelId]
+
+                if (value != null) {
+                    val data = value.boss
+
+                    mAdapter.setNewData(data)
+                } else {
+                    layout_refresh.autoRefresh()
+                }
             }
         }
 
@@ -100,37 +123,28 @@ class BossFragment : BaseFragment() {
 
         if (needLoading) showLoading()
 
-        if (DataConfig.get().bossLabels.isNullOrEmpty()) {
-            TbsApi.boss().obtainBossLabels()
-                .flatMap {
+        LabelManager.obtainLabels()
+            .flatMap {
+                if (LabelManager.needUpdate(version)) {
+                    version = LabelManager.getVersion()
+
+                    tabAdapter.setNewData(DataConfig.get().bossLabels)
+
                     it.add(0, BossLabelEntity.empty)
-                    BossLabelDaoManager.getInstance().insertList(it)
                     mSelectTab = it[0].id
+                }
 
-                    TbsApi.boss().obtainFollowBossList(mSelectTab, false)
-                        .onErrorReturn {
-                            mutableListOf()
-                        }
-                }.bindDefaultSub(doNext = {
-                    tabAdapter.setNewData(DataConfig.get().bossLabels)
-                    mAdapter.setNewData(it)
-                }, doLast = {
-                    showContent()
+                TbsApi.boss().obtainFollowBossList(mSelectTab, false)
+                    .onErrorReturn {
+                        mutableListOf()
+                    }
+            }.bindDefaultSub(doNext = {
+                mAdapter.setNewData(it)
+            }, doLast = {
+                showContent()
 
-                    layout_refresh.finishRefresh()
-                })
-        } else {
-            TbsApi.boss().obtainFollowBossList(mSelectTab, false)
-                .onErrorReturn { mutableListOf() }
-                .bindDefaultSub(doNext = {
-                    tabAdapter.setNewData(DataConfig.get().bossLabels)
-                    mAdapter.setNewData(it)
-                }, doLast = {
-                    showContent()
-
-                    layout_refresh.finishRefresh()
-                })
-        }
+                layout_refresh.finishRefresh()
+            })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
