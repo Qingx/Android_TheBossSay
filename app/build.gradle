@@ -160,4 +160,15 @@ dependencies {
 
     implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0
     implementation 'cn.jiguang.sdk:jcore:2.4.2'  // 此处以JCore 2.4.2
+
+    def advanceVersion = "3.5.1"
+    //必须，Advance聚合SDK 引入。如果gradle引入异常，请参考根目录gradle进行配置，如果依然无法引入，请联系我们使用本地aar引入。
+    implementation "io.github.flayone:advance-core:${advanceVersion}_2"
+    //必须，mercury SDK 引入 包含了广告aar以及渠道处理逻辑
+    implementation "io.github.flayone:advance-mry:${advanceVersion}_3451"
+    //穿山甲、广点通、百度、快手SDK 引入，包含了广告aar以及渠道处理逻辑(如果APP本地引入了平台SDK的aar，不希望使用带aar引入的advance渠道库，可以在最后面加上 _core 标识，这样就不会产生aar引入冲突了，但是请注意，非advance推荐版本可能会出现广告加载异常，一定要充分测试)
+    implementation "io.github.flayone:advance-gdt:${advanceVersion}_4360"
+//    implementation "io.github.flayone:advance-csj:${advanceVersion}_3613"
+//    implementation "io.github.flayone:advance-bd:${advanceVersion}_596"
+//    implementation "io.github.flayone:advance-ks:${advanceVersion}_339"
 }
