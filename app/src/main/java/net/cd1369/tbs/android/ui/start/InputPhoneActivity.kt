@@ -4,8 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextPaint
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.MotionEvent
+import android.view.View
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.SpanUtils
 import cn.wl.android.lib.utils.Toasts
@@ -14,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.ui.home.WebActivity
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
 import net.cd1369.tbs.android.util.Tools.isShouldHideInput
 import net.cd1369.tbs.android.util.doClick
@@ -52,13 +57,43 @@ class InputPhoneActivity : BaseActivity() {
             }
         })
 
+        text_permission.movementMethod = LinkMovementMethod.getInstance()
+
         text_permission.text = SpanUtils.getBuilder("我已阅读并同意")
             .setForegroundColor(ColorUtils.getColor(R.color.colorTextGray))
             .append("《服务条款》")
+            .setClickSpan(object : ClickableSpan() {
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.isUnderlineText = false
+                    ds.bgColor = ColorUtils.getColor(R.color.colorPageBg)
+                }
+
+                override fun onClick(widget: View) {
+                    WebActivity.start(
+                        mActivity,
+                        "服务条款",
+                        "http://file.tianjiemedia.com/serviceProtocol.html"
+                    )
+                }
+            })
             .setForegroundColor(ColorUtils.getColor(R.color.colorAccent))
             .append("和")
             .setForegroundColor(ColorUtils.getColor(R.color.colorTextGray))
             .append("《隐私政策》")
+            .setClickSpan(object : ClickableSpan() {
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.isUnderlineText = false
+                    ds.bgColor = ColorUtils.getColor(R.color.colorPageBg)
+                }
+
+                override fun onClick(widget: View) {
+                    WebActivity.start(
+                        mActivity,
+                        "隐私政策",
+                        "http://file.tianjiemedia.com/privacyService.html"
+                    )
+                }
+            })
             .setForegroundColor(ColorUtils.getColor(R.color.colorAccent))
             .create()
 
@@ -86,7 +121,7 @@ class InputPhoneActivity : BaseActivity() {
             .bindDefaultSub(doNext = {
                 Toasts.show("验证码发送成功")
 
-                InputCodeActivity.start(mActivity, edit_input.text.toString().trim(),it)
+                InputCodeActivity.start(mActivity, edit_input.text.toString().trim(), it)
             }, doFail = {
                 Toasts.show("验证码发送失败，${it.msg}")
             }, doDone = {

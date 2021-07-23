@@ -19,6 +19,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
+import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.jumpSysShare

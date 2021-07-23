@@ -59,7 +59,8 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.ArticleActivity"></activity>
+        <activity android:name=".ui.home.WebActivity"></activity>
+        <activity android:name=".ui.home.ArticleActivity" />
         <activity android:name=".ui.home.TodayHistoryActivity" />
         <activity android:name=".ui.home.SearchArticleActivity" />
         <activity android:name=".ui.home.SearchBossActivity" />
@@ -103,7 +104,6 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-
         <service
             android:name=".push.PushService"
             android:enabled="true"
@@ -137,6 +137,7 @@
                 <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>
+
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"

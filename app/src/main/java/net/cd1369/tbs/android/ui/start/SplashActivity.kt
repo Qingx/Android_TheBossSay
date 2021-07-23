@@ -51,7 +51,11 @@ class SplashActivity : BaseActivity() {
                 if (firstUse && !it.isNullOrEmpty()) {
                     val filter = it.filter { it.guide }
                     GuideActivity.start(mActivity, ArrayList(filter))
-                } else HomeActivity.start(mActivity)
+                    mActivity?.finish()
+                } else {
+                    HomeActivity.start(mActivity)
+                    mActivity?.finish()
+                }
             }
     }
 }
