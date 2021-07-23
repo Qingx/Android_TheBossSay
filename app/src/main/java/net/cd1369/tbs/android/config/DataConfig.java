@@ -31,12 +31,14 @@ public class DataConfig extends BaseConfig {
         String keyFistUse = "KEY_FIRST_USE";
         String keyTempId = "KEY_TEMP_ID";
         String keyUpdateTime = "KEY_UPDATE_TIME";
+        String keyHotSearch = "KEY_HOT_SEARCH";
     }
 
     private boolean firstUse; //是否第一次使用app
     private String tempId; //设备id
     private List<BossLabelEntity> bossLabels;
     private Long updateTime;
+    private String hotSearch;
 
     public void setFirstUse(boolean firstUse) {
         putBoolean(KEY.keyFistUse, firstUse);
@@ -64,5 +66,13 @@ public class DataConfig extends BaseConfig {
 
     public Long getUpdateTime() {
         return getLong(KEY.keyUpdateTime, 1);
+    }
+
+    public void setHotSearch(String hotSearch) {
+        putString(KEY.keyHotSearch, hotSearch);
+    }
+
+    public String getHotSearch() {
+        return getString(KEY.keyHotSearch, "请输入内容");
     }
 }

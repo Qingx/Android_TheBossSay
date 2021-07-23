@@ -14,10 +14,14 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_search_boss.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class SearchBossActivity : BaseListActivity() {
     private lateinit var mAdapter: BossInfoAdapter
@@ -39,7 +43,9 @@ class SearchBossActivity : BaseListActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        edit_input.hint = "大家都在搜莉莉娅"
+        eventBus.register(this)
+
+        edit_input.hint = DataConfig.get().hotSearch
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -111,5 +117,10 @@ class SearchBossActivity : BaseListActivity() {
                 layout_refresh.finishRefresh()
                 layout_refresh.finishLoadMore()
             })
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: HotSearchEvent) {
+        edit_input.hint = DataConfig.get().hotSearch
     }
 }

@@ -9,9 +9,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import cn.wl.android.lib.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_search.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.event.SearchCancelEvent
 import net.cd1369.tbs.android.event.SearchEvent
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class SearchActivity : BaseActivity() {
     val fragments = mutableListOf<Fragment>()
@@ -39,8 +43,8 @@ class SearchActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-
-        edit_input.hint = "大家都在搜莉莉娅"
+        eventBus.register(this)
+        edit_input.hint = DataConfig.get().hotSearch
 
 
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
@@ -77,5 +81,10 @@ class SearchActivity : BaseActivity() {
                 edit_input.setText("")
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: HotSearchEvent) {
+        edit_input.hint = DataConfig.get().hotSearch
     }
 }

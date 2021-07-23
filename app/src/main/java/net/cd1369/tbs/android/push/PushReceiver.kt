@@ -5,11 +5,14 @@ import cn.jpush.android.api.CustomMessage
 import cn.jpush.android.api.NotificationMessage
 import cn.jpush.android.service.JPushMessageReceiver
 import com.google.gson.JsonParser
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp.getContext
+import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.runUiThread
 import net.cd1369.tbs.android.util.showSneaker
+import org.greenrobot.eventbus.EventBus
 
 
 /**
@@ -65,10 +68,17 @@ class PushReceiver : JPushMessageReceiver() {
         super.onMessage(context, message)
         message.logE(prefix = "极光推送:消息")
 
-        val jsonElement = JsonParser().parse(message.toString())
+        val jsonElement = JsonParser().parse(message.extra)
         val jsonObject = jsonElement.asJsonObject
 
-        val content = jsonObject["message"]
+        DataConfig.get().hotSearch = message.message
+        EventBus.getDefault().post(HotSearchEvent())
 
+
+        if (jsonObject.has("hotSearch")) {
+            val content = jsonObject["hotSearch"].asString
+            DataConfig.get().hotSearch = content
+            EventBus.getDefault().post(HotSearchEvent())
+        }
     }
 }
