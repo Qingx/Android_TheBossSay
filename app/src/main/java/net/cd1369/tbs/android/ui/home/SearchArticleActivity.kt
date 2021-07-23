@@ -124,6 +124,6 @@ class SearchArticleActivity : BaseListActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: HotSearchEvent) {
-        edit_input.hint = DataConfig.get().hotSearch
+        edit_input.hint = event.content
     }
 }

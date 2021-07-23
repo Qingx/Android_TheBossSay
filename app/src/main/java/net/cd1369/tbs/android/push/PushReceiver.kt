@@ -72,13 +72,12 @@ class PushReceiver : JPushMessageReceiver() {
         val jsonObject = jsonElement.asJsonObject
 
         DataConfig.get().hotSearch = message.message
-        EventBus.getDefault().post(HotSearchEvent())
-
+        EventBus.getDefault().post(HotSearchEvent(message.message))
 
         if (jsonObject.has("hotSearch")) {
             val content = jsonObject["hotSearch"].asString
             DataConfig.get().hotSearch = content
-            EventBus.getDefault().post(HotSearchEvent())
+            EventBus.getDefault().post(HotSearchEvent(content))
         }
     }
 }

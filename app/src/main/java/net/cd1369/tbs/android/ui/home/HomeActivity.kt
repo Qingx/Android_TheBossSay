@@ -95,7 +95,7 @@ class HomeActivity : BaseActivity() {
             UserConfig.get().userEntity.id ?: "012345"
         ) { i, s, set ->
             i.logE(prefix = "极光推送注册")
-            "0123456".logE(prefix = "极光推送注册")
+            (UserConfig.get().userEntity.id ?: "012345").logE(prefix = "极光推送注册")
 
             if (i == 6002) {
                 timerDelay(1000) {
