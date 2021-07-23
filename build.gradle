@@ -8,8 +8,6 @@ buildscript {
         google()
         mavenCentral()
         jcenter(){url 'https://maven.aliyun.com/repository/jcenter'}
-        //advance相关引用的maven依赖根目录地址，放在阿里云依赖前面
-        maven { url 'https://s01.oss.sonatype.org/content/groups/public' }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
     dependencies {
@@ -24,6 +22,8 @@ buildscript {
 allprojects {
     repositories {
         google()
+        //advance相关引用的maven依赖根目录地址，放在阿里云依赖前面
+        maven { url 'https://s01.oss.sonatype.org/content/groups/public' }
         jcenter(){url 'https://maven.aliyun.com/repository/jcenter'}
         mavenCentral()
         maven { url "https://jitpack.io" }
