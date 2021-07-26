@@ -11,7 +11,6 @@ import cn.wl.android.lib.ui.BaseActivity
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener
 import com.advance.model.AdvanceError
-import com.blankj.utilcode.util.PhoneUtils
 import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.cd1369.tbs.android.R
@@ -52,11 +51,11 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
          * 预申请动态权限
          */
         private val mPer = arrayOf(
-            Manifest.permission.WRITE_SETTINGS,
+//            Manifest.permission.WRITE_SETTINGS,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
+//            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_FINE_LOCATION,
+//            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CAMERA
         )
 
