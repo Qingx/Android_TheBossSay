@@ -1,6 +1,5 @@
 package net.cd1369.tbs.android.data.service;
 
-import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
@@ -57,6 +56,15 @@ public interface UserService {
      */
     @POST("/api/account/sign-code")
     Observable<WLData<TokenEntity>> obtainSignPhone(@Body RequestBody body);
+
+    /**
+     * 微信授权登录
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/account/wechat/sign")
+    Observable<WLData<TokenEntity>> obtainSignWechat(@Body RequestBody body);
 
     /**
      * 修改账号昵称

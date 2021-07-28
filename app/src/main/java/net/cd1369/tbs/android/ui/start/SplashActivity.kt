@@ -24,7 +24,6 @@ import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
 import net.cd1369.tbs.android.ui.home.HomeActivity
 import net.cd1369.tbs.android.util.LabelManager
 
-
 /**
  * @Email 15025496981@163.com
  * @User JustBlue 李波

@@ -64,7 +64,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_default_photo"
+        android:src="@drawable/ic_login_logo_right"
         app:layout_constraintBottom_toBottomOf="@id/text_notice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_title" />
@@ -161,4 +161,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/check_permission" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_wechat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/image_wechat"
+            android:layout_width="28dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_wechat_logo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="微信授权登录"
+            android:textColor="@color/colorTextDark"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@id/image_wechat"
+            app:layout_constraintStart_toEndOf="@id/image_wechat"
+            app:layout_constraintTop_toTopOf="@id/image_wechat" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

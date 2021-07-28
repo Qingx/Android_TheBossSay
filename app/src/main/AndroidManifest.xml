@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="net.cd1369.tbs.android">
+    package="net.cd1369.tbs.android"> <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加 -->
+    <uses-sdk tools:overrideLibrary="com.bun.miitmdid,com.advance.supplier.ks,com.kwad.sdk" />
 
     <permission
         android:name="${applicationId}.permission.JPUSH_MESSAGE"
@@ -18,9 +19,6 @@
         android:protectionLevel="signature"
         tools:node="remove" />
 
-    <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加-->
-    <uses-sdk tools:overrideLibrary="com.bun.miitmdid,com.advance.supplier.ks,com.kwad.sdk" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -36,18 +34,15 @@
     <uses-permission
         android:name="android.permission.VIBRATE"
         tools:node="remove" />
-    <uses-permission
-        android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission
-        android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
         tools:node="remove" />
     <uses-permission
         android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"
-        tools:node="remove" />
-    <!--    <uses-permission android:name="android.permission.CALL_PHONE" />-->
-    <!--    <uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
+        tools:node="remove" /> <!-- <uses-permission android:name="android.permission.CALL_PHONE" /> -->
+    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
         tools:node="remove" />
@@ -63,10 +58,9 @@
     <uses-permission
         android:name="android.permission.REQUEST_INSTALL_PACKAGES"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!--    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />-->
-    <!--    <uses-permission android:name="android.permission.GET_TASKS" />-->
-    <!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" /> -->
+    <!-- <uses-permission android:name="android.permission.GET_TASKS" /> -->
+    <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
@@ -74,8 +68,6 @@
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions"
         tools:node="remove" />
-    <!--    <uses-permission android:name="android.permission.READ_CALENDAR" />-->
-    <!--    <uses-permission android:name="android.permission.WRITE_CALENDAR" />-->
 
     <application
         android:name=".config.TbsApp"
@@ -88,7 +80,8 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.WebActivity"></activity>
+        <activity android:name=".ui.home.AboutUsActivity"></activity>
+        <activity android:name=".ui.home.WebActivity" />
         <activity android:name=".ui.home.ArticleActivity" />
         <activity android:name=".ui.home.TodayHistoryActivity" />
         <activity android:name=".ui.home.SearchArticleActivity" />
@@ -122,6 +115,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

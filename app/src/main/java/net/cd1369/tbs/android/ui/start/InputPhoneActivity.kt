@@ -10,17 +10,24 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.graphics.translationMatrix
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.SpanUtils
 import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.ColorUtils
+import com.tencent.mm.opensdk.modelmsg.SendAuth
 import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.TbsApp
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.event.WechatLoginCodeEvent
 import net.cd1369.tbs.android.ui.home.WebActivity
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
 import net.cd1369.tbs.android.util.Tools.isShouldHideInput
+import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -112,6 +119,45 @@ class InputPhoneActivity : BaseActivity() {
         image_back doClick {
             onBackPressed()
         }
+
+        layout_wechat doClick {
+            if (!check_permission.isChecked) {
+                Toasts.show("请阅读并同意《服务条款》和《隐私政策》")
+            } else {
+                tryJumpWechat()
+            }
+        }
+    }
+
+    /**
+     * 尝试跳转微信授权
+     */
+    private fun tryJumpWechat() {
+        val req = SendAuth.Req()
+        req.scope = "snsapi_userinfo"
+        TbsApp.getWeChatApi().sendReq(req)
+    }
+
+    /**
+     * 尝试微信授权登录
+     * @param code String
+     */
+    private fun trySignWechat(code: String) {
+        showLoadingAlert("正在尝试登录...")
+
+        TbsApi.user().obtainSignWechat(code)
+            .bindDefaultSub(doNext = {
+                HttpConfig.saveToken(it.token)
+                UserConfig.get().loginStatus = true
+                UserConfig.get().userEntity = it.userInfo
+
+                eventBus.post(RefreshUserEvent())
+                mActivity?.finish()
+            }, doFail = {
+                Toasts.show("登录失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
     }
 
     private fun trySendCode() {
@@ -177,5 +223,10 @@ class InputPhoneActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: RefreshUserEvent) {
         mActivity?.finish()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: WechatLoginCodeEvent) {
+        trySignWechat(event.code)
     }
 }

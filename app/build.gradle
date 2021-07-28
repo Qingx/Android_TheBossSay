@@ -81,7 +81,7 @@ android {
 
 //            buildConfigField("String", "BASE_URL", "\"http://192.168.1.106:8086/\"") //李波
 //            buildConfigField("String", "BASE_URL", "\"http://192.168.1.115:8086/\"") //熊
-            buildConfigField("String", "BASE_URL", "\"http://tianjiemedia.com/\"") //阿里云
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
             buildConfigField("String", "WS_URL", "\"ws://192.168.1.88:8072/webSocket\"")
 
             manifestPlaceholders = [
@@ -96,7 +96,7 @@ android {
 
             buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
             buildConfigField("String", "DOWN_URL", "\"http://192.144.169.58:8888/\"")
-            buildConfigField("String", "BASE_URL", "\"http://tianjiemedia.com/\"") //阿里云
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
 
             manifestPlaceholders = [
                     APP_Channel  : "UAT",
@@ -160,6 +160,8 @@ dependencies {
 
     implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0
     implementation 'cn.jiguang.sdk:jcore:2.4.2'  // 此处以JCore 2.4.2
+
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
     def advanceVersion = "3.5.1"
     //必须，Advance聚合SDK 引入。如果gradle引入异常，请参考根目录gradle进行配置，如果依然无法引入，请联系我们使用本地aar引入。

@@ -13,4 +13,5 @@ object Const {
     const val LUNCH_ID = "10004896"
     const val BANNER_ID = "10004898"
 
+    const val SHARE_URL="http://index.tianjiemedia.com/"
 }

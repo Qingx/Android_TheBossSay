@@ -47,6 +47,20 @@
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <FrameLayout
+        android:id="@+id/layout_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPageBg"
+        android:paddingVertical="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/layout_refresh">
+
+        <include layout="@layout/empty_search" />
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

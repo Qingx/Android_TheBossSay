@@ -28,7 +28,9 @@ abstract class UserInfoAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.
         if (loginStatus) {
             name = entity.nickName
             id = "ID：${entity.id}"
-            phone = entity.phone.replaceRange(3, 11, "********")
+            phone = if (entity?.phone.isNullOrEmpty()) {
+                "微信用户暂无手机号"
+            } else entity.phone.replaceRange(3, 11, "********")
         } else {
             name = "请先登录！"
             id = "游客：${DataConfig.get().tempId}"

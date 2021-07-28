@@ -61,9 +61,10 @@
 
                     <ImageView
                         android:id="@+id/image_setting"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="6dp"
+                        android:padding="10dp"
                         android:src="@drawable/ic_setting_white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
@@ -72,9 +73,9 @@
 
                     <ImageView
                         android:id="@+id/image_share"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="10dp"
                         android:src="@drawable/ic_share_white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"

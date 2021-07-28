@@ -26,14 +26,20 @@ import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.utils.*
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
+import com.bumptech.glide.util.Util
 import com.chad.library.adapter.base.BaseViewHolder
 import com.google.gson.JsonElement
 import com.irozon.sneaker.Sneaker
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.layout_push_message.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const
+import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import java.util.*
@@ -41,6 +47,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.abs
+
 
 /**
  * Created by Xiang on 2020/7/3 12:28
@@ -227,6 +234,62 @@ fun isWeChatInstalled(context: Context): Boolean {
     }
 
     return info != null
+}
+
+/**
+ * 分享至微信会话
+ * @param resources Resources
+ */
+fun doShareSession(resources: Resources) {
+    val url = Const.SHARE_URL
+    val title = "Boss说-追踪老板的言论"
+    val des = "深度学习大佬的言论文章，找寻你的成功暗门"
+
+    val webPage = WXWebpageObject()
+    webPage.webpageUrl = url
+    val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
+    val thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true)
+    bmp.recycle()
+
+    val msg = WXMediaMessage(webPage)
+    msg.title = title
+    msg.description = des
+    msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+
+    val req = SendMessageToWX.Req()
+    req.transaction = WeChatUtil.buildTransaction("webPage")
+    req.message = msg
+    req.scene = SendMessageToWX.Req.WXSceneSession
+
+    TbsApp.getWeChatApi().sendReq(req)
+}
+
+/**
+ * 分享至微信朋友圈
+ * @param resources Resources
+ */
+fun doShareTimeline(resources: Resources) {
+    val url = Const.SHARE_URL
+    val title = "Boss说-追踪老板的言论"
+    val des = "深度学习大佬的言论文章，找寻你的成功暗门"
+
+    val webPage = WXWebpageObject()
+    webPage.webpageUrl = url
+    val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
+    val thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true)
+    bmp.recycle()
+
+    val msg = WXMediaMessage(webPage)
+    msg.title = title
+    msg.description = des
+    msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+
+    val req = SendMessageToWX.Req()
+    req.transaction = WeChatUtil.buildTransaction("webPage")
+    req.message = msg
+    req.scene = SendMessageToWX.Req.WXSceneTimeline
+
+    TbsApp.getWeChatApi().sendReq(req)
 }
 
 /**

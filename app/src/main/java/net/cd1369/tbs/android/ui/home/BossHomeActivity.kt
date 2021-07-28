@@ -18,15 +18,17 @@ import kotlinx.android.synthetic.main.activity_boss_home.layout_refresh
 import kotlinx.android.synthetic.main.activity_boss_home.rv_content
 import kotlinx.android.synthetic.main.activity_boss_home.text_num
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.ui.dialog.BossSettingDialog
+import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.avatar
-import net.cd1369.tbs.android.util.doClick
-import net.cd1369.tbs.android.util.jumpSysShare
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -97,8 +99,33 @@ class BossHomeActivity : BaseListActivity() {
         }
 
         image_share doClick {
-            jumpSysShare(mActivity, "https://www.bilibili.com/")
+            onShare()
         }
+
+        image_setting doClick {
+            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
+                .apply {
+                    onConfirm = Runnable {
+                        Toasts.show("开启推送")
+                        dialog?.dismiss()
+                    }
+                }
+        }
+    }
+
+    private fun onShare() {
+        ShareDialog.showDialog(supportFragmentManager, "shareDialog")
+            .apply {
+                onSession = Runnable {
+                    doShareSession(resources)
+                }
+                onTimeline = Runnable {
+                    doShareTimeline(resources)
+                }
+                onCopyLink = Runnable {
+                    Tools.copyText(mActivity, Const.SHARE_URL)
+                }
+            }
     }
 
     /**

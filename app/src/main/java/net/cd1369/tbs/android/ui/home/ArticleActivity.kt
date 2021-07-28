@@ -11,17 +11,18 @@ import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_article.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
 import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
+import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
+import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.avatar
-import net.cd1369.tbs.android.util.doClick
-import net.cd1369.tbs.android.util.getUpdateTime
-import net.cd1369.tbs.android.util.jumpSysShare
 
 class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
@@ -75,12 +76,27 @@ class ArticleActivity : BaseActivity() {
         }
 
         image_share doClick {
-            jumpSysShare(mActivity, "https://www.bilibili.com/")
+            onShare()
         }
 
         image_back doClick {
             onBackPressed()
         }
+    }
+
+    private fun onShare() {
+        ShareDialog.showDialog(supportFragmentManager, "shareDialog")
+            .apply {
+                onSession = Runnable {
+                    doShareSession(resources)
+                }
+                onTimeline = Runnable {
+                    doShareTimeline(resources)
+                }
+                onCopyLink = Runnable {
+                    Tools.copyText(mActivity, Const.SHARE_URL)
+                }
+            }
     }
 
     override fun loadData() {
@@ -214,6 +230,8 @@ class ArticleActivity : BaseActivity() {
      */
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
-            .bindDefaultSub { }
+            .bindDefaultSub {
+                eventBus.post(RefreshUserEvent())
+            }
     }
 }

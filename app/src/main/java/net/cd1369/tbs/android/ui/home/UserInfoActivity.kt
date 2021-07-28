@@ -19,7 +19,6 @@ import net.cd1369.tbs.android.ui.adapter.UserInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.ChangeNameDialog
 import net.cd1369.tbs.android.ui.dialog.ConfirmPhoneDialog
 import net.cd1369.tbs.android.ui.start.ConfirmPhoneActivity
-import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -79,25 +78,27 @@ class UserInfoActivity : BaseActivity() {
                                             hideLoadingAlert()
                                         })
                                 } else Toasts.show("昵称重复，修改失败")
-
-
                             }
                         }
                     }
                     2 -> {
-                        ConfirmPhoneDialog.showDialog(supportFragmentManager).apply {
-                            this.onConfirmClick = ConfirmPhoneDialog.OnConfirmClick { phone ->
-                                showLoadingAlert("发送验证码...")
-                                TbsApi.user().obtainSendCode(phone, 1).bindDefaultSub(doNext = {
-                                    Toasts.show("验证码发送成功")
+                        if (UserConfig.get().userEntity.type == "1" && UserConfig.get().userEntity?.phone.isNullOrEmpty()) {
+                            Toasts.show("微信用户暂不支持修改")
+                        } else {
+                            ConfirmPhoneDialog.showDialog(supportFragmentManager).apply {
+                                this.onConfirmClick = ConfirmPhoneDialog.OnConfirmClick { phone ->
+                                    showLoadingAlert("发送验证码...")
+                                    TbsApi.user().obtainSendCode(phone, 1).bindDefaultSub(doNext = {
+                                        Toasts.show("验证码发送成功")
 
-                                    this?.dismiss()
-                                    ConfirmPhoneActivity.start(mActivity, phone, it)
-                                }, doFail = {
-                                    Toasts.show("发送失败，${it.msg}")
-                                }, doDone = {
-                                    hideLoadingAlert()
-                                })
+                                        this?.dismiss()
+                                        ConfirmPhoneActivity.start(mActivity, phone, it)
+                                    }, doFail = {
+                                        Toasts.show("发送失败，${it.msg}")
+                                    }, doDone = {
+                                        hideLoadingAlert()
+                                    })
+                                }
                             }
                         }
                     }

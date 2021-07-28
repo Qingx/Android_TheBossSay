@@ -1,9 +1,12 @@
 package net.cd1369.tbs.android.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.ErrorBean
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.SpanUtils
@@ -11,8 +14,6 @@ import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.ColorUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_search_result.*
-import kotlinx.android.synthetic.main.fragment_search_result.layout_refresh
-import kotlinx.android.synthetic.main.fragment_search_result.rv_content
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
@@ -55,6 +56,9 @@ class SearchResultFragment : BaseListFragment() {
                     return false
                 }
             }
+
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_search, null)
+        mAdapter.emptyView = emptyView
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -70,6 +74,14 @@ class SearchResultFragment : BaseListFragment() {
             }
         }.also {
             mAdapter = it
+
+            it.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                override fun onChanged() {
+                    super.onChanged()
+
+                    layout_empty.isVisible = it.data.isNullOrEmpty()
+                }
+            })
         }
     }
 
@@ -155,6 +167,10 @@ class SearchResultFragment : BaseListFragment() {
                     layout_refresh.finishLoadMore()
                 })
         }
+    }
+
+    override fun onInterceptDataMiss(error: ErrorBean): Boolean {
+        return super.onInterceptDataMiss(error)
     }
 
     fun eventSearch(content: String) {

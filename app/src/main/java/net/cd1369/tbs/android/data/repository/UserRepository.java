@@ -93,6 +93,23 @@ public class UserRepository extends BaseRepository<UserService> {
     }
 
     /**
+     * 微信授权登录
+     *
+     * @param code
+     * @return
+     */
+    public Observable<TokenEntity> obtainSignWechat(String code) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("code", code);
+            jo.put("deviceId", DataConfig.get().getTempId());
+        });
+
+        return getService().obtainSignWechat(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
      * 修改账号昵称
      *
      * @param name

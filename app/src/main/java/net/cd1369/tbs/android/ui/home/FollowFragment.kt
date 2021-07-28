@@ -13,6 +13,7 @@ import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import kotlinx.android.synthetic.main.empty_boss_card_view.view.*
 import kotlinx.android.synthetic.main.fragment_follow.*
 import kotlinx.android.synthetic.main.header_follow.*
 import kotlinx.android.synthetic.main.header_follow.view.*
@@ -28,6 +29,7 @@ import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.LabelManager
+import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -77,7 +79,8 @@ class FollowFragment : BaseListFragment() {
 
         tabAdapter = object : HomeTabAdapter() {
             override fun onSelect(labelId: String) {
-                val followVal = FollowVal(PageParam.copy(pageParam), cardAdapter.data, mAdapter.data)
+                val followVal =
+                    FollowVal(PageParam.copy(pageParam), cardAdapter.data, mAdapter.data)
                 mValueCache[mSelectTab ?: ""] = followVal
 
                 mSelectTab = labelId
@@ -133,6 +136,10 @@ class FollowFragment : BaseListFragment() {
 
         val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_card_view, null)
         cardAdapter.emptyView = emptyView
+
+        emptyView.text_add doClick {
+            SearchActivity.start(mActivity)
+        }
 
         layout_refresh.post {
             mRootHeight = layout_refresh.height

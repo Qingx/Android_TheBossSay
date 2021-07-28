@@ -12,17 +12,16 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
-import net.cd1369.tbs.android.config.MineItem
-import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.config.*
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
-import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
+import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
+import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
-import net.cd1369.tbs.android.util.jumpSysShare
+import net.cd1369.tbs.android.util.doShareSession
+import net.cd1369.tbs.android.util.doShareTimeline
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
@@ -53,6 +52,8 @@ class MineFragment : BaseFragment() {
                 when (item) {
                     MineItem.Favorite -> onClickFavorite()
                     MineItem.History -> onClickHistory()
+                    MineItem.Share -> onShare()
+                    MineItem.About -> AboutUsActivity.start(mActivity)
                     MineItem.Contact -> ContactActivity.start(mActivity)
                     MineItem.Clear -> onClickClear()
                     else -> Toasts.show(item.itemName)
@@ -97,8 +98,23 @@ class MineFragment : BaseFragment() {
         }
 
         image_share doClick {
-            jumpSysShare(mActivity, "https://www.bilibili.com/")
+            onShare()
         }
+    }
+
+    private fun onShare() {
+        ShareDialog.showDialog(requireFragmentManager(), "shareDialog")
+            .apply {
+                onSession = Runnable {
+                    doShareSession(resources)
+                }
+                onTimeline = Runnable {
+                    doShareTimeline(resources)
+                }
+                onCopyLink = Runnable {
+                    Tools.copyText(mActivity, Const.SHARE_URL)
+                }
+            }
     }
 
     //点击用户信息
