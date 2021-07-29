@@ -117,7 +117,6 @@ class ArticleActivity : BaseActivity() {
         } else {
             setInfo(entity)
         }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -131,14 +130,7 @@ class ArticleActivity : BaseActivity() {
         text_role.text = it.bossVO.role
         layout_content.isSelected = it.bossVO.isCollect
 
-        text_content.text =
-            "${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${
-                Html.fromHtml(it.content)
-            }${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${
-                Html.fromHtml(
-                    it.content
-                )
-            }${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}${Html.fromHtml(it.content)}"
+        text_content.text =Html.fromHtml(it.content)
     }
 
     private fun cancelCollect() {
