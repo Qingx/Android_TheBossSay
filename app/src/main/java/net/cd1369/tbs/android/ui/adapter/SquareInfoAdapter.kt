@@ -1,11 +1,15 @@
 package net.cd1369.tbs.android.ui.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import kotlinx.android.synthetic.main.item_ad_layout.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_info
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_title
@@ -13,6 +17,7 @@ import kotlinx.android.synthetic.main.item_article_singleimg_nocontent.view.*
 import kotlinx.android.synthetic.main.item_article_triimg_nocontent.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.util.AdvanceAD
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
@@ -29,6 +34,17 @@ abstract class SquareInfoAdapter :
         addItemType(0, R.layout.item_article_onlytext_nocontent)
         addItemType(1, R.layout.item_article_singleimg_nocontent)
         addItemType(2, R.layout.item_article_triimg_nocontent)
+        addItemType(ArticleEntity.AD_TYPE, R.layout.item_ad_layout)
+    }
+
+    override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
+        if (viewType == ArticleEntity.AD_TYPE) {
+            var inflate = mLayoutInflater.inflate(R.layout.item_ad_layout, parent, false)
+            var adVH = AdVH(inflate)
+            adVH.ad = AdvanceAD(mContext as Activity?)
+            return adVH
+        }
+        return super.onCreateDefViewHolder(parent, viewType)
     }
 
     @SuppressLint("SetTextI18n")
@@ -67,6 +83,12 @@ abstract class SquareInfoAdapter :
                 }
                 helper.V.text_info.text = "广告·海南万科"
             }
+            ArticleEntity.AD_TYPE -> {
+                if (helper is AdVH) {
+                    //核心步骤：如果是广告布局，执行广告加载
+                    helper.ad?.loadNativeExpress(helper.itemView.fl_ad)
+                }
+            }
         }
 
         helper.V doClick {
@@ -75,4 +97,8 @@ abstract class SquareInfoAdapter :
     }
 
     abstract fun onClick(item: ArticleEntity)
+}
+
+class AdVH(iv: View) : BaseViewHolder(iv) {
+    var ad: AdvanceAD? = null
 }

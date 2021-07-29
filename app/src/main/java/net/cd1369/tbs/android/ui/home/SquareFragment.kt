@@ -22,6 +22,7 @@ import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.FollowVal
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
+import net.cd1369.tbs.android.util.AdvanceAD
 import net.cd1369.tbs.android.util.LabelManager
 
 /**
@@ -116,8 +117,6 @@ class SquareFragment : BaseListFragment() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (needLoading) showLoading()
-
         LabelManager.obtainLabels()
             .flatMap {
                 if (LabelManager.needUpdate(version)) {
@@ -134,10 +133,11 @@ class SquareFragment : BaseListFragment() {
                         Page.empty()
                     }
             }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                var insertAd = AdvanceAD.insertAd(mAdapter.data, it, loadMore)
                 if (loadMore) {
-                    mAdapter.addData(it)
+                    mAdapter.addData(insertAd)
                 } else{
-                    mAdapter.setNewData(it)
+                    mAdapter.setNewData(insertAd)
                 }
             }, doDone = {
                 showContent()
