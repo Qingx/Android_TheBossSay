@@ -16,7 +16,8 @@ data class ArticleEntity(
     val isPoint: Boolean? = false,
     val point: Int? = 0,
     val status: Int,
-    val title: String
+    val title: String,
+    val originLink: String = "暂无"
 ) : MultiItemEntity, Serializable {
 
     override fun getItemType(): Int {
@@ -48,7 +49,8 @@ data class ArticleEntity(
             isPoint = false,
             point = 0,
             status = 0,
-            title = ""
+            title = "",
+            originLink = ""
         )
 
         const val AD_TYPE = 100
@@ -67,7 +69,8 @@ data class ArticleEntity(
             isPoint = false,
             point = 0,
             status = 0,
-            title = ""
+            title = "",
+            originLink = ""
         )
     }
 

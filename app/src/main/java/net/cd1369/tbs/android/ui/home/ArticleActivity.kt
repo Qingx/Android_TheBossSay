@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
-import androidx.core.view.isVisible
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
@@ -15,14 +14,12 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
-import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
 import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.*
-import net.cd1369.tbs.android.util.avatar
 
 class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
@@ -130,7 +127,10 @@ class ArticleActivity : BaseActivity() {
         text_role.text = it.bossVO.role
         layout_content.isSelected = it.bossVO.isCollect
 
-        text_content.text =Html.fromHtml(it.content)
+        val imageGetter = CoilImageGetter(text_content)
+        text_content.text = Html.fromHtml(it.content, Html.FROM_HTML_MODE_LEGACY, imageGetter, null)
+
+        text_copyright.text = "小编仅搜罗该boss的全网文章，并作整理归纳，\n如若浏览文章请见原文链接：${it.originLink}"
     }
 
     private fun cancelCollect() {
