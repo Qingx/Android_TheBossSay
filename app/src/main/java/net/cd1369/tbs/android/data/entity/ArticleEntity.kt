@@ -18,19 +18,21 @@ data class ArticleEntity(
     val status: Int,
     val title: String
 ) : MultiItemEntity, Serializable {
+
     override fun getItemType(): Int {
         return when {
-            files.isNullOrEmpty() -> {
-                0
-            }
-            files.size <= 2 -> {
-                1
-            }
-            else -> {
-                2
-            }
+            isAD() -> AD_TYPE
+            files.isNullOrEmpty() -> 0
+            files.size <= 2 -> 1
+            else -> 2
         }
     }
+
+    /**
+     * 判断当前item是否为广告
+     * @return Boolean
+     */
+    fun isAD() = AD_ID == id
 
     companion object {
         var empty = ArticleEntity(
@@ -42,11 +44,31 @@ data class ArticleEntity(
             "",
             mutableListOf(),
             "",
-            false,
-            false,
+            isCollect = false,
+            isPoint = false,
+            point = 0,
+            status = 0,
+            title = ""
+        )
+
+        const val AD_TYPE = 100
+        const val AD_ID = "AD_ID"
+
+        var tempAD = ArticleEntity(
+            "",
+            BossInfoEntity.empty,
             0,
+            "",
             0,
-            ""
+            "",
+            mutableListOf(),
+            AD_ID,
+            isCollect = false,
+            isPoint = false,
+            point = 0,
+            status = 0,
+            title = ""
         )
     }
+
 }

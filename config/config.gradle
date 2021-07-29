@@ -4,8 +4,8 @@ ext {
             compileSdkVersion: 29,
             minSdkVersion    : 24,
             targetSdkVersion : 29,
-            versionCode      : 1000,   // 2020-06-22
-            versionName      : "1.0.0",
+            versionCode      : 1001,   // 2020-06-22
+            versionName      : "1.0.3",
             testVersionCode  : 1000,   // 2020-06-22
             testVersionName  : "1.0.0",
     ]
