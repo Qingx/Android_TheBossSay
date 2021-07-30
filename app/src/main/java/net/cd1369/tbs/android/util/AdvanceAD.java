@@ -373,7 +373,7 @@ public class AdvanceAD {
     public static List<ArticleEntity> insertAd(List<ArticleEntity> adapterList, List<ArticleEntity> resultList, boolean loadMore) {
         if (Lists.isEmpty(resultList)) return new ArrayList<>(0);
 
-        if (loadMore || adapterList == null) {
+        if (!loadMore || adapterList == null) {
             adapterList = new ArrayList<>(0);
         }
 

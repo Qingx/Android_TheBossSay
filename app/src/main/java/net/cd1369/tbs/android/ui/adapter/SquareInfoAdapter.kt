@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.item_ad_layout.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_info
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_title
+
 import kotlinx.android.synthetic.main.item_article_singleimg_nocontent.view.*
 import kotlinx.android.synthetic.main.item_article_triimg_nocontent.view.*
 import net.cd1369.tbs.android.R
@@ -60,8 +61,9 @@ abstract class SquareInfoAdapter :
             }
             1 -> {
                 helper.V.text_title.text = item.title
-                GlideApp.display(item.bossVO.head.avatar(), helper.V.image_head)
-                GlideApp.display(item.bossVO.head.avatar(), helper.V.image_res)
+                GlideApp.display(item.bossVO.head.avatar(), helper.getView(R.id.image_head))
+                GlideApp.display(item.files?.get(0) ?: "", helper.V.image_res)
+
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
                 helper.V.text_hot.text = "${item.collect}k收藏·${item.point}w人围观"

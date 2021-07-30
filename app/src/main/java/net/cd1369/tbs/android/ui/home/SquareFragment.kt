@@ -36,7 +36,7 @@ class SquareFragment : BaseListFragment() {
     private lateinit var mAdapter: SquareInfoAdapter
 
     private var mSelectTab: String? = null
-    private var needLoading = true
+//    private var needLoading = true
 
     companion object {
 
@@ -66,7 +66,6 @@ class SquareFragment : BaseListFragment() {
         layout_refresh.setHeaderHeight(60f)
 
         layout_refresh.setOnRefreshListener {
-            needLoading = false
             loadData(false)
         }
 
