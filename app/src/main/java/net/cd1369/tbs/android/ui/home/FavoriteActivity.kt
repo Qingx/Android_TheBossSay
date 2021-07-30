@@ -63,7 +63,7 @@ class FavoriteActivity : BaseActivity() {
 
         mAdapter = object : FavoriteAdapter() {
             override fun onContentItemClick(entity: ArticleEntity) {
-                ArticleActivity.start(mActivity, entity.id, entity)
+                ArticleActivity.start(mActivity, entity.id)
             }
 
             override fun onItemDelete(folderId: String) {

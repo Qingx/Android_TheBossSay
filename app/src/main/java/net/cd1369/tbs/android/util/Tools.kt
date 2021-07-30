@@ -25,8 +25,13 @@ import androidx.cardview.widget.CardView
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.utils.*
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.ScreenUtils
-import com.bumptech.glide.util.Util
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.chad.library.adapter.base.BaseViewHolder
 import com.google.gson.JsonElement
 import com.irozon.sneaker.Sneaker
@@ -240,57 +245,144 @@ fun isWeChatInstalled(context: Context): Boolean {
  * 分享至微信会话
  * @param resources Resources
  */
-fun doShareSession(resources: Resources) {
-    val url = Const.SHARE_URL
-    val title = "Boss说-追踪老板的言论"
-    val des = "深度学习大佬的言论文章，找寻你的成功暗门"
+fun doShareSession(
+    resources: Resources,
+    cover: String = "",
+    url: String = Const.SHARE_URL,
+    title: String = "Boss说-追踪老板的言论",
+    des: String = "深度学习大佬的言论文章，找寻你的成功暗门"
+) {
 
     val webPage = WXWebpageObject()
     webPage.webpageUrl = url
-    val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
-    val thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true)
-    bmp.recycle()
 
-    val msg = WXMediaMessage(webPage)
-    msg.title = title
-    msg.description = des
-    msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+    if (cover == "") {
+        val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
 
-    val req = SendMessageToWX.Req()
-    req.transaction = WeChatUtil.buildTransaction("webPage")
-    req.message = msg
-    req.scene = SendMessageToWX.Req.WXSceneSession
+        val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
+        bmp.recycle()
 
-    TbsApp.getWeChatApi().sendReq(req)
+        val msg = WXMediaMessage(webPage)
+        msg.title = title
+        msg.description = des
+        msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+
+        val req = SendMessageToWX.Req()
+        req.transaction = WeChatUtil.buildTransaction("webPage")
+        req.message = msg
+        req.scene = SendMessageToWX.Req.WXSceneSession
+
+        TbsApp.getWeChatApi().sendReq(req)
+    } else {
+        loadBitmap(cover) {
+            val bmp = it
+
+            val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
+            try {
+                bmp.recycle()
+            } catch (e: java.lang.Exception) {
+
+            }
+
+            val msg = WXMediaMessage(webPage)
+            msg.title = title
+            msg.description = des
+            msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+
+            val req = SendMessageToWX.Req()
+            req.transaction = WeChatUtil.buildTransaction("webPage")
+            req.message = msg
+            req.scene = SendMessageToWX.Req.WXSceneSession
+
+            TbsApp.getWeChatApi().sendReq(req)
+        }
+    }
 }
 
 /**
  * 分享至微信朋友圈
  * @param resources Resources
  */
-fun doShareTimeline(resources: Resources) {
-    val url = Const.SHARE_URL
-    val title = "Boss说-追踪老板的言论"
-    val des = "深度学习大佬的言论文章，找寻你的成功暗门"
-
+fun doShareTimeline(
+    resources: Resources, cover: String = "",
+    url: String = Const.SHARE_URL,
+    title: String = "Boss说-追踪老板的言论",
+    des: String = "深度学习大佬的言论文章，找寻你的成功暗门"
+) {
     val webPage = WXWebpageObject()
     webPage.webpageUrl = url
-    val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
-    val thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true)
-    bmp.recycle()
+    if (cover == "") {
+        val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
 
-    val msg = WXMediaMessage(webPage)
-    msg.title = title
-    msg.description = des
-    msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+        val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
+        bmp.recycle()
 
-    val req = SendMessageToWX.Req()
-    req.transaction = WeChatUtil.buildTransaction("webPage")
-    req.message = msg
-    req.scene = SendMessageToWX.Req.WXSceneTimeline
+        val msg = WXMediaMessage(webPage)
+        msg.title = title
+        msg.description = des
+        msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
 
-    TbsApp.getWeChatApi().sendReq(req)
+        val req = SendMessageToWX.Req()
+        req.transaction = WeChatUtil.buildTransaction("webPage")
+        req.message = msg
+        req.scene = SendMessageToWX.Req.WXSceneSession
+
+        TbsApp.getWeChatApi().sendReq(req)
+    } else {
+        loadBitmap(cover) {
+            val bmp = it
+
+            val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
+            try {
+                bmp.recycle()
+            } catch (e: java.lang.Exception) {
+
+            }
+
+            val msg = WXMediaMessage(webPage)
+            msg.title = title
+            msg.description = des
+            msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+
+            val req = SendMessageToWX.Req()
+            req.transaction = WeChatUtil.buildTransaction("webPage")
+            req.message = msg
+            req.scene = SendMessageToWX.Req.WXSceneTimeline
+
+            TbsApp.getWeChatApi().sendReq(req)
+        }
+    }
 }
+
+fun loadBitmap(url: String, call: (Bitmap) -> Unit) {
+    Glide.with(WLConfig.getContext())
+        .asBitmap()
+        .load(url)
+        .listener(object : RequestListener<Bitmap> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Bitmap>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                call.invoke(ImageUtils.getBitmap(R.drawable.ic_logo))
+                return true
+            }
+
+            override fun onResourceReady(
+                resource: Bitmap?,
+                model: Any?,
+                target: Target<Bitmap>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                call.invoke(resource!!)
+                return true
+            }
+        })
+        .preload()
+}
+
 
 /**
  * 显示抖动动画

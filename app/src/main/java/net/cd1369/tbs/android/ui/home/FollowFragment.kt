@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_follow.*
 import kotlinx.android.synthetic.main.header_follow.*
 import kotlinx.android.synthetic.main.header_follow.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
@@ -166,7 +165,7 @@ class FollowFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item)
+                ArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapter = it

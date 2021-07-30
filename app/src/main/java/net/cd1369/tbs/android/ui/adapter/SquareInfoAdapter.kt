@@ -10,12 +10,13 @@ import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_ad_layout.view.*
-import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.*
+import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.image_head
+import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_hot
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_info
+import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_name
+import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_time
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_title
-
 import kotlinx.android.synthetic.main.item_article_singleimg_nocontent.view.*
-import kotlinx.android.synthetic.main.item_article_triimg_nocontent.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.AdvanceAD
@@ -34,7 +35,6 @@ abstract class SquareInfoAdapter :
     init {
         addItemType(0, R.layout.item_article_onlytext_nocontent)
         addItemType(1, R.layout.item_article_singleimg_nocontent)
-        addItemType(2, R.layout.item_article_triimg_nocontent)
         addItemType(ArticleEntity.AD_TYPE, R.layout.item_ad_layout)
     }
 
@@ -63,27 +63,11 @@ abstract class SquareInfoAdapter :
                 helper.V.text_title.text = item.title
                 GlideApp.display(item.bossVO.head.avatar(), helper.getView(R.id.image_head))
                 GlideApp.display(item.files?.get(0) ?: "", helper.V.image_res)
-
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
-                helper.V.text_hot.text = "${item.collect}k收藏·${item.point}w人围观"
+                helper.V.text_hot.text =
+                    "${item.collect}k收藏·${item.point}w人围观"
                 helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
-            }
-            2 -> {
-                helper.V.text_title.text = item.title
-                val adapter = GridImageAdapter()
-                helper.V.rv_content.adapter = adapter
-                adapter.setNewData(item.files)
-                helper.V.rv_content.layoutManager = object : GridLayoutManager(mContext, 3) {
-                    override fun canScrollHorizontally(): Boolean {
-                        return false
-                    }
-
-                    override fun canScrollVertically(): Boolean {
-                        return false
-                    }
-                }
-                helper.V.text_info.text = "广告·海南万科"
             }
             ArticleEntity.AD_TYPE -> {
                 if (helper is AdVH) {

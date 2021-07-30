@@ -35,6 +35,7 @@ public class DateFormat {
     public static final String DATEFORMAT_MM_dd_HH_mm = "MM-dd HH:mm";
     public static final String DATEFORMAT_MMz_ddz = "MM月dd日";
     public static final String DATEFORMAT_YYMMDD = "yyyy/MM/dd";
+    public static final String DATEFORMAT_YYMMDD2 = "yy/MM/dd";
 
 
     public final static long SCEND_1 = 1000;// 1秒钟
@@ -85,7 +86,7 @@ public class DateFormat {
      * @return
      */
     public static String date2yymmdd(long time) {
-        return TimeUtils.date2String(new Date(time), DATEFORMAT_YYMMDD);
+        return TimeUtils.date2String(new Date(time), DATEFORMAT_YYMMDD2);
     }
 
     /**

@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
-import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_search_boss.*
-import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
@@ -46,7 +44,7 @@ class SearchArticleActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item)
+                ArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapter = it

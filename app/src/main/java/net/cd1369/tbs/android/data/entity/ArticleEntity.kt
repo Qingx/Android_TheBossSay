@@ -24,8 +24,7 @@ data class ArticleEntity(
         return when {
             isAD() -> AD_TYPE
             files.isNullOrEmpty() -> 0
-            files.size <= 2 -> 1
-            else -> 2
+            else -> 1
         }
     }
 

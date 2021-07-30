@@ -25,20 +25,41 @@
             android:maxLines="2"
             android:singleLine="false"
             android:textColor="@color/colorTextDark"
-            android:textSize="16dp"
+            android:textSize="18dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="搞什么副业可以月入过万搞什么副业可以月入搞什么副业可以月入过万搞什么副业可以月入过万搞什么副业可以月入过万搞什么副业过万搞什么副业可以月入过万搞什么副业" />
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_res"
+            android:layout_width="96dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorTransparent"
+            android:elevation="0dp"
+            app:cardBackgroundColor="@color/colorTransparent"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_title">
+
+            <ImageView
+                android:id="@+id/image_res"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/ic_test_head" />
+
+        </androidx.cardview.widget.CardView>
+
         <com.allen.library.CircleImageView
             android:id="@+id/image_head"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_title"
+            app:layout_constraintTop_toTopOf="@id/card_res"
             tools:src="@drawable/ic_default_photo" />
 
         <TextView
@@ -77,7 +98,6 @@
             android:id="@+id/text_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:gravity="start"
@@ -85,32 +105,11 @@
             android:singleLine="false"
             android:textColor="@color/colorTextDarkLight"
             android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@id/card_res"
             app:layout_constraintEnd_toStartOf="@id/card_res"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_head"
             tools:text="领效电提算场已将铁存它色置识种是量性传周么名光却次种中节志至或局会点再部技七条先位记建政原…领效电提算场已将铁存它色置识种是量性传周么名光却次种中节志至或局会点再部技七条先位记建政原…" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_res"
-            android:layout_width="96dp"
-            android:layout_height="64dp"
-            android:background="@color/colorTransparent"
-            android:elevation="0dp"
-            app:cardBackgroundColor="@color/colorTransparent"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="false"
-            app:layout_constraintBottom_toBottomOf="@id/text_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/image_head">
-
-            <ImageView
-                android:id="@+id/image_res"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:src="@drawable/ic_test_head" />
-
-        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/text_hot"

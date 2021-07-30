@@ -108,7 +108,7 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
     private fun trySendCode() {
         showLoadingAlert("正在发送验证码...")
 
-        TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), 0)
+        TbsApi.user().obtainSendCode(phoneNumber, 0)
             .bindDefaultSub(doNext = {
                 rnd = it
                 Toasts.show("验证码发送成功")

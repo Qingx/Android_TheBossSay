@@ -1,19 +1,20 @@
 package net.cd1369.tbs.android.ui.home
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
-import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_article.*
+import kotlinx.android.synthetic.main.activity_article.image_back
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
 import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
@@ -23,17 +24,21 @@ import net.cd1369.tbs.android.util.*
 
 class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
-    private lateinit var entity: ArticleEntity
-    private var isCollect: Boolean? = null
+    private var fromHistory: Boolean? = null
+    private var articleUrl: String? = null
+    private var isCollect = false
+    private var articleTitle: String? = null
+    private var articleDes: String? = null
+    private var articleCover: String = ""
 
     companion object {
-        fun start(context: Context?, id: String, entity: ArticleEntity = ArticleEntity.empty) {
+        fun start(context: Context?, id: String, fromHistory: Boolean = false) {
             val intent = Intent(context, ArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtras(Bundle().apply {
                         putString("articleId", id)
-                        putSerializable("articleEntity", entity)
+                        putBoolean("fromHistory", fromHistory)
                     })
                 }
             context!!.startActivity(intent)
@@ -48,12 +53,32 @@ class ArticleActivity : BaseActivity() {
         super.beforeCreateView(savedInstanceState)
 
         articleId = intent.getStringExtra("articleId") as String
-        entity = intent.getSerializableExtra("articleEntity") as ArticleEntity
-        isCollect = entity.isCollect
+        fromHistory = intent.getBooleanExtra("fromHistory", false)
+        articleUrl = "${WLConfig.getBaseUrl()}#/article?id=$articleId"
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        image_collect.isSelected = isCollect!!
+
+        web_view.loadUrl(articleUrl!!)
+
+        val webSettings = web_view.settings
+
+        webSettings.javaScriptEnabled = true
+        webSettings.useWideViewPort = true
+        webSettings.loadWithOverviewMode = true
+        webSettings.setSupportZoom(true)
+        webSettings.builtInZoomControls = true
+        webSettings.displayZoomControls = false
+        webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+        webSettings.domStorageEnabled = true
+        webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+
+        web_view.webViewClient = (object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, uri: String?): Boolean {
+                view?.loadUrl(uri!!)
+                return true
+            }
+        })
 
         tryReadArticle(articleId!!)
 
@@ -66,10 +91,6 @@ class ArticleActivity : BaseActivity() {
                 Toasts.show("请先登录！")
                 InputPhoneActivity.start(mActivity)
             }
-        }
-
-        button_float doClick {
-            layout_scroll.smoothScrollTo(0, 0)
         }
 
         image_share doClick {
@@ -85,10 +106,18 @@ class ArticleActivity : BaseActivity() {
         ShareDialog.showDialog(supportFragmentManager, "shareDialog")
             .apply {
                 onSession = Runnable {
-                    doShareSession(resources)
+                    doShareSession(
+                        resources,
+                        cover = articleCover,
+                        title = articleTitle!!,
+                        des = articleDes!!
+                    )
                 }
                 onTimeline = Runnable {
-                    doShareTimeline(resources)
+                    doShareTimeline(
+                        resources, cover = articleCover,
+                        title = articleTitle!!,
+                    )
                 }
                 onCopyLink = Runnable {
                     Tools.copyText(mActivity, Const.SHARE_URL)
@@ -98,48 +127,27 @@ class ArticleActivity : BaseActivity() {
 
     override fun loadData() {
         super.loadData()
+        showContent()
 
-        if (entity == ArticleEntity.empty) {
-            showLoading()
+        TbsApi.boss().obtainDetailArticle(articleId)
+            .bindDefaultSub {
+                isCollect = it.isCollect!!
+                articleTitle = it?.title ?: ""
+                articleDes = it?.descContent ?: ""
+                if (!it.files.isNullOrEmpty()) {
+                    articleCover = it.files[0].avatar()
+                }
 
-            TbsApi.boss().obtainDetailArticle(articleId)
-                .bindDefaultSub(doNext = {
-                    isCollect = it.isCollect
-                    entity = it
-
-                    setInfo(it)
-                }, doDone = {
-                    showContent()
-                })
-        } else {
-            setInfo(entity)
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setInfo(it: ArticleEntity) {
-        image_collect.isSelected = it.isCollect!!
-        text_title.text = it.title
-        text_info.text = "${it.collect ?: 0}k收藏·${it.point ?: 0}w浏览"
-        text_time.text = getUpdateTime(it.createTime).replace("更新", "")
-        GlideApp.display(it.bossVO.head.avatar(), image_head, R.drawable.ic_default_photo)
-        text_name.text = it.bossVO.name
-        text_role.text = it.bossVO.role
-        layout_content.isSelected = it.bossVO.isCollect
-
-        val imageGetter = CoilImageGetter(text_content)
-        text_content.text = Html.fromHtml(it.content, Html.FROM_HTML_MODE_LEGACY, imageGetter, null)
-
-        text_copyright.text = "小编仅搜罗该boss的全网文章，并作整理归纳，\n如若浏览文章请见原文链接：${it.originLink}"
+                image_collect.isSelected = isCollect
+            }
     }
 
     private fun cancelCollect() {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.user().obtainCancelFavoriteArticle(entity.id)
+        TbsApi.user().obtainCancelFavoriteArticle(articleId)
             .bindDefaultSub(doNext = {
                 isCollect = false
-                entity.isCollect = false
                 image_collect.isSelected = false
 
                 eventBus.post(RefreshUserEvent())
@@ -174,10 +182,9 @@ class ArticleActivity : BaseActivity() {
                                                 .flatMap { folder ->
 
                                                     TbsApi.user()
-                                                        .obtainFavoriteArticle(folder.id, entity.id)
+                                                        .obtainFavoriteArticle(folder.id, articleId)
                                                 }.bindDefaultSub(doNext = {
                                                     isCollect = true
-                                                    entity.isCollect = true
                                                     this@ArticleActivity.image_collect.isSelected =
                                                         true
 
@@ -197,10 +204,9 @@ class ArticleActivity : BaseActivity() {
                         this.onConfirmClick = SelectFolderDialog.OnConfirmClick { folderId ->
                             showLoadingAlert("尝试收藏...")
 
-                            TbsApi.user().obtainFavoriteArticle(folderId, entity.id)
+                            TbsApi.user().obtainFavoriteArticle(folderId, articleId)
                                 .bindDefaultSub(doNext = {
                                     isCollect = true
-                                    entity.isCollect = true
                                     this@ArticleActivity.image_collect.isSelected = true
 
                                     Toasts.show("收藏成功")
@@ -221,9 +227,11 @@ class ArticleActivity : BaseActivity() {
      * @param articleId String
      */
     private fun tryReadArticle(articleId: String) {
-        TbsApi.user().obtainReadArticle(articleId)
-            .bindDefaultSub {
-                eventBus.post(RefreshUserEvent())
-            }
+        if (!fromHistory!!) {
+            TbsApi.user().obtainReadArticle(articleId)
+                .bindDefaultSub {
+                    eventBus.post(RefreshUserEvent())
+                }
+        }
     }
 }

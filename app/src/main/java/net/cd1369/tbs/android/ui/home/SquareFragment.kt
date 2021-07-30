@@ -10,12 +10,8 @@ import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.fragment_follow.*
 import kotlinx.android.synthetic.main.fragment_square.*
-import kotlinx.android.synthetic.main.fragment_square.layout_refresh
-import kotlinx.android.synthetic.main.fragment_square.rv_content
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
@@ -50,7 +46,7 @@ class SquareFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SquareInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item)
+                ArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapter = it
@@ -135,7 +131,7 @@ class SquareFragment : BaseListFragment() {
                 var insertAd = AdvanceAD.insertAd(mAdapter.data, it, loadMore)
                 if (loadMore) {
                     mAdapter.addData(insertAd)
-                } else{
+                } else {
                     mAdapter.setNewData(insertAd)
                 }
             }, doDone = {

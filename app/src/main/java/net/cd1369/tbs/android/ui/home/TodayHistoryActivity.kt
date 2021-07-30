@@ -42,7 +42,7 @@ class TodayHistoryActivity : BaseListActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        text_title.text = "阅读记录($number)"
+        text_title.text = "今日阅读($number)"
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -72,7 +72,7 @@ class TodayHistoryActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : HistoryContentAdapter(false) {
             override fun onContentClick(articleId: String) {
-                ArticleActivity.start(mActivity, articleId)
+                ArticleActivity.start(mActivity, articleId, true)
             }
 
             override fun onContentDelete(historyId: String, doRemove: (id: String) -> Unit) {

@@ -175,7 +175,7 @@ class BossHomeActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id, item)
+                ArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapter = it
