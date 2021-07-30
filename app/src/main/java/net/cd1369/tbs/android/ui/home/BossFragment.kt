@@ -128,9 +128,9 @@ class BossFragment : BaseFragment() {
                 if (LabelManager.needUpdate(version)) {
                     version = LabelManager.getVersion()
 
-                    tabAdapter.setNewData(DataConfig.get().bossLabels)
-
                     it.add(0, BossLabelEntity.empty)
+                    tabAdapter.setNewData(it)
+
                     mSelectTab = it[0].id
                 }
 
