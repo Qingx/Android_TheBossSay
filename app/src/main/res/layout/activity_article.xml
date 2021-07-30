@@ -11,6 +11,7 @@
         android:id="@+id/status_bar"
         android:layout_width="0dp"
         android:layout_height="@dimen/status_bar_height"
+        android:background="@color/colorLoadBg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,6 +20,7 @@
         android:id="@+id/layout_top"
         android:layout_width="0dp"
         android:layout_height="44dp"
+        android:background="@color/colorLoadBg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_bar">
@@ -72,13 +74,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
                 android:gravity="start|top"
                 android:maxLines="2"
                 android:singleLine="false"
@@ -94,6 +97,7 @@
                 android:id="@+id/text_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:gravity="start|center_vertical"
                 android:singleLine="true"
@@ -111,7 +115,8 @@
                 android:src="@drawable/ic_article_time"
                 app:layout_constraintBottom_toBottomOf="@id/text_info"
                 app:layout_constraintEnd_toStartOf="@id/text_time"
-                app:layout_constraintTop_toTopOf="@id/text_info" />
+                app:layout_constraintTop_toTopOf="@id/text_info"
+                app:layout_goneMarginEnd="16dp" />
 
             <TextView
                 android:id="@+id/text_time"
@@ -127,6 +132,7 @@
                 android:id="@+id/image_head"
                 android:layout_width="32dp"
                 android:layout_height="64dp"
+                android:layout_marginStart="16dp"
                 android:paddingVertical="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_info"
@@ -176,9 +182,88 @@
                 android:id="@+id/text_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:textColor="@color/colorTextDarkLight"
+                android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image_head" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/draw_article_copyright"
+                android:paddingVertical="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_copy_top"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <FrameLayout
+                        android:id="@+id/dots_top"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_marginStart="40dp"
+                        android:background="@drawable/draw_dots_accent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_copyright"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:textColor="@color/colorTextDarkLight"
+                        android:textSize="12dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/dots_top"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="小编仅搜罗该boss的全网文章，并作整理归纳，\n
+如若浏览文章请见原文链接：XXXXXXXXXXXX" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_copy_bottom"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_copy_top">
+
+                    <FrameLayout
+                        android:id="@+id/dots_bottom"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_marginStart="40dp"
+                        android:background="@drawable/draw_dots_accent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="
+如有侵权，请发送邮件至cd1369@1369net.com，\n
+确认后我们将尽快删除。"
+                        android:textColor="@color/colorTextDarkLight"
+                        android:textSize="12dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/dots_bottom"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -204,6 +289,5 @@
 
         <include layout="@layout/layout_default_holder" />
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
