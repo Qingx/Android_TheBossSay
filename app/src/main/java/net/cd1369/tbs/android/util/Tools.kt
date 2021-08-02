@@ -65,6 +65,23 @@ object Tools {
         return "temp${UUID.randomUUID().leastSignificantBits}".replace("-", "")
     }
 
+    internal fun Int.formatCount(): String {
+        return when {
+            this <= 99 -> {
+                "0k"
+            }
+            this <= 999 -> {
+                "0.${this / 100}k"
+            }
+            this <= 9999 -> {
+                "${this / 1000}.${this % 1000 / 100}k"
+            }
+            else -> {
+                "${this / 10000}.${this % 10000 / 1000}w"
+            }
+        }
+    }
+
     internal fun <T> T?.logE(
         tag: String = "OkHttp",
         prefix: String = "msg",
