@@ -26,7 +26,7 @@ abstract class HistoryContentAdapter(val today: Boolean) :
         helper.V.text_name.text = item.bossName
         helper.V.text_time.text =
             if (today) DateFormat.getHHmm(item.updateTime) else DateFormat.date2yymmdd(item.updateTime)
-        GlideApp.display(item.bossHead, helper.V.image_head, R.drawable.ic_default_photo)
+        GlideApp.display(item.bossHead, helper.V.image_head)
 
         helper.V.layout_content doClick {
             onContentClick(item.articleId)

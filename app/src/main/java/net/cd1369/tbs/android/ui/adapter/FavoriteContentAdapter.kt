@@ -24,7 +24,7 @@ abstract class FavoriteContentAdapter :
 
         helper.V.text_name.text = item.bossVO.name
         helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
-        GlideApp.display(item.bossVO.head, helper.V.image_head, R.drawable.ic_default_photo)
+        GlideApp.display(item.bossVO.head, helper.V.image_head)
 
         helper.V.text_delete doClick {
             onContentDelete(item.id, ::removeItem)

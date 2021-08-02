@@ -17,6 +17,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import net.cd1369.tbs.android.BuildConfig;
+import net.cd1369.tbs.android.R;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 import net.cd1369.tbs.android.util.Tools;
 
@@ -27,6 +28,7 @@ import cn.jpush.android.api.JPushInterface;
 import cn.wl.android.lib.config.WLConfig;
 import cn.wl.android.lib.data.core.HttpConfig;
 import cn.wl.android.lib.data.repository.BaseApi;
+import cn.wl.android.lib.utils.GlideApp;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 
@@ -54,6 +56,10 @@ public class TbsApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        GlideApp.defaultHeadRes = R.mipmap.ic_default_head;
+        GlideApp.DRAW_FAILURE = R.mipmap.ic_default_img;
+        GlideApp.DRAW_DEFAULT = R.mipmap.ic_default_img;
 
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
         DeviceID.register(this);

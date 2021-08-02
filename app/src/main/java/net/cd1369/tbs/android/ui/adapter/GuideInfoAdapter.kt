@@ -23,7 +23,7 @@ abstract class GuideInfoAdapter :
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
         helper.V.isSelected = mSelect.contains(item.id)
 
-        GlideApp.display(item.head.avatar(), helper.V.image_head, R.drawable.ic_default_photo)
+        GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
 

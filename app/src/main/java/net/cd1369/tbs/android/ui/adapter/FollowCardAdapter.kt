@@ -18,7 +18,8 @@ import net.cd1369.tbs.android.util.doClick
 abstract class FollowCardAdapter :
     BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_follow_card) {
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
-        GlideApp.display(item.head.avatar(), helper.V.image_head, R.drawable.ic_default_photo)
+        GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
+
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
 

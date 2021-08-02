@@ -23,11 +23,11 @@ import cn.wl.android.lib.config.WLConfig;
 public class GlideApp {
 
     @DrawableRes
-    public static final int DRAW_DEFAULT = R.drawable.draw_default;
+    public static int DRAW_DEFAULT = R.drawable.draw_default;
     @DrawableRes
-    public static final int DRAW_FAILURE = R.drawable.draw_default;
+    public static int DRAW_FAILURE = R.drawable.draw_default;
     @DrawableRes
-    public static int defaultHeadRes;
+    public static int defaultHeadRes = R.drawable.draw_default;
 
     private static RequestOptions options;
 
@@ -199,8 +199,8 @@ public class GlideApp {
         RequestOptions options = getOptions().clone()
                 .dontAnimate()
                 .centerCrop()
-                .placeholder(drawRes)
-                .error(drawRes);
+                .placeholder(defaultHeadRes)
+                .error(defaultHeadRes);
 
         displayByOptions(resource, displayView, options);
     }
