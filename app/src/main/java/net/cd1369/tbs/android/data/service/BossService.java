@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.data.service;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
+import net.cd1369.tbs.android.data.entity.OptPicEntity;
 
 import cn.wl.android.lib.core.WLData;
 import cn.wl.android.lib.core.WLList;
@@ -100,4 +101,13 @@ public interface BossService {
      */
     @GET("/api/boss/all-list/{time}")
     Observable<WLList<BossInfoEntity>> obtainAllBoss(@Path("time") Long time);
+
+    /**
+     * 获取运营图
+     *
+     * @return
+     */
+    @GET("/web/OperationPicture/list")
+    Observable<WLList<OptPicEntity>> obtainOptList();
+
 }
