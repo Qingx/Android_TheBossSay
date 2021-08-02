@@ -4,6 +4,7 @@ package net.cd1369.tbs.android.data.repository;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
+import net.cd1369.tbs.android.data.entity.OptPicEntity;
 import net.cd1369.tbs.android.data.service.BossService;
 
 import java.util.ArrayList;
@@ -261,4 +262,17 @@ public class BossRepository extends BaseRepository<BossService> {
                 .compose(combine())
                 .compose(rebase());
     }
+
+    /**
+     * 获取运营图
+     *
+     * @return
+     */
+    public Observable<OptPicEntity> obtainOptPic() {
+        return getService().obtainOptList()
+                .compose(rebase())
+                .map(t -> t.get(0))
+                .onErrorReturn(t -> OptPicEntity.EMPTY);
+    }
+
 }

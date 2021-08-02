@@ -96,4 +96,7 @@ class SearchActivity : BaseActivity() {
     fun eventBus(event: HotSearchEvent) {
         edit_input.hint = event.content
     }
+
+
+
 }

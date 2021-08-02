@@ -218,11 +218,10 @@ class BossHomeActivity : BaseListActivity() {
         GlideApp.display(entity.head.avatar(), image_head, R.drawable.ic_default_photo)
         text_name.text = entity.name
         text_info.text = entity.role
-        text_label.text = "${entity.collect ?: 0}万阅读·${entity.totalCount ?: 0}185篇言论"
+        text_label.text = "${entity.collect ?: 0}万阅读·${entity.totalCount}篇言论"
         text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
         text_follow.isSelected = entity.isCollect
-        text_content.text =
-            "个人简介：${entity.info}"
+        text_content.text = "个人简介：${entity.info}"
         text_num.text = "共${entity.totalCount}篇"
     }
 

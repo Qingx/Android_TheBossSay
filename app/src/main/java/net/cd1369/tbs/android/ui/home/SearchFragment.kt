@@ -20,6 +20,7 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.entity.OptPicEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
@@ -37,12 +38,13 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class SearchFragment : BaseListFragment(), AdvanceBannerListener {
+    private var mOptPic: OptPicEntity? = null
     private var version: Long = 0L
     private lateinit var tabAdapter: SearchTabAdapter
     private lateinit var mAdapter: SearchInfoAdapter
     private var needLoading = true
     private var mSelectTab = ""
-    private var advanceBanner: AdvanceBanner? = null
+//    private var advanceBanner: AdvanceBanner? = null
 
     companion object {
         fun createFragment(): SearchFragment {
@@ -88,15 +90,15 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 }
             }
 
-        //rl是banner的父布局，用来展示广告
-        //rl是banner的父布局，用来展示广告
-        advanceBanner = AdvanceBanner(mActivity, ll_ad, Const.BANNER_ID)
-        //推荐：核心事件监听回调
-        //推荐：核心事件监听回调
-        advanceBanner?.setAdListener(this)
-        //必须：请求策略并请求和展示广告
-        //必须：请求策略并请求和展示广告
-        advanceBanner?.loadStrategy()
+//        //rl是banner的父布局，用来展示广告
+//        //rl是banner的父布局，用来展示广告
+//        advanceBanner = AdvanceBanner(mActivity, ll_ad, Const.BANNER_ID)
+//        //推荐：核心事件监听回调
+//        //推荐：核心事件监听回调
+//        advanceBanner?.setAdListener(this)
+//        //必须：请求策略并请求和展示广告
+//        //必须：请求策略并请求和展示广告
+//        advanceBanner?.loadStrategy()
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -163,6 +165,21 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
             })
     }
 
+    private fun loadOptPic() {
+        var optPic = mOptPic
+
+        if (optPic != null) {
+            return
+        }
+
+        TbsApi.boss().obtainOptPic()
+            .bindDefaultSub {
+                mOptPic = it
+
+                // TODO:
+            }
+    }
+
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
@@ -208,7 +225,7 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
     override fun onDestroy() {
         super.onDestroy()
 
-        advanceBanner?.destroy()
+//        advanceBanner?.destroy()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
