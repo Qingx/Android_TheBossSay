@@ -128,7 +128,7 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, false)
                 eventBus.post(RefreshUserEvent())
-                layout_refresh.autoRefresh()
+                eventBus.post(FollowBossEvent(id, isFollow = false))
 
                 CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
             }, doFail = {
@@ -149,6 +149,7 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, true)
                 eventBus.post(RefreshUserEvent())
+                eventBus.post(FollowBossEvent(id, isFollow = true))
 
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {
@@ -227,11 +228,6 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
         super.onDestroy()
 
 //        advanceBanner?.destroy()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
-        layout_refresh.autoRefresh()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

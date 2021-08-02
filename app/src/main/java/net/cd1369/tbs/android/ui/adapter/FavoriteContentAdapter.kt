@@ -9,6 +9,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.getArticleItemTime
 
 /**
  * Created by Qing on 2021/7/5 2:13 下午
@@ -23,7 +24,7 @@ abstract class FavoriteContentAdapter :
         helper.V.text_title.text = item.title
 
         helper.V.text_name.text = item.bossVO.name
-        helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
+        helper.V.text_time.text = getArticleItemTime(item.createTime)
         GlideApp.display(item.bossVO.head, helper.V.image_head)
 
         helper.V.text_delete doClick {

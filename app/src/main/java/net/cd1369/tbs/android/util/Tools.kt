@@ -534,7 +534,40 @@ fun getTimeDifference(startTime: Long, endTime: Long = Times.current()): String 
     }
 }
 
-fun getUpdateTime(startTime: Long): String {
+fun getArticleItemTime(startTime: Long): String {
+    val endTime = Times.current()
+
+    if (endTime >= startTime) {
+        val diff = endTime - startTime
+        val days =
+            diff / (1000 * 60 * 60 * 24)
+        val hours =
+            (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        val minutes =
+            (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60)) / (1000 * 60)
+        val seconds =
+            (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60) - minutes * (1000 * 60)) / 1000
+
+        return when {
+            days > 0 -> {
+                DateFormat.date2yymmdd(startTime)
+            }
+            hours > 0 -> {
+                "${hours}小时前更新"
+            }
+            minutes > 0 -> {
+                "${minutes}分钟前更新"
+            }
+            else -> {
+                "${seconds}秒前更新"
+            }
+        }
+    } else {
+        return "时间戳异常"
+    }
+}
+
+fun getBossItemTime(startTime: Long): String {
     val endTime = Times.current()
 
     if (endTime >= startTime) {

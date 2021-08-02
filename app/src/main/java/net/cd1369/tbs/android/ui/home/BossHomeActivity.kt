@@ -28,6 +28,7 @@ import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.BossSettingDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.avatar
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -61,8 +62,6 @@ class BossHomeActivity : BaseListActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        eventBus.register(this)
-
         setUserInfo()
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
@@ -138,7 +137,7 @@ class BossHomeActivity : BaseListActivity() {
         TbsApi.boss().obtainCancelFollowBoss(id)
             .bindDefaultSub(doNext = {
                 eventBus.post(RefreshUserEvent())
-
+                eventBus.post(FollowBossEvent(id, false))
                 entity.isCollect = false
                 text_follow.isSelected = false
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
@@ -160,6 +159,7 @@ class BossHomeActivity : BaseListActivity() {
         TbsApi.boss().obtainFollowBoss(id)
             .bindDefaultSub(doNext = {
                 eventBus.post(RefreshUserEvent())
+                eventBus.post(FollowBossEvent(id, true))
 
                 entity.isCollect = true
                 text_follow.isSelected = true
@@ -205,33 +205,16 @@ class BossHomeActivity : BaseListActivity() {
             })
     }
 
-    private fun refreshBoss() {
-        TbsApi.boss().obtainBossDetail(entity.id)
-            .bindDefaultSub(doNext = {
-                entity = it
-                setUserInfo()
-            })
-    }
-
     @SuppressLint("SetTextI18n")
     private fun setUserInfo() {
         GlideApp.displayHead(entity.head.avatar(), image_head)
         text_name.text = entity.name
         text_info.text = entity.role
-        text_label.text = "${entity.collect ?: 0}万阅读·${entity.totalCount}篇言论"
+        text_label.text =
+            "${(entity.readCount ?: 0).formatCount()}阅读·${entity.totalCount}篇言论·${(entity.collect ?: 0).formatCount()}关注"
         text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
         text_follow.isSelected = entity.isCollect
         text_content.text = "个人简介：${entity.info}"
         text_num.text = "共${entity.totalCount}篇"
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: FollowBossEvent) {
-        refreshBoss()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
-        refreshBoss()
     }
 }

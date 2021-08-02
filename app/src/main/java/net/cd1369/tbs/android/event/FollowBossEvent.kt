@@ -5,4 +5,8 @@ package net.cd1369.tbs.android.event
  * @description
  * @email Cymbidium@outlook.com
  */
-class FollowBossEvent(val id: String? = "", val isFollow: Boolean = false)
+class FollowBossEvent(
+    val id: String? = "",
+    val isFollow: Boolean = false,
+    val needLoading: Boolean = true,
+)

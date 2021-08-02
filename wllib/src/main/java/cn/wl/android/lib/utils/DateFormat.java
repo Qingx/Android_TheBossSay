@@ -80,7 +80,7 @@ public class DateFormat {
     }
 
     /**
-     * 格式化时间为 yyyy/MM/dd
+     * 格式化时间为 yy/MM/dd
      *
      * @param time
      * @return

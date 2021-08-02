@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseFragment
+import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import kotlinx.android.synthetic.main.activity_boss_home.*
 import kotlinx.android.synthetic.main.fragment_boss.*
 import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
 import kotlinx.android.synthetic.main.fragment_boss.rv_content
@@ -20,6 +22,7 @@ import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.FollowVal
+import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
@@ -85,6 +88,22 @@ class BossFragment : BaseFragment() {
         }
 
         mAdapter = object : BossInfoAdapter() {
+            override fun onDoTop(item: BossInfoEntity) {
+                val index = mData.indexOfFirst {
+                    it.id == item.id
+                }
+
+                if (index != -1) {
+                    mData.removeAt(index)
+                    mData.add(0, item)
+                    notifyDataSetChanged()
+                }
+            }
+
+            override fun onCancelFollow(item: BossInfoEntity) {
+                doCancelFollow(item.id)
+            }
+
             override fun onClick(item: BossInfoEntity) {
                 BossHomeActivity.start(mActivity, entity = item)
             }
@@ -147,8 +166,31 @@ class BossFragment : BaseFragment() {
             })
     }
 
+    private fun doCancelFollow(id: String) {
+        showLoadingAlert("尝试取消...")
+
+        TbsApi.boss().obtainCancelFollowBoss(id)
+            .bindDefaultSub(doNext = {
+                eventBus.post(RefreshUserEvent())
+                eventBus.post(FollowBossEvent(id, false, needLoading = false))
+                val index = mAdapter.data.indexOfFirst {
+                    it.id == id
+                }
+
+                if (index != -1) {
+                    mAdapter.remove(index)
+                }
+            }, doFail = {
+                Toasts.show("取消失败，${it.msg}")
+            }, doLast = {
+                hideLoadingAlert()
+            })
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
-        loadData()
+    fun eventBus(event: FollowBossEvent) {
+        if (event.needLoading) {
+            loadData()
+        }
     }
 }
