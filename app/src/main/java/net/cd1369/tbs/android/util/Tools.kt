@@ -596,7 +596,7 @@ fun showSneaker(title: CharSequence, content: CharSequence, articleId: String) {
     view.text_content.text = content
 
     view.layout_card doClick {
-        ArticleActivity.start(getContext(), id = articleId)
+        ArticleActivity.start(getContext(), articleId)
     }
 
     sneaker.setDuration(3500)

@@ -1,10 +1,12 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
@@ -16,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_search_boss.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
@@ -42,10 +45,14 @@ class SearchBossActivity : BaseListActivity() {
         return R.layout.activity_search_boss
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
 
-        edit_input.hint = DataConfig.get().hotSearch
+        edit_input.hint =
+            if (DataConfig.get().hotSearch == "-1") "查找追踪过的老板" else DataConfig.get().hotSearch
+
+        text_empty.text = "从追踪的${UserConfig.get().userEntity.collectNum}位boss中查找"
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -56,11 +63,13 @@ class SearchBossActivity : BaseListActivity() {
         }
 
         edit_input.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE && !edit_input.text.toString()
-                    .isNullOrEmpty()
-            ) {
-                searchText = edit_input.text.toString()
-                layout_refresh.autoRefresh()
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                layout_refresh.isVisible = !edit_input.text.toString().isNullOrEmpty()
+                layout_empty.isVisible = edit_input.text.toString().isNullOrEmpty()
+                if (!edit_input.text.toString().isNullOrEmpty()) {
+                    searchText = edit_input.text.toString()
+                    layout_refresh.autoRefresh()
+                }
             }
             false
         }
@@ -79,12 +88,22 @@ class SearchBossActivity : BaseListActivity() {
             if (!edit_input.text.toString().isNullOrEmpty()) {
                 edit_input.setText("")
                 searchText = edit_input.text.toString()
-                layout_refresh.autoRefresh()
+                layout_refresh.isVisible = false
+                layout_empty.isVisible = true
             }
         }
 
         image_back doClick {
             onBackPressed()
+        }
+
+        text_search doClick {
+            layout_refresh.isVisible = !edit_input.text.toString().isNullOrEmpty()
+            layout_empty.isVisible = edit_input.text.toString().isNullOrEmpty()
+            if (!edit_input.text.toString().isNullOrEmpty()) {
+                searchText = edit_input.text.toString()
+                layout_refresh.autoRefresh()
+            }
         }
     }
 
@@ -101,22 +120,24 @@ class SearchBossActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore) {
-            pageParam?.resetPage()
-            if (needLoading) showLoading()
-        }
+        if (!edit_input.text.toString().isNullOrEmpty()) {
+            if (!loadMore) {
+                pageParam?.resetPage()
+                if (needLoading) showLoading()
+            }
 
-        TbsApi.boss().obtainSearchBossList(pageParam, searchText)
-            .onErrorReturn {
-                Page.empty()
-            }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                if (loadMore) mAdapter.addData(it)
-                else mAdapter.setNewData(it)
-            }, doDone = {
-                showContent()
-                layout_refresh.finishRefresh()
-                layout_refresh.finishLoadMore()
-            })
+            TbsApi.boss().obtainSearchBossList(pageParam, searchText)
+                .onErrorReturn {
+                    Page.empty()
+                }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                    if (loadMore) mAdapter.addData(it)
+                    else mAdapter.setNewData(it)
+                }, doDone = {
+                    showContent()
+                    layout_refresh.finishRefresh()
+                    layout_refresh.finishLoadMore()
+                })
+        } else showContent()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -11,7 +11,7 @@ import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.activity_search_boss.*
+import kotlinx.android.synthetic.main.activity_search_article.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
@@ -38,7 +38,7 @@ class SearchArticleActivity : BaseListActivity() {
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_search_boss
+        return R.layout.activity_search_article
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -54,7 +54,8 @@ class SearchArticleActivity : BaseListActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
 
-        edit_input.hint = DataConfig.get().hotSearch
+        edit_input.hint =
+            if (DataConfig.get().hotSearch == "-1") "请输入内容" else DataConfig.get().hotSearch
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -96,6 +97,13 @@ class SearchArticleActivity : BaseListActivity() {
 
         image_back doClick {
             onBackPressed()
+        }
+
+        image_search doClick {
+            if (!edit_input.text.toString().isNullOrEmpty()) {
+                searchText = edit_input.text.toString()
+                layout_refresh.autoRefresh()
+            }
         }
     }
 

@@ -10,7 +10,6 @@ import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_article.*
-import kotlinx.android.synthetic.main.activity_article.image_back
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
@@ -24,7 +23,6 @@ import net.cd1369.tbs.android.util.*
 
 class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
-    private var fromHistory: Boolean? = null
     private var articleUrl: String? = null
     private var isCollect = false
     private var articleTitle: String? = null
@@ -32,13 +30,12 @@ class ArticleActivity : BaseActivity() {
     private var articleCover: String = ""
 
     companion object {
-        fun start(context: Context?, id: String, fromHistory: Boolean = false) {
+        fun start(context: Context?, id: String) {
             val intent = Intent(context, ArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtras(Bundle().apply {
                         putString("articleId", id)
-                        putBoolean("fromHistory", fromHistory)
                     })
                 }
             context!!.startActivity(intent)
@@ -53,7 +50,6 @@ class ArticleActivity : BaseActivity() {
         super.beforeCreateView(savedInstanceState)
 
         articleId = intent.getStringExtra("articleId") as String
-        fromHistory = intent.getBooleanExtra("fromHistory", false)
         articleUrl = "${WLConfig.getBaseUrl()}#/article?id=$articleId"
     }
 
@@ -227,11 +223,11 @@ class ArticleActivity : BaseActivity() {
      * @param articleId String
      */
     private fun tryReadArticle(articleId: String) {
-        if (!fromHistory!!) {
-            TbsApi.user().obtainReadArticle(articleId)
-                .bindDefaultSub {
-                    eventBus.post(RefreshUserEvent())
-                }
-        }
+        TbsApi.user().obtainReadArticle(articleId)
+            .bindDefaultSub(doNext = {
+                eventBus.post(RefreshUserEvent())
+            }, doFail = {
+
+            })
     }
 }

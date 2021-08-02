@@ -87,6 +87,6 @@ public class DataConfig extends BaseConfig {
     }
 
     public String getHotSearch() {
-        return getString(KEY.keyHotSearch, "请输入内容");
+        return getString(KEY.keyHotSearch, "-1");
     }
 }
