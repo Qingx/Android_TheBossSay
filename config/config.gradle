@@ -7,7 +7,7 @@ ext {
             versionCode      : 1006,   // 2021-07-29
             versionName      : "1.0.7",
             testVersionCode  : 1006,   // 2020-06-29
-            testVersionName  : "1.0.6",
+            testVersionName  : "1.0.7",
     ]
 
 }
