@@ -183,6 +183,8 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
+        loadOptPic()
+
         if (!loadMore) {
             pageParam?.resetPage()
 

@@ -38,7 +38,7 @@ class BossInfoActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        GlideApp.display(entity.head.avatar(), image_head, R.drawable.ic_default_photo)
+        GlideApp.displayHead(entity.head.avatar(), image_head)
         text_name.text = entity.name
         text_info.text = entity.role
         text_content.text = entity.info

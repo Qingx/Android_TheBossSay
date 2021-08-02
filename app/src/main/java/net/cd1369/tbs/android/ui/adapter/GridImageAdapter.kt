@@ -15,6 +15,6 @@ import net.cd1369.tbs.android.util.avatar
  */
 class GridImageAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_grid_image) {
     override fun convert(helper: BaseViewHolder, item: String) {
-        GlideApp.display(item.avatar(), helper.V.image_res)
+        GlideApp.displayHead(item.avatar(), helper.V.image_res)
     }
 }

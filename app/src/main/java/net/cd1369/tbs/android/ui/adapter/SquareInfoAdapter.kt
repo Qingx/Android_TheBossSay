@@ -53,7 +53,7 @@ abstract class SquareInfoAdapter :
         when (helper.itemViewType) {
             0 -> {
                 helper.V.text_title.text = item.title
-                GlideApp.display(item.bossVO.head.avatar(), helper.V.image_head)
+                GlideApp.displayHead(item.bossVO.head.avatar(), helper.V.image_head)
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
                 helper.V.text_hot.text = "${item.collect}k收藏·${item.point}w人围观"
@@ -61,7 +61,7 @@ abstract class SquareInfoAdapter :
             }
             1 -> {
                 helper.V.text_title.text = item.title
-                GlideApp.display(item.bossVO.head.avatar(), helper.getView(R.id.image_head))
+                GlideApp.displayHead(item.bossVO.head.avatar(), helper.getView(R.id.image_head))
                 GlideApp.display(item.files?.get(0) ?: "", helper.V.image_res)
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
