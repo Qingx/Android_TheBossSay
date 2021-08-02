@@ -44,7 +44,8 @@ class SearchActivity : BaseActivity() {
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
-        edit_input.hint = DataConfig.get().hotSearch
+        edit_input.hint =
+            if (DataConfig.get().hotSearch == "-1") "请输入内容" else DataConfig.get().hotSearch
 
 
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
@@ -79,6 +80,14 @@ class SearchActivity : BaseActivity() {
                 eventBus.post(SearchCancelEvent())
                 view_pager.setCurrentItem(0, false)
                 edit_input.setText("")
+            }
+        }
+
+        text_search doClick {
+            if (edit_input.text.toString().isNullOrEmpty()) {
+                view_pager.setCurrentItem(1, false)
+                resultFragment.eventSearch(edit_input.text.toString())
+                eventBus.post(SearchEvent(edit_input.text.toString()))
             }
         }
     }

@@ -21,7 +21,7 @@
             android:layout_marginStart="16dp"
             android:gravity="start"
             android:singleLine="true"
-            android:text="老板's"
+            android:text="我的追踪"
             android:textColor="@color/colorTextDark"
             android:textSize="28dp"
             app:layout_constraintBottom_toBottomOf="parent"

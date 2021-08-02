@@ -224,8 +224,10 @@ class ArticleActivity : BaseActivity() {
      */
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
-            .bindDefaultSub {
+            .bindDefaultSub(doNext = {
                 eventBus.post(RefreshUserEvent())
-            }
+            }, doFail = {
+
+            })
     }
 }

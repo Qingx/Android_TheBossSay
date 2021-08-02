@@ -72,7 +72,7 @@ class TalkFragment : BaseFragment() {
         })
 
         view_pager.currentItem = 0
-        view_pager.isUserInputEnabled = false
+        view_pager.isUserInputEnabled = true
 
         text_follow doClick {
             view_pager.currentItem = 0
