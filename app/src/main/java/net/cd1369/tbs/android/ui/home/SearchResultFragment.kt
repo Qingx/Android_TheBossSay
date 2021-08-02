@@ -191,6 +191,6 @@ class SearchResultFragment : BaseListFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: FollowBossEvent) {
-        loadData(false)
+        mAdapter.doFollowChange(event.id!!, event.isFollow)
     }
 }

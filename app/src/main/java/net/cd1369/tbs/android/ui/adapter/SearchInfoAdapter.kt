@@ -42,8 +42,10 @@ abstract class SearchInfoAdapter :
             id == it.id
         }
 
-        mData[position].isCollect = status
+        if (position != -1) {
+            mData[position].isCollect = status
 
-        notifyItemChanged(position)
+            notifyItemChanged(position)
+        }
     }
 }

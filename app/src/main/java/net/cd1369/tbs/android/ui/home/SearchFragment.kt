@@ -149,7 +149,6 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, true)
                 eventBus.post(RefreshUserEvent())
-                layout_refresh.autoRefresh()
 
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {
@@ -235,7 +234,7 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: FollowBossEvent) {
-        layout_refresh.autoRefresh()
+        mAdapter.doFollowChange(event.id!!, event.isFollow)
     }
 
     override fun onAdFailed(p0: AdvanceError?) {
