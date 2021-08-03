@@ -96,7 +96,7 @@ class SearchResultFragment : BaseListFragment() {
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, false)
                 eventBus.post(RefreshUserEvent())
-                layout_refresh.autoRefresh()
+                eventBus.post(FollowBossEvent(id, isFollow = false))
 
                 CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
             }, doFail = {
@@ -117,7 +117,7 @@ class SearchResultFragment : BaseListFragment() {
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, true)
                 eventBus.post(RefreshUserEvent())
-                layout_refresh.autoRefresh()
+                eventBus.post(FollowBossEvent(id, isFollow = true))
 
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {
@@ -185,12 +185,7 @@ class SearchResultFragment : BaseListFragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
-        loadData(false)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: FollowBossEvent) {
-        loadData(false)
+        mAdapter.doFollowChange(event.id!!, event.isFollow)
     }
 }

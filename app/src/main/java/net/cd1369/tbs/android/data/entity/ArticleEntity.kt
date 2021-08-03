@@ -7,6 +7,7 @@ data class ArticleEntity(
     val bossId: String,
     val bossVO: BossInfoEntity,
     val collect: Int? = 0,
+    val readCount: Int? = 0,
     val content: String,
     val createTime: Long,
     val descContent: String,
@@ -54,6 +55,7 @@ data class ArticleEntity(
             "",
             BossInfoEntity.empty,
             0,
+            0,
             "",
             0,
             "",
@@ -73,6 +75,7 @@ data class ArticleEntity(
         var tempAD = ArticleEntity(
             "",
             BossInfoEntity.empty,
+            0,
             0,
             "",
             0,

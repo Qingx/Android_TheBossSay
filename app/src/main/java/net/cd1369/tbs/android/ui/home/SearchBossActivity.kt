@@ -22,12 +22,13 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.BossSearchInfoAdapter
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class SearchBossActivity : BaseListActivity() {
-    private lateinit var mAdapter: BossInfoAdapter
+    private lateinit var mAdapter: BossSearchInfoAdapter
     private var needLoading = true
     private var searchText = ""
 
@@ -52,7 +53,7 @@ class SearchBossActivity : BaseListActivity() {
         edit_input.hint =
             if (DataConfig.get().hotSearch == "-1") "查找追踪过的老板" else DataConfig.get().hotSearch
 
-        text_empty.text = "从追踪的${UserConfig.get().userEntity.collectNum}位boss中查找"
+        text_empty.text = "从追踪的${UserConfig.get().userEntity.traceNum}位boss中查找"
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
@@ -108,7 +109,7 @@ class SearchBossActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : BossInfoAdapter() {
+        return object : BossSearchInfoAdapter() {
             override fun onClick(item: BossInfoEntity) {
                 Toasts.show(item.id)
             }

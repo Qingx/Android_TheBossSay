@@ -19,10 +19,9 @@ import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_
 import kotlinx.android.synthetic.main.item_article_singleimg_nocontent.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
-import net.cd1369.tbs.android.util.AdvanceAD
-import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.avatar
-import net.cd1369.tbs.android.util.doClick
 
 
 /**
@@ -56,8 +55,9 @@ abstract class SquareInfoAdapter :
                 GlideApp.displayHead(item.bossVO.head.avatar(), helper.V.image_head)
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
-                helper.V.text_hot.text = "${item.collect}k收藏·${item.point}w人围观"
-                helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
+                helper.V.text_hot.text =
+                    "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
+                helper.V.text_time.text = getArticleItemTime(item.createTime)
             }
             1 -> {
                 helper.V.text_title.text = item.title
@@ -66,8 +66,8 @@ abstract class SquareInfoAdapter :
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
                 helper.V.text_hot.text =
-                    "${item.collect}k收藏·${item.point}w人围观"
-                helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
+                    "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
+                helper.V.text_time.text = getArticleItemTime(item.createTime)
             }
             ArticleEntity.AD_TYPE -> {
                 if (helper is AdVH) {
