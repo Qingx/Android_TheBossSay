@@ -5,8 +5,10 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
 
 /**
  * Created by Xiang on 2021/7/22 14:31
@@ -52,12 +54,30 @@ public class BossInfoEntity implements Serializable {
     @Property(nameInDb = "createTime")
     private Long createTime; //创建时间
 
+    @Transient
+    private boolean top; //是否置顶
+
+    @Transient
+    private long relTime; //置顶时间
+
+    public boolean checkSort(BossInfoEntity boss) {
+        if (id.equals(boss.id))
+            return false;
+
+        if (boss.top) {
+            if (!top) return true;
+        } else {
+            if (top) return false;
+        }
+        return updateTime < boss.updateTime;
+    }
+
     static BossInfoEntity empty = new BossInfoEntity();
 
     @Generated(hash = 40537958)
     public BossInfoEntity(String id, String name, String head, String role, String info, long date,
-            boolean isCollect, boolean isPoint, boolean deleted, boolean guide, int point, int collect,
-            int updateCount, int totalCount, int readCount, Long updateTime, Long createTime) {
+                          boolean isCollect, boolean isPoint, boolean deleted, boolean guide, int point, int collect,
+                          int updateCount, int totalCount, int readCount, Long updateTime, Long createTime) {
         this.id = id;
         this.name = name;
         this.head = head;
@@ -79,6 +99,14 @@ public class BossInfoEntity implements Serializable {
 
     @Generated(hash = 441427182)
     public BossInfoEntity() {
+    }
+
+    public boolean isTop() {
+        return top;
+    }
+
+    public void setTop(boolean top) {
+        this.top = top;
     }
 
     public String getId() {
@@ -219,5 +247,22 @@ public class BossInfoEntity implements Serializable {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BossInfoEntity that = (BossInfoEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public boolean getTop() {
+        return this.top;
     }
 }

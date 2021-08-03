@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import android.view.View
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -7,6 +8,7 @@ import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.*
+import java.util.*
 
 /**
  * Created by Qing on 2021/6/30 12:43 下午
@@ -27,16 +29,44 @@ abstract class BossInfoAdapter :
         }
 
         helper.V.text_top doClick {
-            onDoTop(item)
+            helper.V.sml_root.quickClose()
+
+            var index = helper.layoutPosition + headerLayoutCount
+            onDoTop(item, helper.V, index)
         }
 
         helper.V.text_delete doClick {
+            helper.V.sml_root.quickClose()
+
             onCancelFollow(item)
         }
+
+        helper.V.isSelected = item.isTop
     }
 
-    abstract fun onDoTop(item: BossInfoEntity)
+    abstract fun onDoTop(item: BossInfoEntity, v: View, index: Int)
+
     abstract fun onCancelFollow(item: BossInfoEntity)
 
     abstract fun onClick(item: BossInfoEntity)
+
+    fun notifyTopic(item: BossInfoEntity, topic: Boolean, i: Int) {
+        var rmIndex = mData.indexOf(item)
+        var lastIndex = mData.lastIndex
+
+        var taIndex = mData.indexOfFirst {
+            it.checkSort(item)
+        }
+
+        if (taIndex < 0) taIndex = lastIndex
+        var offset = if (taIndex > rmIndex) -1 else 0
+
+        if (rmIndex == taIndex) return
+
+        var item = mData.removeAt(rmIndex)
+        mData.add(taIndex + offset, item)
+
+        notifyItemMoved(rmIndex, taIndex)
+    }
+
 }

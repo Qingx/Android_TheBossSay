@@ -5,20 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.activity_boss_home.*
 import kotlinx.android.synthetic.main.fragment_boss.*
 import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
 import kotlinx.android.synthetic.main.fragment_boss.rv_content
 import kotlinx.android.synthetic.main.fragment_boss.rv_tab
-import kotlinx.android.synthetic.main.fragment_square.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.FollowVal
@@ -30,6 +25,7 @@ import net.cd1369.tbs.android.util.LabelManager
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -88,16 +84,8 @@ class BossFragment : BaseFragment() {
         }
 
         mAdapter = object : BossInfoAdapter() {
-            override fun onDoTop(item: BossInfoEntity) {
-                val index = mData.indexOfFirst {
-                    it.id == item.id
-                }
-
-                if (index != -1) {
-                    mData.removeAt(index)
-                    mData.add(0, item)
-                    notifyDataSetChanged()
-                }
+            override fun onDoTop(item: BossInfoEntity, v: View, index: Int) {
+                tryChangeTopic(item, v, index)
             }
 
             override fun onCancelFollow(item: BossInfoEntity) {
@@ -135,6 +123,24 @@ class BossFragment : BaseFragment() {
         image_search doClick {
             SearchBossActivity.start(mActivity)
         }
+    }
+
+    private fun tryChangeTopic(item: BossInfoEntity, v: View, index: Int) {
+        val topic: Boolean = !item.isTop
+        showLoadingAlert("正在保存...")
+
+        TbsApi.boss().topicBoss(item.id)
+            .delay(600, TimeUnit.MILLISECONDS)
+            .bindToastSub("") {
+                v.isSelected = topic
+                item.top = topic
+
+                mAdapter.notifyTopic(item, topic, index)
+
+                if (topic) {
+                    rv_content.scrollToPosition(0)
+                }
+            }
     }
 
     override fun loadData() {
