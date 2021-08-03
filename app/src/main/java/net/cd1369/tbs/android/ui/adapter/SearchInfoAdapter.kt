@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.ui.adapter
 
 import cn.wl.android.lib.utils.GlideApp
+import com.blankj.utilcode.util.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_search_info.view.*
@@ -23,6 +24,7 @@ abstract class SearchInfoAdapter :
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
         helper.V.layout_follow.isSelected = !item.isCollect
+
 
         helper.V.layout_follow doClick {
             onClickFollow(item)

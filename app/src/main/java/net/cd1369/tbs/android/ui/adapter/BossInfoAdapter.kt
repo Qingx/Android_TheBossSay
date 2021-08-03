@@ -16,7 +16,6 @@ import net.cd1369.tbs.android.util.*
 abstract class BossInfoAdapter :
     BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_boss_info) {
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
-
         GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
         GlideApp.display(R.drawable.ic_boss_label, helper.V.image_label)
         helper.V.text_name.text = item.name

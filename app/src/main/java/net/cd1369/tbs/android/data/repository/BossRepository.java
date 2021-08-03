@@ -270,9 +270,22 @@ public class BossRepository extends BaseRepository<BossService> {
      */
     public Observable<OptPicEntity> obtainOptPic() {
         return getService().obtainOptList()
+                .compose(combine())
                 .compose(rebase())
                 .map(t -> t.get(0))
                 .onErrorReturn(t -> OptPicEntity.EMPTY);
+    }
+
+    /**
+     * 置顶boss
+     *
+     * @param bossId
+     * @return
+     */
+    public Observable<Boolean> topicBoss(String bossId) {
+        return getService().topicBoss(bossId)
+                .compose(combine())
+                .compose(success());
     }
 
 }
