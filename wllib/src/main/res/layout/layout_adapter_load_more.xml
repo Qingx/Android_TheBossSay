@@ -55,11 +55,12 @@
             android:background="#D7D7D7" />
 
         <TextView
+            android:id="@+id/tv_end_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_8"
             android:layout_marginRight="@dimen/padding_8"
-            android:text="已经到底了噢"
+            android:hint="已经到底了噢"
             android:textColor="#D7D7D7"
             android:textSize="@dimen/font_12" />
 

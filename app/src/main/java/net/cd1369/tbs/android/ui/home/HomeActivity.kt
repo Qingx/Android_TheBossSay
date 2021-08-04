@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import cn.jpush.android.api.JPushInterface
-import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
+import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.UserConfig
@@ -41,6 +41,10 @@ class HomeActivity : BaseActivity() {
         fragments.add(TalkFragment.createFragment())
         fragments.add(BossFragment.createFragment())
         fragments.add(MineFragment.createFragment())
+
+        // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
+        // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
+        DeviceID.register(this.application)
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {

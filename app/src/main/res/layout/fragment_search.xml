@@ -41,12 +41,10 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_ad"
         android:layout_width="@dimen/size_none"
-        android:layout_height="@dimen/size_none"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_16"
         android:layout_marginRight="@dimen/padding_16"
-        android:visibility="gone"
         app:layout_constrainedWidth="true"
-        app:layout_constraintDimensionRatio="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/smart_tab"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +54,7 @@
         <ImageView
             android:id="@+id/iv_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="@dimen/size_none" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

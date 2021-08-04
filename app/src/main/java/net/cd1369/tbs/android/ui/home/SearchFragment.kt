@@ -2,9 +2,12 @@ package net.cd1369.tbs.android.ui.home
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,7 +55,6 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
     private lateinit var mAdapter: SearchInfoAdapter
     private var needLoading = true
     private var mSelectTab = ""
-//    private var advanceBanner: AdvanceBanner? = null
 
     companion object {
         fun createFragment(): SearchFragment {
@@ -90,7 +92,7 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 }
             }
 
-        rv_content.adapter = mAdapter
+//        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : GridLayoutManager(mActivity, 3, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -98,15 +100,6 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 }
             }
 
-//        //rl是banner的父布局，用来展示广告
-//        //rl是banner的父布局，用来展示广告
-//        advanceBanner = AdvanceBanner(mActivity, ll_ad, Const.BANNER_ID)
-//        //推荐：核心事件监听回调
-//        //推荐：核心事件监听回调
-//        advanceBanner?.setAdListener(this)
-//        //必须：请求策略并请求和展示广告
-//        //必须：请求策略并请求和展示广告
-//        advanceBanner?.loadStrategy()
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -200,13 +193,13 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                     var width = resource.width
                     var height = resource.height
 
-                    var constraintSet = ConstraintSet()
-                    constraintSet.clone(cl_root)
+                    var rootW = ll_ad.width
+                    var rootH = rootW * (height.toFloat() / width)
+                    iv_img.updateLayoutParams<LinearLayoutCompat.LayoutParams> {
+                        this.height = rootH.toInt()
+                    }
 
-                    constraintSet.setDimensionRatio(R.id.ll_ad, "$width:$height")
-                    ll_ad.isVisible = true
-
-                    constraintSet.applyTo(cl_root)
+                    iv_img.setImageBitmap(resource)
                 }
             })
 
@@ -239,6 +232,8 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                         }
                 }.bindPageSubscribe(loadMore = loadMore, doNext = {
                     mAdapter.setNewData(it)
+
+//                    mAdapter.loadMoreEnd()
                 }, doDone = {
                     showContent()
 
@@ -250,6 +245,8 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                     Page.empty()
                 }.bindPageSubscribe(loadMore = loadMore, doNext = {
                     mAdapter.addData(it)
+
+//                    mAdapter.loadMoreEnd()
                 }, doDone = {
                     layout_refresh.finishLoadMore()
                 })
@@ -268,15 +265,15 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
     }
 
     override fun onAdFailed(p0: AdvanceError?) {
-
+        Log.e("OkHttp", "add...onAdFailed")
     }
 
     override fun onSdkSelected(p0: String?) {
-
+        Log.e("OkHttp", "add...onAdFailed")
     }
 
     override fun onAdShow() {
-
+        Log.e("OkHttp", "add...onAdShow")
     }
 
     override fun onAdClicked() {

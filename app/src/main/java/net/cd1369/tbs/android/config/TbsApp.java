@@ -61,9 +61,6 @@ public class TbsApp extends MultiDexApplication {
         GlideApp.DRAW_FAILURE = R.mipmap.ic_default_img;
         GlideApp.DRAW_DEFAULT = R.mipmap.ic_default_img;
 
-        // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
-        DeviceID.register(this);
-
         mContext = this;
 
         BaseApi.mProvider = () -> RetryHolder.mTempRetry;

@@ -1,9 +1,12 @@
 package cn.wl.android.lib.ui.common;
 
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.loadmore.LoadMoreView;
+
+import java.util.concurrent.Callable;
 
 import cn.wl.android.lib.R;
 import cn.wl.android.lib.utils.OnClick;
@@ -25,6 +28,18 @@ public class LoadView extends LoadMoreView {
     @Override
     public void convert(BaseViewHolder holder) {
         super.convert(holder);
+
+//        try {
+//            View vEnd = holder.getView(getLoadEndViewId());
+//            if (vEnd != null) {
+//                TextView tvEnd = vEnd.findViewById(R.id.tv_end_name);
+//                if (callEnd != null) {
+//                    tvEnd.setText(callEnd.call());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         View view = holder.getView(getLoadFailViewId());
         if (view != null) {

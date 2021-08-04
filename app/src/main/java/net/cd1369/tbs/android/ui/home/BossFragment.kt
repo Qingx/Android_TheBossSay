@@ -6,9 +6,12 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
+import cn.wl.android.lib.ui.common.LoadView
 import cn.wl.android.lib.utils.Toasts
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.footer_count.view.*
 import kotlinx.android.synthetic.main.fragment_boss.*
 import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
 import kotlinx.android.synthetic.main.fragment_boss.rv_content
@@ -24,6 +27,7 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.LabelManager
+import net.cd1369.tbs.android.util.OnChangeCallback
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -37,6 +41,7 @@ import java.util.concurrent.TimeUnit
  * @email Cymbidium@outlook.com
  */
 class BossFragment : BaseFragment() {
+    private var footerView: View? = null
     private var mTimer: Disposable? = null
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: BossInfoAdapter
@@ -44,6 +49,13 @@ class BossFragment : BaseFragment() {
     private var version = 0L
     private var mSelectTab: String? = null
     private var needLoading = true
+
+    private val mCall = object : OnChangeCallback() {
+        override fun onDataChange() {
+            var view = footerView ?: return
+            view.tv_end_name.text = "已追踪${mAdapter.data?.size ?: 0}位boss"
+        }
+    }
 
     companion object {
 
@@ -101,6 +113,7 @@ class BossFragment : BaseFragment() {
                 BossHomeActivity.start(mActivity, entity = item)
             }
         }
+        mAdapter.registerAdapterDataObserver(mCall)
 
         rv_tab.adapter = tabAdapter
         rv_tab.layoutManager =
@@ -120,6 +133,9 @@ class BossFragment : BaseFragment() {
 
         val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_view, null)
         mAdapter.emptyView = emptyView
+
+        footerView = LayoutInflater.from(mActivity).inflate(R.layout.footer_count, null)
+        mAdapter.addFooterView(footerView)
 
         button_float doClick {
             SearchActivity.start(mActivity)
@@ -155,7 +171,7 @@ class BossFragment : BaseFragment() {
                             rv_content.scrollToPosition(fp)
                         }
                     }
-                }catch (e:Exception) {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
 
@@ -221,4 +237,11 @@ class BossFragment : BaseFragment() {
             loadData()
         }
     }
+
+    override fun onDestroyView() {
+        mAdapter.unregisterAdapterDataObserver(mCall)
+
+        super.onDestroyView()
+    }
+
 }
