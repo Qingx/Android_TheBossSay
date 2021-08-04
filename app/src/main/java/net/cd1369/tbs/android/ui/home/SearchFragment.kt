@@ -1,7 +1,10 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +14,9 @@ import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
 import com.advance.AdvanceBannerListener
 import com.advance.model.AdvanceError
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -176,8 +182,29 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
             .bindDefaultSub {
                 mOptPic = it
 
-                // TODO:
+                loadImage(it.pictureLocation)
             }
+    }
+
+    private fun loadImage(location: String?) {
+        Glide.with(mActivity)
+            .asBitmap()
+            .load(location ?: R.mipmap.test_banner)
+            .into(object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    var width = resource.width
+                    var height = resource.height
+
+                    var constraintSet = ConstraintSet()
+                    constraintSet.clone(cl_root)
+
+                    constraintSet.setDimensionRatio(R.id.ll_ad, "$width:$height")
+                    ll_ad.isVisible = true
+
+                    constraintSet.applyTo(cl_root)
+                }
+            })
+
     }
 
     override fun loadData(loadMore: Boolean) {

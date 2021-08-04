@@ -107,15 +107,15 @@ public interface BossService {
      *
      * @return
      */
-    @GET("/web/OperationPicture/list")
-    Observable<WLList<OptPicEntity>> obtainOptList();
+    @GET("/api/operationPicture/get")
+    Observable<WLData<OptPicEntity>> obtainOptList();
 
     /**
      * 获取运营图
      *
      * @return
      */
-    @GET("/api/boss/top-boss/{bossId}")
-    Observable<WLList<OptPicEntity>> topicBoss(@Path("bossId") String bossId);
+    @POST("/api/boss/top-boss")
+    Observable<WLList<OptPicEntity>> topicBoss(@Body RequestBody body);
 
 }

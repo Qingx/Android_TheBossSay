@@ -272,7 +272,6 @@ public class BossRepository extends BaseRepository<BossService> {
         return getService().obtainOptList()
                 .compose(combine())
                 .compose(rebase())
-                .map(t -> t.get(0))
                 .onErrorReturn(t -> OptPicEntity.EMPTY);
     }
 
@@ -282,8 +281,12 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param bossId
      * @return
      */
-    public Observable<Boolean> topicBoss(String bossId) {
-        return getService().topicBoss(bossId)
+    public Observable<Boolean> topicBoss(String bossId, boolean target) {
+        RequestBody requestBody = bodyFromCreator(map -> {
+            map.put("bossId", bossId);
+            map.put("top", target);
+        });
+        return getService().topicBoss(requestBody)
                 .compose(combine())
                 .compose(success());
     }

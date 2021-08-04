@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_boss.*
 import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
 import kotlinx.android.synthetic.main.fragment_boss.rv_content
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit
  * @email Cymbidium@outlook.com
  */
 class BossFragment : BaseFragment() {
+    private var mTimer: Disposable? = null
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: BossInfoAdapter
 
@@ -129,7 +131,9 @@ class BossFragment : BaseFragment() {
         val topic: Boolean = !item.isTop
         showLoadingAlert("正在保存...")
 
-        TbsApi.boss().topicBoss(item.id)
+        mTimer?.dispose()
+
+        TbsApi.boss().topicBoss(item.id, topic)
             .delay(600, TimeUnit.MILLISECONDS)
             .bindToastSub("") {
                 v.isSelected = topic
@@ -139,6 +143,10 @@ class BossFragment : BaseFragment() {
 
                 if (topic) {
                     rv_content.scrollToPosition(0)
+                }
+
+                mTimer = timerDelay(600) {
+//                    mAdapter.notifyDataSetChanged()
                 }
             }
     }

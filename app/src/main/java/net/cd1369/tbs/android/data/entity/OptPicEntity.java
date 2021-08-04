@@ -12,8 +12,32 @@ import java.util.Objects;
 public class OptPicEntity implements Serializable {
 
     private String id;
-    private String bossId;
+
     private String pictureLocation;
+
+    private String bossId;
+
+    private String name;
+
+    private long date;
+
+    private String role;
+
+    private String info;
+
+    private String head;
+
+    private long createTime;
+
+    private long updateTime;
+
+    private int level;
+
+    private long readCount;
+
+    private int baseCollectNum;
+
+    private boolean guide;
 
     public static final OptPicEntity EMPTY = new OptPicEntity();
 
@@ -39,6 +63,94 @@ public class OptPicEntity implements Serializable {
 
     public void setPictureLocation(String pictureLocation) {
         this.pictureLocation = pictureLocation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public String getHead() {
+        return head;
+    }
+
+    public void setHead(String head) {
+        this.head = head;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public long getReadCount() {
+        return readCount;
+    }
+
+    public void setReadCount(long readCount) {
+        this.readCount = readCount;
+    }
+
+    public int getBaseCollectNum() {
+        return baseCollectNum;
+    }
+
+    public void setBaseCollectNum(int baseCollectNum) {
+        this.baseCollectNum = baseCollectNum;
+    }
+
+    public boolean isGuide() {
+        return guide;
+    }
+
+    public void setGuide(boolean guide) {
+        this.guide = guide;
     }
 
     @Override

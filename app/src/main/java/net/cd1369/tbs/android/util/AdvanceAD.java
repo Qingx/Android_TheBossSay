@@ -368,7 +368,7 @@ public class AdvanceAD {
     }
 
 
-    private static final int AD_COUNT = 8;
+    private static final int AD_COUNT = 7;
 
     public static List<ArticleEntity> insertAd(List<ArticleEntity> adapterList, List<ArticleEntity> resultList, boolean loadMore) {
         if (Lists.isEmpty(resultList)) return new ArrayList<>(0);
