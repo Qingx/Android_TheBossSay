@@ -13,7 +13,7 @@
         android:id="@+id/image_icon"
         android:layout_width="135dp"
         android:layout_height="108dp"
-        android:src="@drawable/ic_follow_success"
+        android:src="@mipmap/ic_boss_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:singleLine="true"
-        android:text="追踪成功"
+        android:text="确定要取消追踪吗?"
         android:textColor="@color/colorTextDark"
         android:textSize="16dp"
         android:textStyle="bold"
@@ -41,7 +41,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="需要实时推送该老板的言论吗？"
+        android:text="取消追踪后将不再关注该boss"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/draw_loadbg_4"
         android:gravity="center"
-        android:text="暂不开启"
+        android:text="取消"
         android:textColor="@color/colorTextDark"
         android:textSize="14dp"
         app:layout_constraintEnd_toStartOf="@id/text_confirm"
@@ -68,7 +68,7 @@
         android:layout_marginStart="16dp"
         android:background="@drawable/draw_load_accent_4"
         android:gravity="center"
-        android:text="开启推送"
+        android:text="确定"
         android:textColor="@color/colorWhite"
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@id/text_cancel"
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:singleLine="true"
-        android:text="追踪成功"
+        android:text="取消成功"
         android:textColor="@color/colorTextDark"
         android:textSize="16dp"
         android:textStyle="bold"
@@ -115,7 +115,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="后续可在老板-我的追踪里查看"
+        android:text="已成功取消追踪，将不会实时推送"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -132,17 +132,17 @@
         android:singleLine="true"
         android:text="2S"
         android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_notice1"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/text_notice1" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:constraint_referenced_ids="image_icon1,text_title1,text_notice1,text_time" />
+        app:constraint_referenced_ids="image_icon1,text_title1,text_notice1,text_time"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

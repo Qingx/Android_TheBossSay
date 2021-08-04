@@ -24,10 +24,11 @@ abstract class BossInfoAdapter :
         helper.V.text_info.text = item.role
         helper.V.text_time.text = getBossItemTime(item.updateTime)
 
-        helper.V.layout_content doClick {
+        helper.V.cl_root doClick {
             onClick(item)
         }
 
+        helper.V.text_top.text = "取消置顶".takeIf { item.top } ?: "置顶"
         helper.V.text_top doClick {
             helper.V.sml_root.quickClose()
 
@@ -49,7 +50,7 @@ abstract class BossInfoAdapter :
     abstract fun onCancelFollow(item: BossInfoEntity)
     abstract fun onClick(item: BossInfoEntity)
 
-    fun notifyTopic(item: BossInfoEntity, topic: Boolean, i: Int) {
+    fun notifyTopic(item: BossInfoEntity, fp: Int, lp: Int): Int {
         var rmIndex = mData.indexOf(item)
         var lastIndex = mData.lastIndex
 
@@ -60,12 +61,13 @@ abstract class BossInfoAdapter :
         if (taIndex < 0) taIndex = lastIndex
         var offset = if (taIndex > rmIndex) -1 else 0
 
-        if (rmIndex == taIndex) return
+        if (rmIndex == taIndex) return -1
 
         var item = mData.removeAt(rmIndex)
         mData.add(taIndex + offset, item)
 
-        notifyItemMoved(rmIndex, taIndex)
+        notifyItemMoved(rmIndex, taIndex + offset)
+        return taIndex + offset
     }
 
 }

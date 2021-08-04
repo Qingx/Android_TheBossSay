@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_boss.*
 import kotlinx.android.synthetic.main.fragment_boss.layout_refresh
 import kotlinx.android.synthetic.main.fragment_boss.rv_content
 import kotlinx.android.synthetic.main.fragment_boss.rv_tab
+import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
@@ -23,9 +24,11 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.LabelManager
+import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 /**
@@ -138,11 +141,22 @@ class BossFragment : BaseFragment() {
             .bindToastSub("") {
                 v.isSelected = topic
                 item.top = topic
+                v.text_top.text = "取消置顶".takeIf { item.top } ?: "置顶"
 
-                mAdapter.notifyTopic(item, topic, index)
+                var layoutManager = rv_content.layoutManager as LinearLayoutManager
+                var fp = layoutManager.findFirstVisibleItemPosition()
+                var lp = layoutManager.findLastVisibleItemPosition()
 
-                if (topic) {
-                    rv_content.scrollToPosition(0)
+                var taIndex = mAdapter.notifyTopic(item, fp, lp)
+
+                try {
+                    if (topic) {
+                        if (taIndex in fp..lp) {
+                            rv_content.scrollToPosition(fp)
+                        }
+                    }
+                }catch (e:Exception) {
+                    e.printStackTrace()
                 }
 
                 mTimer = timerDelay(600) {

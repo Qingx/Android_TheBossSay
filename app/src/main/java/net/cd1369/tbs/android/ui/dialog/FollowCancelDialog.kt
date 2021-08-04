@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.transition.TransitionManager
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.dialog_follow_success.*
+import kotlinx.android.synthetic.main.dialog_follow_cancel.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit
@@ -23,11 +22,11 @@ import java.util.concurrent.TimeUnit
  * @description
  * @email Cymbidium@outlook.com
  */
-class SuccessFollowDialog : DialogFragment() {
+class FollowCancelDialog : DialogFragment() {
 
     companion object {
-        fun showDialog(fragmentManager: FragmentManager, tag: String): SuccessFollowDialog {
-            return SuccessFollowDialog().apply {
+        fun showDialog(fragmentManager: FragmentManager, tag: String): FollowCancelDialog {
+            return FollowCancelDialog().apply {
                 show(fragmentManager, tag)
             }
         }
@@ -41,7 +40,7 @@ class SuccessFollowDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_follow_success, container, false)
+        return inflater.inflate(R.layout.dialog_follow_cancel, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,9 +57,9 @@ class SuccessFollowDialog : DialogFragment() {
         }
     }
 
-    override fun dismiss() {
+    fun tryDismiss() {
         if (showStep2) {
-            super.dismiss()
+            dismiss()
         } else {
             showStep2 = true
 

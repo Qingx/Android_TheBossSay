@@ -18,6 +18,7 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 class CancelFollowDialog : DialogFragment() {
+
     companion object {
         fun showDialog(fragmentManager: FragmentManager, tag: String): CancelFollowDialog {
             return CancelFollowDialog().apply {

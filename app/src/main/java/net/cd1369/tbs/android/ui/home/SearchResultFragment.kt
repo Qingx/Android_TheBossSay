@@ -22,6 +22,7 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.event.SearchEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
+import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
 import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class SearchResultFragment : BaseListFragment() {
+    private var showDialog: FollowCancelDialog? = null
     private lateinit var mAdapter: SearchInfoAdapter
 
     private var searchText = ""
@@ -69,7 +71,10 @@ class SearchResultFragment : BaseListFragment() {
 
             override fun onClickFollow(item: BossInfoEntity) {
                 if (item.isCollect) {
-                    cancelFollow(item.id)
+                    showDialog = FollowCancelDialog.showDialog(childFragmentManager, "cancel")
+                    showDialog?.onConfirmClick = FollowCancelDialog.OnConfirmClick {
+                        cancelFollow(item.id)
+                    }
                 } else followBoss(item.id)
             }
         }.also {
@@ -98,7 +103,8 @@ class SearchResultFragment : BaseListFragment() {
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = false))
 
-                CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
+//                CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
+                showDialog?.tryDismiss()
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doLast = {
