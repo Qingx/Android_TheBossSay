@@ -24,7 +24,7 @@ abstract class BossInfoAdapter :
         helper.V.text_info.text = item.role
         helper.V.text_time.text = getBossItemTime(item.updateTime)
 
-        helper.V doClick {
+        helper.V.layout_content doClick {
             onClick(item)
         }
 
@@ -47,7 +47,6 @@ abstract class BossInfoAdapter :
     abstract fun onDoTop(item: BossInfoEntity, v: View, index: Int)
 
     abstract fun onCancelFollow(item: BossInfoEntity)
-
     abstract fun onClick(item: BossInfoEntity)
 
     fun notifyTopic(item: BossInfoEntity, topic: Boolean, i: Int) {
