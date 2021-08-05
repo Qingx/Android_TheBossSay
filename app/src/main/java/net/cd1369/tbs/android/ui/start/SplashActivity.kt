@@ -84,12 +84,12 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
                     it.add(0, BossLabelEntity.empty)
                 }
 
-                TbsApi.boss().obtainAllBoss(DataConfig.get().updateTime)
+                TbsApi.boss().obtainGuideBoss()
                     .onErrorReturn { mutableListOf() }
             }.bindDefaultSub {
-                if (!it.isNullOrEmpty()) {
-                    BossInfoDaoManager.getInstance().insertList(it)
-                }
+//                if (!it.isNullOrEmpty()) {
+//                    BossInfoDaoManager.getInstance().insertList(it)
+//                }
                 bossList = it
                 hasLoadBoss = true
 

@@ -103,6 +103,14 @@ public interface BossService {
     Observable<WLList<BossInfoEntity>> obtainAllBoss(@Path("time") Long time);
 
     /**
+     * 获取全部boss
+     *
+     * @return
+     */
+    @GET("/api/boss/guide")
+    Observable<WLList<BossInfoEntity>> obtainGuideBoss();
+
+    /**
      * 获取运营图
      *
      * @return

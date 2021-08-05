@@ -254,6 +254,17 @@ public class BossRepository extends BaseRepository<BossService> {
     /**
      * 获取全部boss
      *
+     * @return
+     */
+    public Observable<List<BossInfoEntity>> obtainGuideBoss() {
+        return getService().obtainGuideBoss()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取全部boss
+     *
      * @param time
      * @return
      */

@@ -21,6 +21,7 @@ import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 
 class GuideActivity : BaseActivity() {
+
     private lateinit var mLabels: ArrayList<BossInfoEntity>
 
     companion object {

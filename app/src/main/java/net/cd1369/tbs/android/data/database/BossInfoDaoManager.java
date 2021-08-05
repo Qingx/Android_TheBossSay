@@ -21,7 +21,9 @@ import java.util.List;
  * @email Cymbidium@outlook.com
  */
 public class BossInfoDaoManager {
+
     private DaoMaster.DevOpenHelper helper;
+
     private DaoMaster daoMaster;
     private DaoSession daoSession;
     private BossInfoEntityDao infoDao;
