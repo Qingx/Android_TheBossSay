@@ -19,9 +19,11 @@ import kotlinx.android.synthetic.main.header_follow.*
 import kotlinx.android.synthetic.main.header_follow.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.data.model.FollowVal
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
@@ -38,6 +40,8 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class FollowFragment : BaseListFragment() {
+
+    private var emptyView: View? = null
 
     private var version: Long = 0L
     private var mRootHeight: Int = 0
@@ -133,10 +137,10 @@ class FollowFragment : BaseListFragment() {
                 }
             }
 
-        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_card_view, null)
+        emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_card_view, null)
         cardAdapter.emptyView = emptyView
 
-        emptyView.text_add doClick {
+        emptyView!!.text_add doClick {
             SearchActivity.start(mActivity)
         }
 
@@ -211,6 +215,15 @@ class FollowFragment : BaseListFragment() {
                     mAdapter.setNewData(it.shuffled())
                 }, doDone = {
                     showContent()
+
+                    var userEntity = UserConfig.get().userEntity
+                    var traceNum = userEntity.traceNum ?: 0
+
+                    if (traceNum > 0) {
+                        emptyView?.text_notice?.text = "追踪的老板暂无言论更新"
+                    } else {
+                        emptyView?.text_notice?.text = ""
+                    }
 
                     layout_refresh.finishRefresh()
 

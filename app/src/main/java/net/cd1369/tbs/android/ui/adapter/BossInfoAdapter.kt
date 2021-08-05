@@ -19,7 +19,11 @@ abstract class BossInfoAdapter :
     BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_boss_info) {
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
         GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
-        GlideApp.display(R.drawable.ic_boss_label, helper.V.image_label)
+
+        item.showImage(
+            helper.V.image_label1,
+            helper.V.image_label2)
+
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
         helper.V.text_time.text = getBossItemTime(item.updateTime)

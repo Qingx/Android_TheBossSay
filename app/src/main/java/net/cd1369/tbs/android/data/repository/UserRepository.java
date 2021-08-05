@@ -2,6 +2,7 @@ package net.cd1369.tbs.android.data.repository;
 
 
 import net.cd1369.tbs.android.config.DataConfig;
+import net.cd1369.tbs.android.config.TbsApi;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
+import cn.wl.android.lib.data.repository.BaseApi;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import cn.wl.android.lib.utils.Lists;
 import io.reactivex.Observable;
@@ -24,6 +26,9 @@ import okhttp3.RequestBody;
  * @email Cymbidium@outlook.com
  */
 public class UserRepository extends BaseRepository<UserService> {
+
+//    public static final Observable<TokenEntity> globalRefresh = ;
+
     public UserRepository() {
     }
 

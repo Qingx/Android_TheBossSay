@@ -10,9 +10,9 @@
         android:id="@+id/cl_root"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:background="@drawable/draw_topic"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
-        android:background="@drawable/draw_topic">
+        android:paddingVertical="12dp">
 
         <com.allen.library.CircleImageView
             android:id="@+id/image_head"
@@ -66,23 +66,47 @@
             android:textSize="16dp"
             app:layout_constrainedWidth="true"
             app:layout_constraintBaseline_toBaselineOf="@id/text_time"
-            app:layout_constraintEnd_toStartOf="@id/image_label"
+            app:layout_constraintEnd_toStartOf="@id/ll_label"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/text_info"
             tools:text="神里凌华" />
 
-        <ImageView
-            android:id="@+id/image_label"
-            android:layout_width="56dp"
-            android:layout_height="16dp"
-            android:layout_marginHorizontal="8dp"
+        <LinearLayout
+            android:id="@+id/ll_label"
+            android:layout_width="@dimen/size_none"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding_4"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/text_name"
             app:layout_constraintEnd_toStartOf="@id/text_time"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/text_name"
-            app:layout_constraintTop_toTopOf="@id/text_name"
-            tools:src="@drawable/ic_boss_label" />
+            app:layout_constraintTop_toTopOf="@id/text_name">
+
+            <ImageView
+                android:id="@+id/image_label1"
+                android:layout_width="56dp"
+                android:layout_height="16dp"
+                android:layout_marginHorizontal="@dimen/padding_2"
+                tools:src="@drawable/ic_boss_label" />
+
+            <ImageView
+                android:id="@+id/image_label2"
+                android:layout_width="56dp"
+                android:layout_height="16dp"
+                android:layout_marginHorizontal="@dimen/padding_2"
+                tools:src="@drawable/ic_boss_label" />
+
+<!--            <ImageView-->
+<!--                android:id="@+id/image_label3"-->
+<!--                android:layout_width="56dp"-->
+<!--                android:layout_height="16dp"-->
+<!--                android:layout_marginHorizontal="@dimen/padding_2"-->
+<!--                tools:src="@drawable/ic_boss_label" />-->
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView

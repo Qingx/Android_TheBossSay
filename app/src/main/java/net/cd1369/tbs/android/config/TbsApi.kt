@@ -17,4 +17,10 @@ object TbsApi {
         val user: UserRepository = UserRepository()
         val boss: BossRepository = BossRepository()
     }
+
+    val globalRefresh by lazy {
+        user().obtainRefreshUser()
+            .publish()
+            .refCount()
+    }
 }

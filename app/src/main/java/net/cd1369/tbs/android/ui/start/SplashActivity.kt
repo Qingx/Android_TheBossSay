@@ -118,7 +118,6 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
             }
         } else {
             hasService = true
-
             //开屏初始化；adContainer为广告容器，skipView不需要自定义可以为null
             //开屏初始化；adContainer为广告容器，skipView不需要自定义可以为null
             advanceSplash = AdvanceSplash(this, Const.LUNCH_ID, fl_wel, null)

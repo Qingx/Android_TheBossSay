@@ -67,8 +67,9 @@ class SuccessFollowDialog : DialogFragment() {
             group_1.isVisible = false
             group_2.isVisible = true
 
+            text_time.text = "${2}S"
             mTimer = Observable.interval(1000, TimeUnit.MILLISECONDS)
-                .map { (2 - it).toInt() }
+                .map { (1 - it).toInt() }
                 .takeWhile { it >= 0 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

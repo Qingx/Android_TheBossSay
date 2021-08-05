@@ -1,14 +1,21 @@
 package net.cd1369.tbs.android.data.entity;
 
+import android.widget.ImageView;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Transient;
+
+import cn.wl.android.lib.utils.GlideApp;
+import cn.wl.android.lib.utils.Lists;
+import cn.wl.android.lib.utils.ViewHelper;
 
 /**
  * Created by Xiang on 2021/7/22 14:31
@@ -55,10 +62,33 @@ public class BossInfoEntity implements Serializable {
     private Long createTime; //创建时间
 
     @Transient
+    private List<String> photoUrl;
+
+    @Transient
     private boolean top; //是否置顶
 
     @Transient
     private long relTime; //置顶时间
+
+    public void showImage(ImageView iv1, ImageView iv2) {
+        List<String> photoUrl = this.photoUrl;
+
+        if (Lists.isEmpty(photoUrl)) {
+            ViewHelper.setVisible(iv1, false);
+            ViewHelper.setVisible(iv2, false);
+        } else if (photoUrl.size() == 1) {
+            ViewHelper.setVisible(iv1, true);
+            ViewHelper.setVisible(iv2, false);
+
+            GlideApp.display(photoUrl.get(0), iv1);
+        } else if (photoUrl.size() > 1) {
+            ViewHelper.setVisible(iv1, true);
+            ViewHelper.setVisible(iv2, true);
+
+            GlideApp.display(photoUrl.get(0), iv1);
+            GlideApp.display(photoUrl.get(1), iv2);
+        }
+    }
 
     public boolean checkSort(BossInfoEntity boss) {
         if (id.equals(boss.id))

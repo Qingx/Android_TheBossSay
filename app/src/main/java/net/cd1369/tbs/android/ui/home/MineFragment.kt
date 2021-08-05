@@ -225,9 +225,9 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
 
     override fun loadData() {
         super.loadData()
-        TbsApi.user().obtainRefreshUser().bindDefaultSub {
-            HttpConfig.saveToken(it.token)
 
+        TbsApi.globalRefresh.bindDefaultSub {
+            HttpConfig.saveToken(it.token)
             UserConfig.get().userEntity = it.userInfo
 
             setUserInfo()
