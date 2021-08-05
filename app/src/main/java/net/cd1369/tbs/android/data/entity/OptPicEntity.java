@@ -11,35 +11,14 @@ import java.util.Objects;
  */
 public class OptPicEntity implements Serializable {
 
+    public static final OptPicEntity EMPTY = new OptPicEntity();
+
     private String id;
 
     private String pictureLocation;
 
-    private String bossId;
+    private BossInfoEntity entity;
 
-    private String name;
-
-    private long date;
-
-    private String role;
-
-    private String info;
-
-    private String head;
-
-    private long createTime;
-
-    private long updateTime;
-
-    private int level;
-
-    private long readCount;
-
-    private int baseCollectNum;
-
-    private boolean guide;
-
-    public static final OptPicEntity EMPTY = new OptPicEntity();
 
     public String getId() {
         return id;
@@ -47,14 +26,6 @@ public class OptPicEntity implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getBossId() {
-        return bossId;
-    }
-
-    public void setBossId(String bossId) {
-        this.bossId = bossId;
     }
 
     public String getPictureLocation() {
@@ -65,92 +36,12 @@ public class OptPicEntity implements Serializable {
         this.pictureLocation = pictureLocation;
     }
 
-    public String getName() {
-        return name;
+    public BossInfoEntity getEntity() {
+        return entity;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public String getHead() {
-        return head;
-    }
-
-    public void setHead(String head) {
-        this.head = head;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public long getReadCount() {
-        return readCount;
-    }
-
-    public void setReadCount(long readCount) {
-        this.readCount = readCount;
-    }
-
-    public int getBaseCollectNum() {
-        return baseCollectNum;
-    }
-
-    public void setBaseCollectNum(int baseCollectNum) {
-        this.baseCollectNum = baseCollectNum;
-    }
-
-    public boolean isGuide() {
-        return guide;
-    }
-
-    public void setGuide(boolean guide) {
-        this.guide = guide;
+    public void setEntity(BossInfoEntity entity) {
+        this.entity = entity;
     }
 
     @Override
@@ -158,13 +49,21 @@ public class OptPicEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OptPicEntity that = (OptPicEntity) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(bossId, that.bossId) &&
-                Objects.equals(pictureLocation, that.pictureLocation);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "OptPicEntity{" +
+                "id='" + id + '\'' +
+                ", pictureLocation='" + pictureLocation + '\'' +
+                ", entity=" + entity +
+                '}';
+    }
+
 }

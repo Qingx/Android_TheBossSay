@@ -57,7 +57,7 @@ abstract class SquareInfoAdapter :
                 helper.V.text_info.text = item.bossVO.role
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.createTime)
+                helper.V.text_time.text = getArticleItemTime(item.getTime())
             }
             1 -> {
                 helper.V.text_title.text = item.title
@@ -67,7 +67,7 @@ abstract class SquareInfoAdapter :
                 helper.V.text_info.text = item.bossVO.role
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.createTime)
+                helper.V.text_time.text = getArticleItemTime(item.getTime())
             }
             ArticleEntity.AD_TYPE -> {
                 if (helper is AdVH) {

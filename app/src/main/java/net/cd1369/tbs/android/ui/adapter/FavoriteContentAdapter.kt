@@ -24,7 +24,7 @@ abstract class FavoriteContentAdapter :
         helper.V.text_title.text = item.title
 
         helper.V.text_name.text = item.bossVO.name
-        helper.V.text_time.text = getArticleItemTime(item.createTime)
+        helper.V.text_time.text = getArticleItemTime(item.getTime())
         GlideApp.display(item.bossVO.head, helper.V.image_head)
 
         helper.V.text_delete doClick {

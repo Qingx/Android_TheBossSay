@@ -9,7 +9,8 @@ data class ArticleEntity(
     val collect: Int? = 0,
     val readCount: Int? = 0,
     val content: String,
-    val createTime: Long,
+    val createTime: Long?,
+    val articleTime: Long?,
     val descContent: String,
     val files: List<String>? = listOf(),
     val id: String,
@@ -20,6 +21,8 @@ data class ArticleEntity(
     val title: String,
     val originLink: String = "暂无"
 ) : MultiItemEntity, Serializable {
+
+    fun getTime(): Long = articleTime ?: createTime ?: 0L
 
     override fun getItemType(): Int {
         return when {
@@ -58,6 +61,7 @@ data class ArticleEntity(
             0,
             "",
             0,
+            0,
             "",
             mutableListOf(),
             "",
@@ -78,6 +82,7 @@ data class ArticleEntity(
             0,
             0,
             "",
+            0,
             0,
             "",
             mutableListOf(),

@@ -47,7 +47,7 @@ abstract class FollowInfoAdapter :
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.createTime)
+                helper.V.text_time.text = getArticleItemTime(item.getTime())
             }
             1 -> {
                 helper.V.text_title.text = item.title
@@ -61,7 +61,7 @@ abstract class FollowInfoAdapter :
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.createTime)
+                helper.V.text_time.text = getArticleItemTime(item.getTime())
             }
 //            else -> {
 //                helper.V.text_title.text = item.title

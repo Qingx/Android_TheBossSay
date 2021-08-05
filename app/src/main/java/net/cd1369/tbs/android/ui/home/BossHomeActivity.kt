@@ -26,7 +26,9 @@ import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.BossSettingDialog
+import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.avatar
@@ -34,6 +36,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class BossHomeActivity : BaseListActivity() {
+
+    private var showDialog: FollowCancelDialog? = null
     private lateinit var mAdapter: FollowInfoAdapter
     private var needLoading = true
     private lateinit var entity: BossInfoEntity
@@ -85,7 +89,11 @@ class BossHomeActivity : BaseListActivity() {
 
         text_follow doClick {
             if (entity.isCollect) {
-                cancelFollow(entity.id)
+                showDialog = FollowCancelDialog.showDialog(supportFragmentManager, "cancel")
+                showDialog?.onConfirmClick = FollowCancelDialog.OnConfirmClick {
+                    cancelFollow(entity.id)
+                }
+//                cancelFollow(entity.id)
             } else followBoss(entity.id)
         }
 
@@ -142,6 +150,7 @@ class BossHomeActivity : BaseListActivity() {
                 text_follow.isSelected = false
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
 
+                showDialog?.tryDismiss()
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doDone = {
@@ -165,6 +174,13 @@ class BossHomeActivity : BaseListActivity() {
                 text_follow.isSelected = true
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
 
+                SuccessFollowDialog.showDialog(supportFragmentManager, "successFollowBoss")
+                    .apply {
+                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
+//                            Toasts.show("开启推送")
+                            this.dismiss()
+                        }
+                    }
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {

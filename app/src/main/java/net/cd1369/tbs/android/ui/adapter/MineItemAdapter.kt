@@ -32,6 +32,6 @@ abstract class MineItemAdapter : BaseQuickAdapter<MineItem, BaseViewHolder>(R.la
     abstract fun onItemClick(item: MineItem)
 
     fun onRefreshLogin() {
-        notifyItemChanged(0)
+        notifyItemChanged(0 + headerLayoutCount)
     }
 }

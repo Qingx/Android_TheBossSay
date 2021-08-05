@@ -37,6 +37,9 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
     private var hasAdShow = false
     private var hasService = false
     private var hasLoadBoss = false
+
+    private var gotoLock = false
+
     private var bossList: List<BossInfoEntity> = mutableListOf()
     private var advanceSplash: AdvanceSplash? = null
 
@@ -133,7 +136,11 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
      */
     private fun tryLunchApp() {
         if (hasService && hasLoadBoss && hasAdShow) {
-            Log.e("OkHttp", DeviceID.getOAID())
+            if (gotoLock) {
+                return
+            }
+
+            gotoLock = true
 
             val firstUse = DataConfig.get().firstUse
 

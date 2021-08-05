@@ -1,12 +1,10 @@
 package net.cd1369.tbs.android.ui.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
@@ -16,7 +14,8 @@ import com.advance.model.AdvanceError
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
-import kotlinx.android.synthetic.main.layout_ad.view.*
+import kotlinx.android.synthetic.main.layout_mine_ad.view.*
+import kotlinx.android.synthetic.main.layout_mine_head.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.*
 import net.cd1369.tbs.android.event.JumpBossEvent
@@ -38,6 +37,7 @@ import java.util.concurrent.TimeUnit
  * @email Cymbidium@outlook.com
  */
 class MineFragment : BaseFragment(), AdvanceBannerListener {
+    private var header: View? = null
     private var footer: View? = null
     private lateinit var mAdapter: MineItemAdapter
     private var advanceBanner: AdvanceBanner? = null
@@ -69,48 +69,35 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
             }
         }
 
-        rv_content.layoutManager =
-            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
-                override fun canScrollHorizontally(): Boolean {
-                    return false
-                }
-
-                override fun canScrollVertically(): Boolean {
-                    return false
-                }
-            }
-
+        rv_content.layoutManager = LinearLayoutManager(mActivity)
         rv_content.adapter = mAdapter
-        mAdapter.setNewData(MineItem.values().toMutableList())
 
-        mAdapter.onRefreshLogin()
-
-        image_info doClick {
-            onClickInfo()
-        }
+        addHeaderView(mAdapter)
+        addFooterView(mAdapter)
 
         image_setting doClick {
             onClickInfo()
-        }
-
-        layout_history doClick {
-            TodayHistoryActivity.start(mActivity)
-        }
-
-        layout_favorite doClick {
-            onClickFavorite()
-        }
-
-        layout_follow doClick {
-            eventBus.post(JumpBossEvent())
         }
 
         image_share doClick {
             onShare()
         }
 
-        footer = LayoutInflater.from(mActivity).inflate(R.layout.layout_ad, null, false)
-        mAdapter.addFooterView(footer)
+        timerDelay(40) {
+            mAdapter.setNewData(MineItem.values().toMutableList())
+            mAdapter.onRefreshLogin()
+        }
+    }
+
+    /**
+     * 添加底部布局
+     * @param adapter MineItemAdapter
+     */
+    private fun addFooterView(adapter: MineItemAdapter) {
+        footer = LayoutInflater.from(mActivity).inflate(
+            R.layout.layout_mine_ad, null, false
+        )
+        adapter.addFooterView(footer)
 
         //rl是banner的父布局，用来展示广告
         //rl是banner的父布局，用来展示广告
@@ -121,6 +108,33 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
         //必须：请求策略并请求和展示广告
         //必须：请求策略并请求和展示广告
         advanceBanner?.loadStrategy()
+    }
+
+    /**
+     * 添加头部布局
+     * @param adapter MineItemAdapter
+     */
+    private fun addHeaderView(adapter: MineItemAdapter) {
+        header = LayoutInflater.from(mActivity).inflate(
+            R.layout.layout_mine_head, null, false
+        )
+        adapter.addHeaderView(header)
+
+        header!!.layout_history doClick {
+            TodayHistoryActivity.start(mActivity)
+        }
+
+        header!!.layout_favorite doClick {
+            onClickFavorite()
+        }
+
+        header!!.layout_follow doClick {
+            eventBus.post(JumpBossEvent())
+        }
+
+        header!!.image_info doClick {
+            onClickInfo()
+        }
     }
 
     private fun onShare() {
@@ -180,24 +194,26 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
             }
     }
 
-    @SuppressLint("SetTextI18n")
+    /**
+     * 更新用户信息
+     */
     private fun setUserInfo() {
         val loginStatus = UserConfig.get().loginStatus
         val entity = UserConfig.get().userEntity
 
         if (loginStatus) {
-            text_name.text = entity.nickName
-            text_id.text = "ID：${entity.id}"
+            header?.text_name?.text = entity.nickName
+            header?.text_id?.text = "ID：${entity.id}"
         } else {
             val tempId = DataConfig.get().tempId
 
-            text_name.text = "请先登录！"
-            text_id.text = "游客：${tempId.substring(0, 12)}..."
+            header?.text_name?.text = "请先登录！"
+            header?.text_id?.text = "游客：${tempId.substring(0, 12)}..."
         }
 
-        text_follow_num.text = entity.traceNum.toString()
-        text_favorite_num.text = entity.collectNum.toString()
-        text_history_num.text = entity.readNum.toString()
+        header?.text_follow_num?.text = entity.traceNum.toString()
+        header?.text_history_num?.text = entity.readNum.toString()
+        header?.text_favorite_num?.text = entity.collectNum.toString()
 
         mAdapter.onRefreshLogin()
     }

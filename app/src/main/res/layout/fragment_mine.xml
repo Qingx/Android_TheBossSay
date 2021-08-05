@@ -1,57 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/status_bar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/status_bar_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <net.cd1369.tbs.android.widget.WlCardView
+        android:id="@+id/layout_top"
+        android:layout_width="0dp"
+        android:layout_height="201dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rcv_bottomLeftRadiu="12dp"
+        app:rcv_bottomRightRadiu="12dp">
+
+        <ImageView
+            android:id="@+id/image_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_mine_bg" />
+
+    </net.cd1369.tbs.android.widget.WlCardView>
+
+    <LinearLayout
+        android:id="@+id/ll_title_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <FrameLayout
-            android:id="@+id/status_bar"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/status_bar_height"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <net.cd1369.tbs.android.widget.WlCardView
-            android:id="@+id/layout_top"
-            android:layout_width="0dp"
-            android:layout_height="201dp"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:rcv_bottomLeftRadiu="12dp"
-            app:rcv_bottomRightRadiu="12dp">
-
-            <ImageView
-                android:id="@+id/image_bg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_mine_bg" />
-        </net.cd1369.tbs.android.widget.WlCardView>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/status_bar">
 
         <ImageView
             android:id="@+id/image_back"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="@dimen/font_44"
+            android:layout_height="@dimen/font_44"
             android:layout_marginStart="4dp"
             android:padding="12dp"
             android:src="@drawable/ic_back_dark"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/status_bar" />
 
+        <Space
+            android:layout_width="@dimen/size_none"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
         <ImageView
             android:id="@+id/image_setting"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/font_44"
+            android:layout_height="@dimen/font_44"
             android:padding="12dp"
             android:src="@drawable/ic_setting_black"
             app:layout_constraintBottom_toBottomOf="@id/image_back"
@@ -61,8 +71,8 @@
 
         <ImageView
             android:id="@+id/image_share"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/font_44"
+            android:layout_height="@dimen/font_44"
             android:layout_marginEnd="4dp"
             android:padding="12dp"
             android:src="@drawable/ic_share_black"
@@ -71,237 +81,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/image_back" />
 
-        <TextView
-            android:id="@+id/text_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:gravity="start|center_vertical"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/colorTextDark"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/text_id"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_back"
-            tools:text="请先登录！" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:singleLine="true"
-            android:textColor="@color/colorTextDarkLight"
-            android:textSize="14dp"
-            app:layout_constraintBottom_toTopOf="@id/layout_info"
-            app:layout_constraintStart_toStartOf="@id/text_name"
-            app:layout_constraintTop_toBottomOf="@id/text_name"
-            tools:text="游客：12312312323" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_none"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="@dimen/padding_16"
+        android:paddingBottom="@dimen/padding_30"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title_root" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/image_info"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/draw_circle_white"
-            app:layout_constraintBottom_toBottomOf="@id/text_id"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_name">
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_arrow_right_black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_info"
-            android:layout_width="0dp"
-            android:layout_height="88dp"
-            android:layout_marginHorizontal="16dp"
-            android:background="@drawable/draw_white_4"
-            app:layout_constraintBottom_toBottomOf="@id/layout_top"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_top">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_follow"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/line_follow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/text_follow_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/colorTextDark"
-                    android:textSize="24dp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/text_follow"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    tools:text="4" />
-
-                <TextView
-                    android:id="@+id/text_follow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="追踪数"
-                    android:textColor="@color/colorTextDarkLight"
-                    android:textSize="12dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_follow_num" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <FrameLayout
-                android:id="@+id/line_follow"
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:layout_marginVertical="20dp"
-                android:background="@color/colorMainLine"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/layout_favorite"
-                app:layout_constraintStart_toEndOf="@id/layout_follow"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_favorite"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/line_favorite"
-                app:layout_constraintStart_toEndOf="@id/line_follow"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/text_favorite_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/colorTextDark"
-                    android:textSize="24dp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/text_favorite"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    tools:text="4" />
-
-                <TextView
-                    android:id="@+id/text_favorite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="收藏数"
-                    android:textColor="@color/colorTextDarkLight"
-                    android:textSize="12dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_favorite_num" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <FrameLayout
-                android:id="@+id/line_favorite"
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:background="@color/colorMainLine"
-                app:layout_constraintBottom_toBottomOf="@id/line_follow"
-                app:layout_constraintEnd_toStartOf="@id/layout_history"
-                app:layout_constraintStart_toEndOf="@id/layout_favorite"
-                app:layout_constraintTop_toTopOf="@id/line_follow" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_history"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/line_favorite"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/text_history_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/colorTextDark"
-                    android:textSize="24dp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/text_history"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    tools:text="4" />
-
-                <TextView
-                    android:id="@+id/text_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="今日阅读量"
-                    android:textColor="@color/colorTextDarkLight"
-                    android:textSize="12dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_history_num" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_content"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_none"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingTop="@dimen/padding_16"
-            android:paddingBottom="@dimen/padding_30"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_info" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll_ad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_16"
-            android:layout_marginRight="@dimen/padding_16"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_content" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-</androidx.core.widget.NestedScrollView>

@@ -38,6 +38,7 @@ import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
 import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
 import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import net.cd1369.tbs.android.util.LabelManager
+import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -100,6 +101,13 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 }
             }
 
+        iv_img doClick {
+            var optPic = mOptPic
+
+            if (optPic != null) {
+                BossInfoActivity.start(mActivity, optPic.entity)
+            }
+        }
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -158,7 +166,7 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {
                         onConfirmClick = SuccessFollowDialog.OnConfirmClick {
-                            Toasts.show("开启推送")
+//                            Toasts.show("开启推送")
                             this.dismiss()
                         }
                     }
