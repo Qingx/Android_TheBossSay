@@ -13,9 +13,36 @@ data class UserEntity(
     var traceNum: Int? = 0, //追踪数
     val type: String, //0->游客 1->正式
     val wxHead: String,
-    val wxName: String
+    val wxName: String,
+    val tags: List<String>?
 ) : Serializable {
+
     companion object {
-        val empty: UserEntity = UserEntity("", "", "", "", "", 0, 0, 0, "0", "", "")
+        val empty: UserEntity = UserEntity(
+            "",
+            "", "", "", "",
+            0, 0, 0, "0",
+            "", "", null
+        )
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as UserEntity
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    override fun toString(): String {
+        return "UserEntity(avatar='$avatar', deviceId='$deviceId', id='$id', nickName='$nickName', phone='$phone', collectNum=$collectNum, readNum=$readNum, traceNum=$traceNum, type='$type', wxHead='$wxHead', wxName='$wxName', tags=$tags)"
+    }
+
 }

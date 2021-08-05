@@ -24,6 +24,7 @@ import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
 import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
 import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.util.JPushHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -103,6 +104,8 @@ class SearchResultFragment : BaseListFragment() {
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = false))
 
+                JPushHelper.tryDelTag(id)
+
 //                CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
                 showDialog?.tryDismiss()
             }, doFail = {
@@ -124,6 +127,8 @@ class SearchResultFragment : BaseListFragment() {
                 mAdapter.doFollowChange(id, true)
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = true))
+
+                JPushHelper.tryAddTag(id)
 
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {

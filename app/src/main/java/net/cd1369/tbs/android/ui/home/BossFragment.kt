@@ -26,10 +26,7 @@ import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
-import net.cd1369.tbs.android.util.LabelManager
-import net.cd1369.tbs.android.util.OnChangeCallback
-import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.lang.Exception
@@ -220,6 +217,8 @@ class BossFragment : BaseFragment() {
                 val index = mAdapter.data.indexOfFirst {
                     it.id == id
                 }
+
+                JPushHelper.tryDelTag(id)
 
                 if (index != -1) {
                     mAdapter.remove(index)

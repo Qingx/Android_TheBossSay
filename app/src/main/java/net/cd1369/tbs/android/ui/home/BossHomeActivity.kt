@@ -147,8 +147,11 @@ class BossHomeActivity : BaseListActivity() {
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, false))
                 entity.isCollect = false
+
                 text_follow.isSelected = false
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+
+                JPushHelper.tryDelTag(id)
 
                 showDialog?.tryDismiss()
             }, doFail = {
@@ -173,6 +176,8 @@ class BossHomeActivity : BaseListActivity() {
                 entity.isCollect = true
                 text_follow.isSelected = true
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+
+                JPushHelper.tryAddTag(id)
 
                 SuccessFollowDialog.showDialog(supportFragmentManager, "successFollowBoss")
                     .apply {

@@ -129,10 +129,10 @@ class UserInfoActivity : BaseActivity() {
             UserConfig.get().clear()
 
             HttpConfig.reset()
-            // TODO: 添加数据
             UserConfig.get().userEntity = UserEntity.empty
 
             Toasts.show("退出成功")
+
             eventBus.post(RefreshUserEvent())
             mActivity?.finish()
         }

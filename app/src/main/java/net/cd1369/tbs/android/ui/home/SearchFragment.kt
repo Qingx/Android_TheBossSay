@@ -37,6 +37,7 @@ import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
 import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
 import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
 import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.LabelManager
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -162,6 +163,8 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 mAdapter.doFollowChange(id, true)
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = true))
+
+                JPushHelper.tryAddTag(id)
 
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {
