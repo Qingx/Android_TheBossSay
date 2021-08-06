@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.config;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.mercury.sdk.core.config.MercuryAD;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.tendcloud.tenddata.TCAgent;
 
 import net.cd1369.tbs.android.BuildConfig;
 import net.cd1369.tbs.android.R;
@@ -28,6 +30,8 @@ import cn.jpush.android.api.JPushInterface;
 import cn.wl.android.lib.config.WLConfig;
 import cn.wl.android.lib.data.core.HttpConfig;
 import cn.wl.android.lib.data.repository.BaseApi;
+import cn.wl.android.lib.ui.BaseCommonActivity;
+import cn.wl.android.lib.ui.OnActivityCallback;
 import cn.wl.android.lib.utils.GlideApp;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -56,25 +60,9 @@ public class TbsApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        GlideApp.defaultHeadRes = R.mipmap.ic_default_head;
-        GlideApp.DRAW_FAILURE = R.mipmap.ic_default_img;
-        GlideApp.DRAW_DEFAULT = R.mipmap.ic_default_img;
-
         mContext = this;
 
-        BaseApi.mProvider = () -> RetryHolder.mTempRetry;
-
         Utils.init(this);
-        registerToWeChat();
-
-        //必要配置：初始化聚合SDK，三个参数依次为context上下文，appId媒体id，isDebug调试模式开关
-        AdvanceSDK.initSDK(this, Const.AD_ID, BuildConfig.DEBUG);
-        //推荐配置：允许Mercury预缓存素材
-        MercuryAD.needPreLoadMaterial(true);
-
-        JPushInterface.setDebugMode(BuildConfig.DEBUG);
-        JPushInterface.init(mContext);
 
         WLConfig.init(mContext, BuildConfig.DEBUG);
         WLConfig.initHttp(new WLConfig.UrlProvider() {
@@ -93,6 +81,42 @@ public class TbsApp extends MultiDexApplication {
                 return BuildConfig.FILE_URL;
             }
         });
+
+        GlideApp.defaultHeadRes = R.mipmap.ic_default_head;
+        GlideApp.DRAW_FAILURE = R.mipmap.ic_default_img;
+        GlideApp.DRAW_DEFAULT = R.mipmap.ic_default_img;
+
+
+        BaseApi.mProvider = () -> RetryHolder.mTempRetry;
+
+        registerToWeChat();
+
+        //必要配置：初始化聚合SDK，三个参数依次为context上下文，appId媒体id，isDebug调试模式开关
+        AdvanceSDK.initSDK(this, Const.AD_ID, BuildConfig.DEBUG);
+        //推荐配置：允许Mercury预缓存素材
+        MercuryAD.needPreLoadMaterial(true);
+
+        JPushInterface.setDebugMode(BuildConfig.DEBUG);
+        JPushInterface.init(mContext);
+
+        TCAgent.LOG_ON = WLConfig.isDebug();
+        // App ID: 在TalkingData创建应用后，进入数据报表页中，在“系统设置”-“编辑应用”页面里查看App ID。
+        // 渠道 ID: 是渠道标识符，可通过不同渠道单独追踪数据。
+        TCAgent.init(this);
+        // 如果已经在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可；或与AndroidManifest.xml中的对应参数保持一致。
+        TCAgent.setReportUncaughtExceptions(true);
+
+        BaseCommonActivity.mCall = new OnActivityCallback() {
+            @Override
+            public void onCreated(Activity activity) {
+                TCAgent.onPageStart(activity, activity.getClass().getSimpleName());
+            }
+
+            @Override
+            public void onDestroy(Activity activity) {
+                TCAgent.onPageEnd(activity, activity.getClass().getSimpleName());
+            }
+        };
     }
 
     /**

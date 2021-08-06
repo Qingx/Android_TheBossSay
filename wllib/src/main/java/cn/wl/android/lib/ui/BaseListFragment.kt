@@ -327,9 +327,11 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
         tryFinishRefresh()
         mAdapter!!.loadMoreComplete()
         if (!hasData) {
-            mAdapter!!.loadMoreEnd()
+            mAdapter!!.loadMoreEnd(getLoadGone())
         }
     }
+
+    open fun getLoadGone(): Boolean = false
 
     /**
      * 尝试设置失败状态

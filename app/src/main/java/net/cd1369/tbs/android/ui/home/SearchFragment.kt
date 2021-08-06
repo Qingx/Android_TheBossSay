@@ -264,13 +264,13 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                     Page.empty()
                 }.bindPageSubscribe(loadMore = loadMore, doNext = {
                     mAdapter.addData(it)
-
-//                    mAdapter.loadMoreEnd()
                 }, doDone = {
                     layout_refresh.finishLoadMore()
                 })
         }
     }
+
+    override fun getLoadGone(): Boolean = true
 
     override fun onDestroy() {
         super.onDestroy()

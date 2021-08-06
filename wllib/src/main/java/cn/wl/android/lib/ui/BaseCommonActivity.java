@@ -59,6 +59,8 @@ public abstract class BaseCommonActivity extends AppCompatActivity implements IL
     protected Boolean isLazyLoaded = false;
     protected BaseCommonActivity mActivity;
 
+    public static OnActivityCallback mCall;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +69,6 @@ public abstract class BaseCommonActivity extends AppCompatActivity implements IL
         ActStack.get().addActivity(this);
 
         if (isFitStatusBar()) {
-//            StatusBarUtil.setLightMode(mActivity);
-//            StatusBarUtil.setTranslucent(mActivity);
             ImmersionBar.with(mActivity)
                     .transparentStatusBar()
                     .statusBarDarkFont(true)
@@ -85,6 +85,14 @@ public abstract class BaseCommonActivity extends AppCompatActivity implements IL
         initViewCreated(savedInstanceState);
 
         publishLifecycle(CYC_CREATE);
+
+        try {
+            if (mCall != null) {
+                mCall.onCreated(this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -174,6 +182,14 @@ public abstract class BaseCommonActivity extends AppCompatActivity implements IL
 
     @Override
     protected void onDestroy() {
+        try {
+            if (mCall != null) {
+                mCall.onDestroy(this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         super.onDestroy();
 
         if (mEventBus != null) {

@@ -9,6 +9,8 @@ import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import com.jyn.vcview.VerificationCodeView
+import com.tendcloud.tenddata.TCAgent
+import com.tendcloud.tenddata.TDProfile
 import kotlinx.android.synthetic.main.activity_input_code.*
 import kotlinx.android.synthetic.main.activity_input_code.image_back
 import kotlinx.android.synthetic.main.activity_input_phone.*
@@ -82,8 +84,13 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
         TbsApi.user().obtainSignPhone(phoneNumber, code, rnd)
             .bindDefaultSub(doNext = {
                 HttpConfig.saveToken(it.token)
+
+
                 UserConfig.get().loginStatus = true
-                UserConfig.get().userEntity = it.userInfo
+                var userInfo = it.userInfo
+                UserConfig.get().userEntity = userInfo
+
+                TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.ANONYMOUS, userInfo.nickName)
 
                 eventBus.post(RefreshUserEvent())
                 mActivity?.finish()

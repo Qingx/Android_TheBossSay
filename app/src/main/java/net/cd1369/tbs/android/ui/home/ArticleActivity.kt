@@ -50,12 +50,16 @@ class ArticleActivity : BaseActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
+        var userEntity = UserConfig.get().userEntity
+
         articleId = intent.getStringExtra("articleId") as String
-        articleUrl = "${WLConfig.getBaseUrl()}#/article?id=$articleId"
+        articleUrl = "${WLConfig.getBaseUrl()}#/article?" +
+                "id=$articleId" +
+                "&version=${userEntity?.version ?: "1000"}" +
+                "&type=0"
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-
         web_view.loadUrl(articleUrl!!)
 
         val webSettings = web_view.settings
@@ -189,7 +193,8 @@ class ArticleActivity : BaseActivity() {
                                                         true
 
                                                     UserConfig.get().updateUser {
-                                                        it.collectNum = max((it.collectNum ?: 0) + 1, 0)
+                                                        it.collectNum =
+                                                            max((it.collectNum ?: 0) + 1, 0)
                                                     }
                                                     eventBus.post(RefreshUserEvent())
 

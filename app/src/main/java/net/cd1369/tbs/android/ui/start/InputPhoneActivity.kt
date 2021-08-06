@@ -17,6 +17,8 @@ import cn.wl.android.lib.utils.SpanUtils
 import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.ColorUtils
 import com.tencent.mm.opensdk.modelmsg.SendAuth
+import com.tendcloud.tenddata.TCAgent
+import com.tendcloud.tenddata.TDProfile
 import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
@@ -149,7 +151,10 @@ class InputPhoneActivity : BaseActivity() {
             .bindDefaultSub(doNext = {
                 HttpConfig.saveToken(it.token)
                 UserConfig.get().loginStatus = true
-                UserConfig.get().userEntity = it.userInfo
+                var userInfo = it.userInfo
+                UserConfig.get().userEntity = userInfo
+
+                TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
 
                 eventBus.post(RefreshUserEvent())
                 mActivity?.finish()
