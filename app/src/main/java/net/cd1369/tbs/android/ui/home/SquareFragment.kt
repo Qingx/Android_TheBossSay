@@ -122,6 +122,8 @@ class SquareFragment : BaseListFragment() {
 
         mDisposable?.dispose()
 
+//        showLoading()
+
         LabelManager.obtainLabels()
             .flatMap {
                 if (LabelManager.needUpdate(version)) {

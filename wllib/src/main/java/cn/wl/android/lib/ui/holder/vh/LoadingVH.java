@@ -3,6 +3,9 @@ package cn.wl.android.lib.ui.holder.vh;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import cn.wl.android.lib.R;
 import cn.wl.android.lib.ui.holder.StatusCodePool;
@@ -17,7 +20,7 @@ import cn.wl.android.lib.view.holder.BaseHolder;
  */
 public class LoadingVH extends BaseHolder implements IAinmHolder {
 
-    private View mLoading;
+    private ImageView mLoading;
 
     public LoadingVH() {
         super(StatusCodePool.LOADING_CODE);
@@ -25,7 +28,11 @@ public class LoadingVH extends BaseHolder implements IAinmHolder {
 
     @Override
     protected void initContentView(View contentView) {
-        mLoading = getView(R.id.lv_holder_loading);
+        mLoading = getView(R.id.iv_loading);
+
+        Glide.with(mLoading)
+                .load(R.drawable.loading)
+                .into(mLoading);
     }
 
     @Override

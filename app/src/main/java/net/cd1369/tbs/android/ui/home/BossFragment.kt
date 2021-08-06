@@ -94,7 +94,7 @@ class BossFragment : BaseFragment() {
 
                     mAdapter.setNewData(data)
                 } else {
-                    layout_refresh.autoRefresh()
+                    loadData()
                 }
             }
         }
@@ -241,6 +241,11 @@ class BossFragment : BaseFragment() {
         if (event.needLoading) {
             loadData()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
+        loadData()
     }
 
     override fun onDestroyView() {

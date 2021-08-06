@@ -44,6 +44,7 @@
         app:layout_constraintTop_toTopOf="@+id/layout_refresh">
 
         <include layout="@layout/layout_default_holder" />
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
