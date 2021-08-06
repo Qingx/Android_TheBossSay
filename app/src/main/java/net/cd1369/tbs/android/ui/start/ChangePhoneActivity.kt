@@ -21,6 +21,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
+import kotlin.math.max
 
 class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
     private var phoneNumber: String? = null

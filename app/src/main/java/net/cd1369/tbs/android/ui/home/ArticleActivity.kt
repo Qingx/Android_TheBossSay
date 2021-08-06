@@ -20,6 +20,7 @@ import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.*
+import kotlin.math.max
 
 class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
@@ -146,6 +147,9 @@ class ArticleActivity : BaseActivity() {
                 isCollect = false
                 image_collect.isSelected = false
 
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                }
                 eventBus.post(RefreshUserEvent())
 
                 Toasts.show("取消成功")
@@ -184,6 +188,9 @@ class ArticleActivity : BaseActivity() {
                                                     this@ArticleActivity.image_collect.isSelected =
                                                         true
 
+                                                    UserConfig.get().updateUser {
+                                                        it.collectNum = max((it.collectNum ?: 0) + 1, 0)
+                                                    }
                                                     eventBus.post(RefreshUserEvent())
 
                                                     Toasts.show("收藏成功")
@@ -225,6 +232,9 @@ class ArticleActivity : BaseActivity() {
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
             .bindDefaultSub(doNext = {
+                UserConfig.get().updateUser {
+                    it.readNum = max((it.readNum ?: 0) + 1, 0)
+                }
                 eventBus.post(RefreshUserEvent())
             }, doFail = {
 

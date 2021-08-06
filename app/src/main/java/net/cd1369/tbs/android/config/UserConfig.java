@@ -5,6 +5,7 @@ import net.cd1369.tbs.android.util.JPushHelper;
 
 import cn.wl.android.lib.config.BaseConfig;
 import cn.wl.android.lib.data.core.HttpConfig;
+import io.reactivex.functions.Consumer;
 
 public class UserConfig extends BaseConfig {
     public UserConfig() {
@@ -61,6 +62,19 @@ public class UserConfig extends BaseConfig {
 
     public String getAlias() {
         return getString(KEY.PushAlias, "");
+    }
+
+    public void updateUser(Consumer<UserEntity> updater) {
+        UserEntity userEntity = getUserEntity();
+
+        try {
+            if (!UserEntity.Companion.getEmpty().equals(userEntity)) {
+                updater.accept(userEntity);
+                setUserEntity(userEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

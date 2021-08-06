@@ -9,7 +9,9 @@ import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.scwang.smartrefresh.layout.constant.RefreshState
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_square.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
@@ -27,12 +29,13 @@ import net.cd1369.tbs.android.util.LabelManager
  * @email Cymbidium@outlook.com
  */
 class SquareFragment : BaseListFragment() {
+    private var mDisposable: Disposable? = null
+
     private var version: Long = 0L
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mAdapter: SquareInfoAdapter
 
     private var mSelectTab: String? = null
-//    private var needLoading = true
 
     companion object {
 
@@ -83,7 +86,12 @@ class SquareFragment : BaseListFragment() {
 
                     tryCompleteStatus(true)
                 } else {
-                    layout_refresh.autoRefresh()
+//                    if (layout_refresh.state == RefreshState.None) {
+//                        layout_refresh.autoRefresh()
+//                    } else {
+//
+//                    }
+                    loadData()
                 }
             }
         }
@@ -112,6 +120,8 @@ class SquareFragment : BaseListFragment() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
+        mDisposable?.dispose()
+
         LabelManager.obtainLabels()
             .flatMap {
                 if (LabelManager.needUpdate(version)) {
@@ -127,7 +137,11 @@ class SquareFragment : BaseListFragment() {
                     .onErrorReturn {
                         Page.empty()
                     }
-            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+            }
+            .doOnSubscribe {
+                mDisposable = it
+            }
+            .bindPageSubscribe(loadMore = loadMore, doNext = {
                 var insertAd = AdvanceAD.insertAd(mAdapter.data, it, loadMore)
                 if (loadMore) {
                     mAdapter.addData(insertAd)

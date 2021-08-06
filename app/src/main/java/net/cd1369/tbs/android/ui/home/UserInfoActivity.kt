@@ -22,6 +22,7 @@ import net.cd1369.tbs.android.ui.start.ConfirmPhoneActivity
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.math.max
 
 class UserInfoActivity : BaseActivity() {
     private lateinit var mAdapter: UserInfoAdapter
@@ -67,6 +68,10 @@ class UserInfoActivity : BaseActivity() {
                                             UserConfig.get().userEntity = entity
 
                                             mAdapter.notifyDataSetChanged()
+
+                                            UserConfig.get().updateUser {
+                                                it.nickName = newName
+                                            }
                                             eventBus.post(RefreshUserEvent())
 
                                             this.dismiss()

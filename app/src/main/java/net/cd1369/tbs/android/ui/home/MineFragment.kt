@@ -87,6 +87,8 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
             mAdapter.setNewData(MineItem.values().toMutableList())
             mAdapter.onRefreshLogin()
         }
+
+        setUserInfo()
     }
 
     /**
@@ -220,18 +222,7 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: RefreshUserEvent) {
-        loadData()
-    }
-
-    override fun loadData() {
-        super.loadData()
-
-        TbsApi.globalRefresh.bindDefaultSub {
-            HttpConfig.saveToken(it.token)
-            UserConfig.get().userEntity = it.userInfo
-
-            setUserInfo()
-        }
+        setUserInfo()
     }
 
     override fun onAdFailed(p0: AdvanceError?) {
@@ -239,22 +230,17 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
     }
 
     override fun onSdkSelected(p0: String?) {
-//        Log.e("OkHttp", "add...onAdFailed")
     }
 
     override fun onAdShow() {
-        Log.e("OkHttp", "add...onAdShow")
     }
 
     override fun onAdClicked() {
-
     }
 
     override fun onDislike() {
-
     }
 
     override fun onAdLoaded() {
-
     }
 }

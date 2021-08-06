@@ -27,6 +27,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.entity.OptPicEntity
@@ -42,6 +43,7 @@ import net.cd1369.tbs.android.util.LabelManager
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.math.max
 
 
 /**
@@ -140,6 +142,9 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
         TbsApi.boss().obtainCancelFollowBoss(id)
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, false)
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                }
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = false))
 
@@ -161,6 +166,9 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
         TbsApi.boss().obtainFollowBoss(id)
             .bindDefaultSub(doNext = {
                 mAdapter.doFollowChange(id, true)
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) + 1, 0)
+                }
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = true))
 

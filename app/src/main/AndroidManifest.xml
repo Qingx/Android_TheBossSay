@@ -101,8 +101,8 @@
         <activity android:name=".ui.home.SearchActivity" />
         <activity
             android:name=".ui.home.HomeActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.MainActivity"
             android:screenOrientation="portrait" />
@@ -114,6 +114,25 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.start.WelActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullTheme">
+            <!-- 要想在别的App上能成功调起App，必须添加intent过滤器 -->
+            <!-- 协议部分，随便设置 -->
+            <intent-filter>
+                <!--String url = "thebosssays://thebosssays/launch?id=xxx";-->
+                <!--协议部分，随便设置-->
+                <data
+                    android:host="thebosssays"
+                    android:path="/launch"
+                    android:scheme="thebosssays" />
+                <!--下面这几行也必须得设置-->
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
         <activity

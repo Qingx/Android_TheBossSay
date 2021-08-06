@@ -54,8 +54,8 @@ class SearchArticleActivity : BaseListActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
 
-        edit_input.hint =
-            if (DataConfig.get().hotSearch == "-1") "请输入内容" else DataConfig.get().hotSearch
+        edit_input.hint = if (DataConfig.get().hotSearch == "-1")
+            "请输入内容" else DataConfig.get().hotSearch
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)

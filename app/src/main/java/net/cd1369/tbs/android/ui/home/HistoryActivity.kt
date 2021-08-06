@@ -15,9 +15,11 @@ import kotlinx.android.synthetic.main.activity_history.*
 import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
 import net.cd1369.tbs.android.util.doClick
+import kotlin.math.max
 
 class HistoryActivity : BaseListActivity() {
     private lateinit var mAdapter: HistoryContentAdapter
@@ -108,6 +110,9 @@ class HistoryActivity : BaseListActivity() {
         TbsApi.user().obtainRemoveHistory(id)
             .bindDefaultSub(doNext = {
                 doRemove(id)
+                UserConfig.get().updateUser {
+                    it.readNum = max((it.readNum ?: 0) - 1, 0)
+                }
                 eventBus.post(RefreshUserEvent())
                 Toasts.show("删除成功")
             }, doDone = {

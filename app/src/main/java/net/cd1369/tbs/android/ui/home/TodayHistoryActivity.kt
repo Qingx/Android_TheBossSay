@@ -20,6 +20,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
 import net.cd1369.tbs.android.util.doClick
+import kotlin.math.max
 
 class TodayHistoryActivity : BaseListActivity() {
     private lateinit var mAdapter: HistoryContentAdapter
@@ -116,6 +117,9 @@ class TodayHistoryActivity : BaseListActivity() {
 
                 number -= 1
                 text_title.text = "阅读记录($number)"
+                UserConfig.get().updateUser {
+                    it.readNum = max((it.readNum ?: 0) - 1, 0)
+                }
 
                 eventBus.post(RefreshUserEvent())
 

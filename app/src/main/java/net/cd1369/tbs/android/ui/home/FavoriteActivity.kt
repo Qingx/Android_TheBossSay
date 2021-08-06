@@ -20,6 +20,7 @@ import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.math.max
 
 class FavoriteActivity : BaseActivity() {
     private lateinit var mAdapter: FavoriteAdapter
@@ -140,6 +141,9 @@ class FavoriteActivity : BaseActivity() {
 
                 mAdapter.remove(position)
 
+                UserConfig.get().updateUser {
+                    it.collectNum = max(totalNum ?: 0, 0)
+                }
                 eventBus.post(RefreshUserEvent())
 
                 Toasts.show("删除成功")
@@ -160,6 +164,10 @@ class FavoriteActivity : BaseActivity() {
 
                 totalNum = totalNum!! - 1
                 text_title.text = "我的收藏($totalNum)"
+
+                UserConfig.get().updateUser {
+                    it.collectNum = max((it.collectNum ?: 0) - 1, 0)
+                }
 
                 eventBus.post(RefreshUserEvent())
 

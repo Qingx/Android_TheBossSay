@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_boss.rv_tab
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.FollowVal
@@ -31,6 +32,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
@@ -212,6 +214,10 @@ class BossFragment : BaseFragment() {
 
         TbsApi.boss().obtainCancelFollowBoss(id)
             .bindDefaultSub(doNext = {
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                }
+
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, false, needLoading = false))
                 val index = mAdapter.data.indexOfFirst {
