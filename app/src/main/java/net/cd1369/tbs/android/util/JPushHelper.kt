@@ -118,6 +118,22 @@ object JPushHelper {
      * 尝试添加tag
      * @param tags Array<out String>
      */
+    fun tryAddAllTag(tag: Collection<String>) {
+        if (tag.isNullOrEmpty()) return
+
+        "添加推送Tag:$tag".logE()
+
+        JPushInterface.addTags(
+            mContext,
+            mVersion.getAndIncrement(),
+            tag.toSet()
+        )
+    }
+
+    /**
+     * 尝试添加tag
+     * @param tags Array<out String>
+     */
     fun tryDelTag(tag: String) {
         if (tag.isNullOrEmpty()) return
 

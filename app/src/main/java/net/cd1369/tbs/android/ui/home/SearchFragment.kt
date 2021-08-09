@@ -117,13 +117,56 @@ class SearchFragment : BaseListFragment() {
         }
 
         tv_action_goto doClick {
-            Toasts.show("确定")
+            tryFollowAllSelect()
 
-            switchActionShow(tv_action_open)
+//            switchActionShow(tv_action_open)
         }
 
         tv_action_cancel doClick {
             switchActionShow(tv_action_open)
+        }
+    }
+
+    /**
+     * 尝试关注所有选中的boss
+     */
+    private fun tryFollowAllSelect() {
+        showLoadingAlert("正在追踪...")
+
+        val idSet = mAdapter.mIdSet
+
+        if (idSet.isNullOrEmpty()) {
+            Toasts.show("请选择关注的boss")
+            return
+        }
+
+        TbsApi.boss().obtainGuideFollow(idSet.toList())
+            .doOnNext {
+                changeBossCollectStatus(mTempBossList, idSet)
+                changeBossCollectStatus(mAdapter.data, idSet)
+            }
+            .bindDefaultSub {
+                switchActionShow(tv_action_open)
+                mAdapter.notifyDataSetChanged()
+
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) + idSet.size, 0)
+                }
+                eventBus.post(RefreshUserEvent())
+                eventBus.post(FollowBossEvent(needLoading = true))
+
+                JPushHelper.tryAddAllTag(idSet)
+            }
+    }
+
+    private fun changeBossCollectStatus(list: List<BossInfoEntity>, idSet: HashSet<String>) {
+        if (list.isEmpty()) return
+        if (idSet.isEmpty()) return
+
+        for (entity in list) {
+            if (entity.id in idSet) {
+                entity.isCollect = true
+            }
         }
     }
 
