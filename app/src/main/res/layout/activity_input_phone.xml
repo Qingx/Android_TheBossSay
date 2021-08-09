@@ -107,12 +107,11 @@
 
     <CheckBox
         android:id="@+id/check_permission"
-        style="@style/Widget.AppCompat.CompoundButton.RadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
-        android:scaleX="0.6"
-        android:scaleY="0.6"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@id/text_title"
         app:layout_constraintTop_toBottomOf="@id/edit_input" />

@@ -16,6 +16,12 @@ import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+/**
+ * @Email 15025496981@163.com
+ * @User JustBlue 李波
+ * @time 10:22 2021/8/9
+ * @desc
+ */
 class HomeActivity : BaseActivity() {
     val fragments = mutableListOf<Fragment>()
 

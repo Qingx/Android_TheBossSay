@@ -22,6 +22,7 @@ import net.cd1369.tbs.android.data.database.BossInfoDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
 import net.cd1369.tbs.android.util.LabelManager
 
@@ -45,7 +46,8 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
     private var advanceSplash: AdvanceSplash? = null
 
     private val serviceDialog by lazy {
-        ServicePrivacyDialog.showDialog(supportFragmentManager, "SplashActivity")
+        ServicePrivacyDialog.showDialog(
+            supportFragmentManager, "SplashActivity")
     }
 
     companion object {
@@ -149,13 +151,26 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
 
             val firstUse = DataConfig.get().firstUse
 
+            var tempId = WelActivity.tempId
+
             if (firstUse && !bossList.isNullOrEmpty()) {
                 val guideBoss = bossList.filter { it.guide }
                 GuideActivity.start(mActivity, ArrayList(guideBoss))
                 mActivity?.finish()
             } else {
-                HomeActivity.start(mActivity)
-                mActivity?.finish()
+                if (tempId.isNullOrEmpty()) {
+                    HomeActivity.start(mActivity)
+                    mActivity?.finish()
+                } else {
+                    var intentHome = Intent(mActivity, HomeActivity::class.java)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                    var intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                    intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intentArticle.putExtra("articleId", tempId)
+
+                    mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                }
             }
         }
     }

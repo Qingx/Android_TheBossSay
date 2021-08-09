@@ -1,5 +1,7 @@
 package net.cd1369.tbs.android.ui.home
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -57,6 +59,13 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
 
         mAdapter = object : MineItemAdapter() {
             override fun onItemClick(item: MineItem) {
+
+                var intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("thebosssays://thebosssays/launch?id=1423235941224644610")
+                )
+                startActivity(intent)
+
                 when (item) {
                     MineItem.Favorite -> onClickFavorite()
                     MineItem.History -> onClickHistory()

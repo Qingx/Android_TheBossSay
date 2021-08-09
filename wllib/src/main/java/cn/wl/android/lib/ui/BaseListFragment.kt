@@ -263,7 +263,7 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
      *
      * @return
      */
-    protected fun createPageParam(): PageParam {
+    open fun createPageParam(): PageParam {
         return PageParam.create()
     }
 

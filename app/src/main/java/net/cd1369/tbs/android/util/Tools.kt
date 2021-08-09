@@ -258,6 +258,35 @@ fun isWeChatInstalled(context: Context): Boolean {
     return info != null
 }
 
+fun pathQuery(url: String, queryCreator: (HashMap<String, String>) -> Unit): String {
+    if (url.isNullOrEmpty()) return ""
+
+    var sb = StringBuilder(url)
+    val hashMap = HashMap<String, String>()
+    queryCreator.invoke(hashMap)
+
+    var iterator = hashMap.iterator()
+    if (iterator.hasNext()) {
+        var next = iterator.next()
+
+        sb.append('?')
+        sb.append(next.key)
+        sb.append('=')
+        sb.append(next.value)
+    }
+
+    while (iterator.hasNext()) {
+        var next = iterator.next()
+
+        sb.append('&')
+        sb.append(next.key)
+        sb.append('=')
+        sb.append(next.value)
+    }
+
+    return sb.toString()
+}
+
 /**
  * 分享至微信会话
  * @param resources Resources
@@ -269,7 +298,6 @@ fun doShareSession(
     title: String = "Boss说-追踪老板的言论",
     des: String = "深度学习大佬的言论文章，找寻你的成功暗门"
 ) {
-
     val webPage = WXWebpageObject()
     webPage.webpageUrl = url
 

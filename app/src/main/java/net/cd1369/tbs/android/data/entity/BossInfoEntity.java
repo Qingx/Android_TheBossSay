@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.data.entity;
 
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -65,10 +66,26 @@ public class BossInfoEntity implements Serializable {
     private List<String> photoUrl;
 
     @Transient
+    private List<String> labels;
+
+    @Transient
     private boolean top; //是否置顶
 
     @Transient
     private long relTime; //置顶时间
+
+    public boolean checkLabels(String label) {
+        if (Lists.isEmpty(labels)) return false;
+        if (TextUtils.isEmpty(label)) return false;
+
+        for (String s : labels) {
+            if (label.equals(s)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void showImage(ImageView iv1, ImageView iv2) {
         List<String> photoUrl = this.photoUrl;
@@ -129,6 +146,14 @@ public class BossInfoEntity implements Serializable {
 
     @Generated(hash = 441427182)
     public BossInfoEntity() {
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
     }
 
     public boolean isTop() {

@@ -16,6 +16,7 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.ui.adapter.GuideInfoAdapter
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
@@ -61,6 +62,8 @@ class GuideActivity : BaseActivity() {
             override fun onAddFollow(data: MutableList<String>) {
                 showLoadingAlert("搜寻并追踪...")
 
+                var tempId = WelActivity.tempId
+
                 TbsApi.boss().obtainGuideFollow(data)
                     .bindDefaultSub(doNext = {
                         Toasts.show("追踪成功")
@@ -70,8 +73,20 @@ class GuideActivity : BaseActivity() {
 
                         DataConfig.get().firstUse = false
                         DataConfig.get().updateTime = Times.current()
-                        HomeActivity.start(mActivity)
-                        mActivity?.finish()
+
+                        if (tempId.isNullOrEmpty()) {
+                            HomeActivity.start(mActivity)
+                            mActivity?.finish()
+                        } else {
+                            var intentHome = Intent(mActivity, HomeActivity::class.java)
+                            intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                            var intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                            intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            intentArticle.putExtra("articleId", tempId)
+
+                            mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                        }
                     }, doFail = {
                         hideLoadingAlert()
                         it.msg.logE()
@@ -99,10 +114,24 @@ class GuideActivity : BaseActivity() {
         }
 
         text_time doClick {
+            var tempId = WelActivity.tempId
+
             if (text_time.text == "跳过") {
                 DataConfig.get().firstUse = false
-                HomeActivity.start(mActivity)
-                mActivity?.finish()
+
+                if (tempId.isNullOrEmpty()) {
+                    HomeActivity.start(mActivity)
+                    mActivity?.finish()
+                } else {
+                    var intentHome = Intent(mActivity, HomeActivity::class.java)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                    var intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                    intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intentArticle.putExtra("articleId", tempId)
+
+                    mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                }
             }
         }
     }

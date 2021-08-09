@@ -81,10 +81,14 @@
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
 
-        <meta-data android:name="TD_APP_ID" android:value="016127D4E3C844CCAB7BF4EE55D88CFE" />
-        <meta-data android:name="TD_CHANNEL_ID" android:value="Android-Boss" />
+        <meta-data
+            android:name="TD_APP_ID"
+            android:value="016127D4E3C844CCAB7BF4EE55D88CFE" />
+        <meta-data
+            android:name="TD_CHANNEL_ID"
+            android:value="Android-Boss" />
 
-        <activity android:name=".ui.home.AboutUsActivity"/>
+        <activity android:name=".ui.home.AboutUsActivity" />
         <activity android:name=".ui.home.WebActivity" />
         <activity android:name=".ui.home.ArticleActivity" />
         <activity android:name=".ui.home.TodayHistoryActivity" />
@@ -99,10 +103,14 @@
         <activity android:name=".ui.start.InputCodeActivity" />
         <activity android:name=".ui.start.InputPhoneActivity" />
         <activity android:name=".ui.start.GuideActivity" />
-        <activity android:name=".ui.start.SplashActivity" />
+        <activity
+            android:name=".ui.start.SplashActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".ui.home.BossInfoActivity" />
         <activity android:name=".ui.home.BossHomeActivity" />
-        <activity android:name=".ui.home.SearchActivity"
+        <activity
+            android:name=".ui.home.SearchActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".ui.home.HomeActivity"

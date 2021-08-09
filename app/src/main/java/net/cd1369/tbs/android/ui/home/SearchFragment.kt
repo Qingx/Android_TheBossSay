@@ -2,21 +2,18 @@ package net.cd1369.tbs.android.ui.home
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import cn.wl.android.lib.core.Page
+import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseListFragment
 import cn.wl.android.lib.utils.Toasts
-import com.advance.AdvanceBanner
-import com.advance.AdvanceBannerListener
-import com.advance.model.AdvanceError
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -24,8 +21,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_search.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.Const
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
@@ -35,7 +30,6 @@ import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
-import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
 import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
 import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
 import net.cd1369.tbs.android.util.JPushHelper
@@ -51,13 +45,16 @@ import kotlin.math.max
  * @description
  * @email Cymbidium@outlook.com
  */
-class SearchFragment : BaseListFragment(), AdvanceBannerListener {
+class SearchFragment : BaseListFragment() {
+
+    private lateinit var tabAdapter: SearchTabAdapter
+    private lateinit var mAdapter: SearchInfoAdapter
+
+    private var mTempBossList: List<BossInfoEntity> = mutableListOf()
+
     private var showDialog: FollowCancelDialog? = null
     private var mOptPic: OptPicEntity? = null
     private var version: Long = 0L
-    private lateinit var tabAdapter: SearchTabAdapter
-    private lateinit var mAdapter: SearchInfoAdapter
-    private var needLoading = true
     private var mSelectTab = ""
 
     companion object {
@@ -77,14 +74,16 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
         layout_refresh.setHeaderHeight(60f)
 
         layout_refresh.setOnRefreshListener {
-            needLoading = false
             loadData(false)
         }
 
         tabAdapter = object : SearchTabAdapter() {
             override fun onClick(item: String) {
                 mSelectTab = item
-                layout_refresh.autoRefresh()
+
+                var filterBossList = filterBossList(mTempBossList)
+                mAdapter.setNewData(filterBossList)
+                mAdapter.loadMoreEnd(getLoadGone())
             }
         }
 
@@ -96,7 +95,6 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 }
             }
 
-//        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : GridLayoutManager(mActivity, 3, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -111,6 +109,33 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 BossInfoActivity.start(mActivity, optPic.entity)
             }
         }
+
+        tv_action_open doClick {
+            if (!it.isSelected) {
+                switchActionShow(it)
+            }
+        }
+
+        tv_action_goto doClick {
+            Toasts.show("确定")
+
+            switchActionShow(tv_action_open)
+        }
+
+        tv_action_cancel doClick {
+            switchActionShow(tv_action_open)
+        }
+    }
+
+    private fun switchActionShow(openView: View) {
+        val target = !openView.isSelected
+        openView.isSelected = target
+
+        TransitionManager.beginDelayedTransition(ll_action)
+
+        ll_action_root.isVisible = target
+
+        mAdapter.isEdit = target
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -148,6 +173,9 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 eventBus.post(RefreshUserEvent())
                 eventBus.post(FollowBossEvent(id, isFollow = false))
 
+                JPushHelper.tryDelTag(id)
+                tryUpdateItem(id, false)
+
                 showDialog?.tryDismiss()
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
@@ -173,11 +201,11 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                 eventBus.post(FollowBossEvent(id, isFollow = true))
 
                 JPushHelper.tryAddTag(id)
+                tryUpdateItem(id, true)
 
                 SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
                     .apply {
                         onConfirmClick = SuccessFollowDialog.OnConfirmClick {
-//                            Toasts.show("开启推送")
                             this.dismiss()
                         }
                     }
@@ -221,89 +249,101 @@ class SearchFragment : BaseListFragment(), AdvanceBannerListener {
                     iv_img.setImageBitmap(resource)
                 }
             })
+    }
 
+    override fun createPageParam(): PageParam {
+        return super.createPageParam().apply {
+            this.size = Int.MAX_VALUE
+        }
     }
 
     override fun loadData(loadMore: Boolean) {
-        super.loadData(loadMore)
-
-        loadOptPic()
-
+//        super.loadData(loadMore)
+        val pageParam = pageParam
         if (!loadMore) {
             pageParam?.resetPage()
 
-            if (needLoading) showLoading()
+            if (mTempBossList.isNullOrEmpty()) {
+                showLoading()
+            }
+        }
 
-            LabelManager.obtainLabels()
-                .flatMap {
-                    if (LabelManager.needUpdate(version)) {
-                        version = LabelManager.getVersion()
+        loadOptPic()
 
-                        it.add(0, BossLabelEntity.empty)
-                        tabAdapter.setNewData(it)
+        LabelManager.obtainLabels()
+            .flatMap {
+                if (LabelManager.needUpdate(version)) {
+                    version = LabelManager.getVersion()
 
-                        mSelectTab = it[0].id
-                    }
+                    it.add(0, BossLabelEntity.empty)
+                    tabAdapter.setNewData(it)
 
-                    TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
-                        .onErrorReturn {
-                            Page.empty()
-                        }
-                }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                    mAdapter.setNewData(it)
+                    mSelectTab = it[0].id
+                }
 
-//                    mAdapter.loadMoreEnd()
-                }, doDone = {
-                    showContent()
+                TbsApi.boss().obtainAllBossList(pageParam, "-1")
+                    .onErrorReturn { Page.empty() }
+            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                mTempBossList = it
 
-                    layout_refresh.finishRefresh()
-                })
-        } else {
-            TbsApi.boss().obtainAllBossList(pageParam, mSelectTab)
-                .onErrorReturn {
-                    Page.empty()
-                }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                    mAdapter.addData(it)
-                }, doDone = {
-                    layout_refresh.finishLoadMore()
-                })
+                var filterBossList = filterBossList(it)
+                mAdapter.setNewData(filterBossList)
+            }, doDone = {
+                showContent()
+
+                layout_refresh.finishRefresh()
+            })
+    }
+
+    /**
+     * 过滤数据
+     * @param list List<BossInfoEntity>
+     * @return List<BossInfoEntity>
+     */
+    private fun filterBossList(list: List<BossInfoEntity>): List<BossInfoEntity> {
+        if (list.isEmpty()) return list
+
+        var selectTab = mSelectTab
+
+        if (selectTab.isNullOrEmpty()) {
+            selectTab = "-1"
+        }
+
+        return list.toMutableList().filter {
+            return@filter "-1" == selectTab || it.checkLabels(selectTab)
+        }
+    }
+
+    /**
+     * 尝试刷新缓存数据
+     * @param id String
+     * @param target Boolean
+     */
+    private fun tryUpdateItem(id: String, target: Boolean) {
+        if (id.isNullOrEmpty()) return
+
+        val list = mTempBossList
+
+        if (!list.isNullOrEmpty()) {
+            list.firstOrNull {
+                id == it.id
+            }?.let {
+                it.isCollect = target
+            }
         }
     }
 
     override fun getLoadGone(): Boolean = true
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-//        advanceBanner?.destroy()
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: FollowBossEvent) {
         mAdapter.doFollowChange(event.id!!, event.isFollow)
     }
 
-    override fun onAdFailed(p0: AdvanceError?) {
-        Log.e("OkHttp", "add...onAdFailed")
+    override fun onLoadMoreRequested() {
+        timerDelay(100) {
+            tryCompleteStatus(false)
+        }
     }
 
-    override fun onSdkSelected(p0: String?) {
-        Log.e("OkHttp", "add...onAdFailed")
-    }
-
-    override fun onAdShow() {
-        Log.e("OkHttp", "add...onAdShow")
-    }
-
-    override fun onAdClicked() {
-
-    }
-
-    override fun onDislike() {
-
-    }
-
-    override fun onAdLoaded() {
-
-    }
 }

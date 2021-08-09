@@ -19,6 +19,7 @@ import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
 import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
+import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
 import kotlin.math.max
 
@@ -55,8 +56,7 @@ class ArticleActivity : BaseActivity() {
         articleId = intent.getStringExtra("articleId") as String
         articleUrl = "${WLConfig.getBaseUrl()}#/article?" +
                 "id=$articleId" +
-                "&version=${userEntity?.version ?: "1000"}" +
-                "&type=0"
+                "&version=${userEntity?.version ?: "1000"}"
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
@@ -103,6 +103,12 @@ class ArticleActivity : BaseActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        WelActivity.tempId = ""
+    }
+
     private fun onShare() {
         ShareDialog.showDialog(supportFragmentManager, "shareDialog")
             .apply {
@@ -111,13 +117,21 @@ class ArticleActivity : BaseActivity() {
                         resources,
                         cover = articleCover,
                         title = articleTitle!!,
-                        des = articleDes!!
+                        des = articleDes!!,
+                        url = pathQuery(Const.SHARE_URL) {
+                            it["id"] = articleId ?: ""
+                            it["type"] = "1"
+                        }
                     )
                 }
                 onTimeline = Runnable {
                     doShareTimeline(
                         resources, cover = articleCover,
                         title = articleTitle!!,
+                        url = pathQuery(Const.SHARE_URL) {
+                            it["id"] = articleId ?: ""
+                            it["type"] = "1"
+                        }
                     )
                 }
                 onCopyLink = Runnable {
