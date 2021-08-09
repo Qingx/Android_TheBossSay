@@ -17,6 +17,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.data.database.BossInfoDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
@@ -53,14 +54,15 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
          * 预申请动态权限
          */
         private val mPer = arrayOf(
-//            Manifest.permission.WRITE_SETTINGS,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CAMERA
         )
 
+        /**
+         * 启动界面
+         * @param context Context?
+         */
         fun start(context: Context?) {
             val intent = Intent(context, SplashActivity::class.java)
                 .apply {
@@ -74,7 +76,6 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
         return R.layout.activity_splash
     }
 
-    @SuppressLint("SetTextI18n", "MissingPermission")
     override fun initViewCreated(savedInstanceState: Bundle?) {
         tryShowService()
 
@@ -87,9 +88,6 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
                 TbsApi.boss().obtainGuideBoss()
                     .onErrorReturn { mutableListOf() }
             }.bindDefaultSub {
-//                if (!it.isNullOrEmpty()) {
-//                    BossInfoDaoManager.getInstance().insertList(it)
-//                }
                 bossList = it
                 hasLoadBoss = true
 
@@ -106,14 +104,21 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
 
             serviceDialog.doConfirm = Runnable {
                 DataConfig.get().isNeedService = false
+                TbsApp.tryInitThree(applicationContext)
 
                 rxPermission.request(*mPer)
                     .subscribe({
                         hasService = true
-                        tryLunchApp()
+
+                        timerDelay(100) {
+                            tryLunchApp()
+                        }
                     }) {
                         hasService = true
-                        tryLunchApp()
+
+                        timerDelay(100) {
+                            tryLunchApp()
+                        }
                     }
             }
         } else {
@@ -124,8 +129,9 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
             //必须：设置开屏核心回调事件的监听器。
             //必须：设置开屏核心回调事件的监听器。
             advanceSplash?.setAdListener(this)
-            //必须：请求策略并请求和展示广告，如果targetSDKVersion >= 23，需要申请好权限,如果您的App没有适配到Android6.0（即targetSDKVersion < 23）或者已经提前申请权限，那么只需要在这里直接调用loadAd方法。
-            //必须：请求策略并请求和展示广告，如果targetSDKVersion >= 23，需要申请好权限,如果您的App没有适配到Android6.0（即targetSDKVersion < 23）或者已经提前申请权限，那么只需要在这里直接调用loadAd方法。
+            // 必须：请求策略并请求和展示广告，如果targetSDKVersion >= 23，需要申请好权限,
+            // 如果您的App没有适配到Android6.0（即targetSDKVersion < 23）或者已经提前申请权限，
+            // 那么只需要在这里直接调用loadAd方法。
             advanceSplash?.loadStrategy()
         }
     }
