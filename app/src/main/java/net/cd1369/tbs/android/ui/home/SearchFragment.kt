@@ -131,14 +131,13 @@ class SearchFragment : BaseListFragment() {
      * 尝试关注所有选中的boss
      */
     private fun tryFollowAllSelect() {
-        showLoadingAlert("正在追踪...")
-
         val idSet = mAdapter.mIdSet
 
         if (idSet.isNullOrEmpty()) {
             Toasts.show("请选择关注的boss")
             return
         }
+        showLoadingAlert("正在追踪...")
 
         TbsApi.boss().obtainGuideFollow(idSet.toList())
             .doOnNext {
