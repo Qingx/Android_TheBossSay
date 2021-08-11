@@ -3,16 +3,9 @@ package net.cd1369.tbs.android.data.entity;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Property;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Transient;
 
 import cn.wl.android.lib.utils.GlideApp;
 import cn.wl.android.lib.utils.Lists;
@@ -24,54 +17,29 @@ import cn.wl.android.lib.utils.ViewHelper;
  * @description
  * @email Cymbidium@outlook.com
  */
-@Entity
 public class BossInfoEntity implements Serializable {
     private static final long serialVersionUID = 123L;
-    @Id
     private String id;
-    @Property(nameInDb = "name")
     private String name; //boss名
-    @Property(nameInDb = "head")
     private String head; //boss头像
-    @Property(nameInDb = "role")
     private String role; //boss角色, 职务
-    @Property(nameInDb = "info")
     private String info; //boss描述
-    @Property(nameInDb = "date")
     private long date; //生日
-    @Property(nameInDb = "isCollect")
     private boolean isCollect; //是否追踪
-    @Property(nameInDb = "isPoint")
     private boolean isPoint;//是否点赞
-    @Property(nameInDb = "deleted")
     private boolean deleted; //是否被删除
-    @Property(nameInDb = "guide")
     private boolean guide; //是否被推荐
-    @Property(nameInDb = "point")
     private int point; //点赞数
-    @Property(nameInDb = "collect")
     private int collect; //收藏数
-    @Property(nameInDb = "updateCount")
     private int updateCount; //更新数量
-    @Property(nameInDb = "totalCount")
     private int totalCount; //发布文章总数
-    @Property(nameInDb = "readCount")
     private int readCount; //阅读数
-    @Property(nameInDb = "updateTime")
     private Long updateTime; //上次更新时间
-    @Property(nameInDb = "createTime")
     private Long createTime; //创建时间
 
-    @Transient
     private List<String> photoUrl;
-
-    @Transient
     private List<String> labels;
-
-    @Transient
     private boolean top; //是否置顶
-
-    @Transient
     private long relTime; //置顶时间
 
     public boolean checkLabels(String label) {
@@ -121,7 +89,6 @@ public class BossInfoEntity implements Serializable {
 
     static BossInfoEntity empty = new BossInfoEntity();
 
-    @Generated(hash = 40537958)
     public BossInfoEntity(String id, String name, String head, String role, String info, long date,
                           boolean isCollect, boolean isPoint, boolean deleted, boolean guide, int point, int collect,
                           int updateCount, int totalCount, int readCount, Long updateTime, Long createTime) {
@@ -144,7 +111,6 @@ public class BossInfoEntity implements Serializable {
         this.createTime = createTime;
     }
 
-    @Generated(hash = 441427182)
     public BossInfoEntity() {
     }
 

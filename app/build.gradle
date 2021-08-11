@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id 'org.greenrobot.greendao'
+//    id 'org.greenrobot.greendao'
 }
 
 def rootPro = rootProject.ext
@@ -118,11 +118,11 @@ android {
         abortOnError false
     }
 
-    greendao {
-        schemaVersion 1
-        daoPackage 'com.greendao.gen'
-        targetGenDir 'src/main/java'
-    }
+//    greendao {
+//        schemaVersion 1
+//        daoPackage 'com.greendao.gen'
+//        targetGenDir 'src/main/java'
+//    }
 }
 
 /**
@@ -153,8 +153,8 @@ dependencies {
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'//recyclerView左滑删除
     implementation 'com.jyn.verificationcodeview:verificationcodeview:1.0.1'
     implementation 'com.irozon.sneaker:sneaker:2.0.0'
-    implementation 'org.greenrobot:greendao:3.3.0'
-    implementation 'org.greenrobot:greendao-generator:3.3.0'
+//    implementation 'org.greenrobot:greendao:3.3.0'
+//    implementation 'org.greenrobot:greendao-generator:3.3.0'
     implementation 'com.google.zxing:core:3.3.0'
 
     implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0

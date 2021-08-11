@@ -1,6 +1,5 @@
 package net.cd1369.tbs.android.config;
 
-import net.cd1369.tbs.android.data.database.BossLabelDaoManager;
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 
 import java.util.List;
