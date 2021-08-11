@@ -47,7 +47,6 @@ class SearchActivity : BaseActivity() {
         edit_input.hint =
             if (DataConfig.get().hotSearch == "-1") "请输入内容" else DataConfig.get().hotSearch
 
-
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
             override fun getItemCount(): Int {
                 return 2
@@ -96,7 +95,5 @@ class SearchActivity : BaseActivity() {
     fun eventBus(event: HotSearchEvent) {
         edit_input.hint = event.content
     }
-
-
 
 }
