@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.data.database.BossLabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -62,7 +61,7 @@ object LabelManager {
         if (change && !isLocal) {
             Log.e("OkHttp", "标签已更新...")
             // 同步数据库
-            BossLabelDaoManager.getInstance().insertList(it)
+//            BossLabelDaoManager.getInstance().insertList(it)
         } else {
             Log.e("OkHttp", "标签未更新...")
         }

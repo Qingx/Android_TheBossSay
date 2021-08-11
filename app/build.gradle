@@ -118,11 +118,11 @@ android {
         abortOnError false
     }
 
-    greendao {
-        schemaVersion 1
-        daoPackage 'com.greendao.gen'
-        targetGenDir 'src/main/java'
-    }
+//    greendao {
+//        schemaVersion 1
+//        daoPackage 'com.greendao.gen'
+//        targetGenDir 'src/main/java'
+//    }
 }
 
 /**

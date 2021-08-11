@@ -1,7 +1,6 @@
 package net.cd1369.tbs.android.ui.start
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,14 +10,12 @@ import cn.wl.android.lib.ui.BaseActivity
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener
 import com.advance.model.AdvanceError
-import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
-import net.cd1369.tbs.android.data.database.BossInfoDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog

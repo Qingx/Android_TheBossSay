@@ -1,10 +1,5 @@
 package net.cd1369.tbs.android.data.entity;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Property;
-import org.greenrobot.greendao.annotation.Generated;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,27 +9,18 @@ import java.util.Objects;
  * @description
  * @email Cymbidium@outlook.com
  */
-@Entity
 public class BossLabelEntity implements Serializable {
     private static final long serialVersionUID = 456L;
-    @Id
     private String id;
-    @Property(nameInDb = "name")
     private String name;
-    @Property(nameInDb = "keyValue")
     private String keyValue;
-    @Property(nameInDb = "createTime")
     private Long createTime;
-    @Property(nameInDb = "parentId")
     private String parentId;
-    @Property(nameInDb = "sort")
     private int sort;
-    @Property(nameInDb = "type")
     private int type;
 
     public static BossLabelEntity empty = new BossLabelEntity("-1", "", "", Long.getLong("0"), "", 0, 0);
 
-    @Generated(hash = 1667490424)
     public BossLabelEntity(String id, String name, String keyValue, Long createTime,
                            String parentId, int sort, int type) {
         this.id = id;
@@ -46,7 +32,6 @@ public class BossLabelEntity implements Serializable {
         this.type = type;
     }
 
-    @Generated(hash = 1489330764)
     public BossLabelEntity() {
     }
 
