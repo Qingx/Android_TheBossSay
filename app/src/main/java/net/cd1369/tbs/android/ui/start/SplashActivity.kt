@@ -47,7 +47,8 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
 
     private val serviceDialog by lazy {
         ServicePrivacyDialog.showDialog(
-            supportFragmentManager, "SplashActivity")
+            supportFragmentManager, "SplashActivity"
+        )
     }
 
     companion object {
@@ -81,11 +82,10 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         tryShowService()
 
-        LabelManager.obtainLabels()
+        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
             .flatMap {
-                if (!it.isNullOrEmpty()) {
-                    it.add(0, BossLabelEntity.empty)
-                }
+                it.add(0, BossLabelEntity.empty)
+                DataConfig.get().bossLabels = it
 
                 TbsApi.boss().obtainGuideBoss()
                     .onErrorReturn { mutableListOf() }

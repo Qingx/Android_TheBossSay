@@ -12,6 +12,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.ui.test.SpeechTackFragment
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -37,7 +38,7 @@ class TalkFragment : BaseFragment() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        fragments.add(FollowFragment.createFragment())
+        fragments.add(SpeechTackFragment.createFragment())
         fragments.add(SquareFragment.createFragment())
     }
 
@@ -72,7 +73,7 @@ class TalkFragment : BaseFragment() {
         })
 
         view_pager.currentItem = 0
-        view_pager.isUserInputEnabled = true
+        view_pager.isUserInputEnabled = false
 
         text_follow doClick {
             view_pager.currentItem = 0

@@ -74,6 +74,10 @@ public class DataConfig extends BaseConfig {
         return this.bossLabels;
     }
 
+    public void setBossLabels(List<BossLabelEntity> list) {
+        this.bossLabels = list;
+    }
+
     public void setUpdateTime(Long time) {
         putLong(KEY.keyUpdateTime, time);
     }

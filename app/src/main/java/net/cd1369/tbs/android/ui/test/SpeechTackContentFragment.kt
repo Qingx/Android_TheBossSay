@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.ui.test
 import android.os.Bundle
 import android.view.View
 import cn.wl.android.lib.ui.BaseFragment
+import kotlinx.android.synthetic.main.fragment_speech_tack_content_fragment.*
 import net.cd1369.tbs.android.R
 
 /**
@@ -34,5 +35,6 @@ class SpeechTackContentFragment : BaseFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+        text_content.text = mLabel
     }
 }
