@@ -84,7 +84,7 @@ class SearchActivity : BaseActivity() {
         }
 
         text_search doClick {
-            if (edit_input.text.toString().isNullOrEmpty()) {
+            if (!edit_input.text.toString().isNullOrEmpty()) {
                 view_pager.setCurrentItem(1, false)
                 resultFragment.eventSearch(edit_input.text.toString())
                 eventBus.post(SearchEvent(edit_input.text.toString()))
