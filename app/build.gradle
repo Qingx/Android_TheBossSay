@@ -79,7 +79,8 @@ android {
             buildConfigField("String", "FILE_URL", "\"http://file-tr.hii-m.net/\"")
             buildConfigField("String", "DOWN_URL", "\"http://download-tr.hii-m.net/\"")
 
-            buildConfigField("String", "BASE_URL", "\"http://192.168.1.125:8088/\"") //阿里云
+//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.125:8088/\"") //阿里云
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
 
             manifestPlaceholders = [
                     APP_Channel  : "DEV",
