@@ -71,7 +71,11 @@ public class DataConfig extends BaseConfig {
     }
 
     public List<BossLabelEntity> getBossLabels() {
-        return BossLabelDaoManager.getInstance().getAllLabel();
+        return this.bossLabels;
+    }
+
+    public void setBossLabels(List<BossLabelEntity> list) {
+        this.bossLabels = list;
     }
 
     public void setUpdateTime(Long time) {

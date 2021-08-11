@@ -8,8 +8,8 @@ ext {
              * 2021-07-29 v1.0.7
              * 2021-08-05 v1.0.8
              */
-            versionCode      : 1008,
-            versionName      : "1.0.8+1",
+            versionCode      : 1009,
+            versionName      : "1.0.9+1",
             testVersionCode  : 1006,   // 2020-06-29
             testVersionName  : "1.0.7",
     ]
