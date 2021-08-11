@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.test
+package net.cd1369.tbs.android.ui.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -16,22 +16,26 @@ import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.Tools.isLabelsEmpty
 
 /**
- * Created by Xiang on 2021/8/11 10:00
+ * Created by Xiang on 2021/8/11 12:02
  * @description
  * @email Cymbidium@outlook.com
  */
-class SpeechTackFragment : BaseFragment() {
+class SpeechSquareFragment : BaseFragment() {
     private lateinit var tabAdapter: HomeTabAdapter
     private lateinit var mLabels: MutableList<BossLabelEntity>
 
     companion object {
-        fun createFragment(): SpeechTackFragment {
-            return SpeechTackFragment()
+        fun createFragment(): SpeechSquareFragment {
+            return SpeechSquareFragment()
         }
     }
 
     override fun getLayoutResource(): Any {
         return R.layout.fragment_speech_tack
+    }
+
+    override fun beforeCreateView(savedInstanceState: Bundle?) {
+        super.beforeCreateView(savedInstanceState)
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -42,18 +46,23 @@ class SpeechTackFragment : BaseFragment() {
 
         tabAdapter = object : HomeTabAdapter() {
             override fun onSelect(select: String) {
+                val index = mLabels.indexOfFirst {
+                    it.id == select
+                }
 
+                if (index != -1) {
+                    view_pager.setCurrentItem(index, false)
+                }
             }
         }
 
         rv_tab.adapter = tabAdapter
 
+        view_pager.isUserInputEnabled = false
     }
 
     override fun loadData() {
         super.loadData()
-
-        showLoading()
 
         mLabels = DataConfig.get().bossLabels
 
@@ -66,9 +75,11 @@ class SpeechTackFragment : BaseFragment() {
                 }
 
                 override fun createFragment(position: Int): Fragment {
-                    return SpeechTackContentFragment.createFragment(mLabels[position].id)
+                    return SpeechSquareContentFragment.createFragment(mLabels[position].id)
                 }
             }
+
+            view_pager.offscreenPageLimit = mLabels.size
         } else {
             TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }.bindSubscribe {
                 it.add(0, BossLabelEntity.empty)
@@ -83,9 +94,11 @@ class SpeechTackFragment : BaseFragment() {
                     }
 
                     override fun createFragment(position: Int): Fragment {
-                        return SpeechTackContentFragment.createFragment(mLabels[position].id)
+                        return SpeechSquareContentFragment.createFragment(mLabels[position].id)
                     }
                 }
+
+                view_pager.offscreenPageLimit = mLabels.size
             }
         }
     }

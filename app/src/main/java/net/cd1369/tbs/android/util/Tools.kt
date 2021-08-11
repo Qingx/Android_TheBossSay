@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.DialogFragment
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.utils.*
 import com.blankj.utilcode.util.ConvertUtils
@@ -206,7 +207,7 @@ object Tools {
     /**
      * 适用于dialog的倒计时
      */
-    fun countDown(time: Int, dialog: Dialog?, doDown: (int: Int) -> Unit): Disposable {
+    fun countDown(time: Int, dialog: DialogFragment?, doDown: (int: Int) -> Unit): Disposable {
         return Observable.interval(1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .map { t: Long -> (time - t).toInt() }

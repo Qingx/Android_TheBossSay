@@ -9,9 +9,9 @@
         android:id="@+id/tv_end_name"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/font_56"
-        android:gravity="center"
         android:layout_marginLeft="@dimen/padding_8"
         android:layout_marginRight="@dimen/padding_8"
+        android:gravity="center"
         android:hint="已经到底了噢"
         android:textColor="#D7D7D7"
         android:textSize="@dimen/font_13" />

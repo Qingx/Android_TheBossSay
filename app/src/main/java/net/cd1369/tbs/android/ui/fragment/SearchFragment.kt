@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.home
+package net.cd1369.tbs.android.ui.fragment
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -21,19 +21,19 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_search.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.entity.OptPicEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
-import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
-import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.ui.dialog.*
+import net.cd1369.tbs.android.ui.home.BossHomeActivity
+import net.cd1369.tbs.android.ui.home.BossInfoActivity
 import net.cd1369.tbs.android.util.JPushHelper
-import net.cd1369.tbs.android.util.LabelManager
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -52,7 +52,6 @@ class SearchFragment : BaseListFragment() {
 
     private var mTempBossList: List<BossInfoEntity> = mutableListOf()
 
-    private var showDialog: FollowCancelDialog? = null
     private var mOptPic: OptPicEntity? = null
     private var version: Long = 0L
     private var mSelectTab = ""
@@ -188,11 +187,13 @@ class SearchFragment : BaseListFragment() {
 
             override fun onClickFollow(item: BossInfoEntity) {
                 if (item.isCollect) {
-                    showDialog = FollowCancelDialog.showDialog(childFragmentManager, "cancel")
-                    showDialog?.onConfirmClick = FollowCancelDialog.OnConfirmClick {
-                        cancelFollow(item.id)
-                    }
-                } else followBoss(item.id)
+                    FollowAskCancelDialog.showDialog(requireFragmentManager(), "askCancel")
+                        .apply {
+                            onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+                                cancelFollow(item, this)
+                            }
+                        }
+                } else followBoss(item)
             }
         }.also {
             mAdapter = it
@@ -201,24 +202,34 @@ class SearchFragment : BaseListFragment() {
 
     /**
      * 取消追踪boss
-     * @param id String
      */
-    private fun cancelFollow(id: String) {
+    private fun cancelFollow(item: BossInfoEntity, dialog: FollowAskCancelDialog?) {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.boss().obtainCancelFollowBoss(id)
+        TbsApi.boss().obtainCancelFollowBoss(item.id)
             .bindDefaultSub(doNext = {
-                mAdapter.doFollowChange(id, false)
+                dialog?.dismiss()
+
+                FollowChangedDialog.showDialog(requireFragmentManager(), true, "followChange")
+
+                mAdapter.doFollowChange(item.id, false)
+
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(id, isFollow = false))
 
-                JPushHelper.tryDelTag(id)
-                tryUpdateItem(id, false)
+                eventBus.post(
+                    FollowBossEvent(
+                        id = item.id,
+                        isFollow = false,
+                        needLoading = true,
+                        labels = item.labels
+                    )
+                )
 
-                showDialog?.tryDismiss()
+                JPushHelper.tryDelTag(item.id)
+                tryUpdateItem(item.id, false)
+
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doLast = {
@@ -228,29 +239,51 @@ class SearchFragment : BaseListFragment() {
 
     /**
      * 追踪boss
-     * @param id String
      */
-    private fun followBoss(id: String) {
+    private fun followBoss(item: BossInfoEntity) {
         showLoadingAlert("尝试追踪...")
 
-        TbsApi.boss().obtainFollowBoss(id)
+        TbsApi.boss().obtainFollowBoss(item.id)
             .bindDefaultSub(doNext = {
-                mAdapter.doFollowChange(id, true)
+                FollowAskPushDialog.showDialog(requireFragmentManager(), "askPush")
+                    .apply {
+                        onConfirmClick = FollowAskPushDialog.OnConfirmClick {
+                            JPushHelper.tryAddTag(item.id)
+
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                requireFragmentManager(),
+                                false,
+                                "followChange"
+                            )
+                        }
+                        onCancelClick = FollowAskPushDialog.OnCancelClick {
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                requireFragmentManager(),
+                                false,
+                                "followChange"
+                            )
+                        }
+                    }
+
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(id, isFollow = true))
 
-                JPushHelper.tryAddTag(id)
-                tryUpdateItem(id, true)
+                mAdapter.doFollowChange(item.id, true)
+                tryUpdateItem(item.id, true)
 
-                SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
-                    .apply {
-                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
-                            this.dismiss()
-                        }
-                    }
+                eventBus.post(
+                    FollowBossEvent(
+                        id = item.id,
+                        isFollow = true,
+                        needLoading = true,
+                        labels = item.labels
+                    )
+                )
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doLast = {
@@ -259,7 +292,7 @@ class SearchFragment : BaseListFragment() {
     }
 
     private fun loadOptPic() {
-        var optPic = mOptPic
+        val optPic = mOptPic
 
         if (optPic != null) {
             return
@@ -279,11 +312,11 @@ class SearchFragment : BaseListFragment() {
             .load(location ?: R.mipmap.test_banner)
             .into(object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    var width = resource.width
-                    var height = resource.height
+                    val width = resource.width
+                    val height = resource.height
 
-                    var rootW = ll_ad.width
-                    var rootH = rootW * (height.toFloat() / width)
+                    val rootW = ll_ad.width
+                    val rootH = rootW * (height.toFloat() / width)
                     iv_img.updateLayoutParams<LinearLayoutCompat.LayoutParams> {
                         this.height = rootH.toInt()
                     }
@@ -312,23 +345,16 @@ class SearchFragment : BaseListFragment() {
 
         loadOptPic()
 
-        LabelManager.obtainLabels()
-            .flatMap {
-                if (LabelManager.needUpdate(version)) {
-                    version = LabelManager.getVersion()
+        tabAdapter.setNewData(DataConfig.get().bossLabels)
 
-                    it.add(0, BossLabelEntity.empty)
-                    tabAdapter.setNewData(it)
+        mSelectTab = DataConfig.get().bossLabels[0].id
 
-                    mSelectTab = it[0].id
-                }
-
-                TbsApi.boss().obtainAllBossList(pageParam, "-1")
-                    .onErrorReturn { Page.empty() }
-            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+        TbsApi.boss().obtainAllBossList(pageParam, "-1")
+            .onErrorReturn { Page.empty() }
+            .bindPageSubscribe(loadMore = loadMore, doNext = {
                 mTempBossList = it
 
-                var filterBossList = filterBossList(it)
+                val filterBossList = filterBossList(it)
                 mAdapter.setNewData(filterBossList)
             }, doDone = {
                 showContent()

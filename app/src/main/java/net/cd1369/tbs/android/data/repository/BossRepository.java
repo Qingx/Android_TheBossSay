@@ -84,9 +84,13 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param pageParam
      * @return
      */
-    public Observable<Page<ArticleEntity>> obtainFollowArticle(PageParam pageParam) {
+    public Observable<Page<ArticleEntity>> obtainFollowArticle(String label, PageParam pageParam) {
         RequestBody body = bodyFromCreator(pageParam, jo -> {
-
+            if (!label.equals("-1")) {
+                List<String> list = new ArrayList<>();
+                list.add(label);
+                jo.put("labels", list);
+            }
         });
 
         return getService().obtainFollowArticle(body)

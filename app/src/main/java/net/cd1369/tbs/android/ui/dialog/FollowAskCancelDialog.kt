@@ -8,20 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.dialog_cancel_follow.*
+import kotlinx.android.synthetic.main.dialog_follow_ask_cancel.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 
 /**
- * Created by Xiang on 2021/7/15 11:15
+ * Created by Xiang on 2021/8/11 13:26
  * @description
  * @email Cymbidium@outlook.com
  */
-class CancelFollowDialog : DialogFragment() {
-
+class FollowAskCancelDialog : DialogFragment() {
     companion object {
-        fun showDialog(fragmentManager: FragmentManager, tag: String): CancelFollowDialog {
-            return CancelFollowDialog().apply {
+        fun showDialog(fragmentManager: FragmentManager, tag: String): FollowAskCancelDialog {
+            return FollowAskCancelDialog().apply {
                 show(fragmentManager, tag)
             }
         }
@@ -32,14 +31,19 @@ class CancelFollowDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_cancel_follow, container, false)
+        return inflater.inflate(R.layout.dialog_follow_ask_cancel, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        text_cancel.isSelected = true
+        text_confirm.isSelected = true
+
         text_cancel doClick {
             dismiss()
+        }
+
+        text_confirm doClick {
+            onConfirmClick?.onConfirm()
         }
     }
 
@@ -61,5 +65,11 @@ class CancelFollowDialog : DialogFragment() {
             dialog.setCanceledOnTouchOutside(false)
             dialog.setCancelable(false)
         }
+    }
+
+    var onConfirmClick: OnConfirmClick? = null
+
+    fun interface OnConfirmClick {
+        fun onConfirm()
     }
 }

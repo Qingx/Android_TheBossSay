@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.home
+package net.cd1369.tbs.android.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -7,23 +7,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
 import com.advance.AdvanceBannerListener
 import com.advance.model.AdvanceError
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.*
+import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
@@ -31,22 +30,21 @@ import net.cd1369.tbs.android.util.doShareSession
 import net.cd1369.tbs.android.util.doShareTimeline
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
  * @description
  * @email Cymbidium@outlook.com
  */
-class MineFragment : BaseFragment(), AdvanceBannerListener {
+class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     private var header: View? = null
     private var footer: View? = null
     private lateinit var mAdapter: MineItemAdapter
     private var advanceBanner: AdvanceBanner? = null
 
     companion object {
-        fun createFragment(): MineFragment {
-            return MineFragment()
+        fun createFragment(): HomeMineFragment {
+            return HomeMineFragment()
         }
     }
 
@@ -60,7 +58,7 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
         mAdapter = object : MineItemAdapter() {
             override fun onItemClick(item: MineItem) {
 
-                var intent = Intent(
+                val intent = Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse("thebosssays://thebosssays/launch?id=1423235941224644610")
                 )
@@ -193,18 +191,6 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
         }
     }
 
-    private fun onClickClear() {
-        showLoadingAlert("正在清除缓存...")
-
-        Observable.just(true)
-            .observeOn(AndroidSchedulers.mainThread())
-            .delay(1500, TimeUnit.MILLISECONDS)
-            .bindDefaultSub {
-                Toasts.show("清除成功")
-                hideLoadingAlert()
-            }
-    }
-
     /**
      * 更新用户信息
      */
@@ -231,6 +217,11 @@ class MineFragment : BaseFragment(), AdvanceBannerListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: RefreshUserEvent) {
+        setUserInfo()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: FollowBossEvent) {
         setUserInfo()
     }
 

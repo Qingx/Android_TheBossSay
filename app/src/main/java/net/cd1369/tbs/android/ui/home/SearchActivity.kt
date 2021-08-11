@@ -13,6 +13,8 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.event.SearchCancelEvent
 import net.cd1369.tbs.android.event.SearchEvent
+import net.cd1369.tbs.android.ui.fragment.SearchFragment
+import net.cd1369.tbs.android.ui.fragment.SearchResultFragment
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

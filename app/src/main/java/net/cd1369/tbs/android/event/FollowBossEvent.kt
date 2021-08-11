@@ -9,4 +9,5 @@ class FollowBossEvent(
     val id: String? = "",
     val isFollow: Boolean = false,
     val needLoading: Boolean = true,
+    val labels: MutableList<String>? = mutableListOf()
 )

@@ -26,10 +26,7 @@ import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
-import net.cd1369.tbs.android.ui.dialog.BossSettingDialog
-import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
-import net.cd1369.tbs.android.ui.dialog.ShareDialog
-import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.avatar
@@ -91,12 +88,13 @@ class BossHomeActivity : BaseListActivity() {
 
         text_follow doClick {
             if (entity.isCollect) {
-                showDialog = FollowCancelDialog.showDialog(supportFragmentManager, "cancel")
-                showDialog?.onConfirmClick = FollowCancelDialog.OnConfirmClick {
-                    cancelFollow(entity.id)
-                }
-//                cancelFollow(entity.id)
-            } else followBoss(entity.id)
+                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
+                    .apply {
+                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+                            cancelFollow(this)
+                        }
+                    }
+            } else followBoss()
         }
 
         image_back doClick {
@@ -115,7 +113,7 @@ class BossHomeActivity : BaseListActivity() {
             BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
                 .apply {
                     onConfirm = Runnable {
-                        Toasts.show("开启推送")
+                        JPushHelper.tryAddTag(entity.id)
                         dialog?.dismiss()
                     }
                 }
@@ -139,24 +137,33 @@ class BossHomeActivity : BaseListActivity() {
 
     /**
      * 取消追踪boss
-     * @param id String
      */
-    private fun cancelFollow(id: String) {
+    private fun cancelFollow(dialog: FollowAskCancelDialog?) {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.boss().obtainCancelFollowBoss(id)
+        TbsApi.boss().obtainCancelFollowBoss(entity.id)
             .bindDefaultSub(doNext = {
+                dialog?.dismiss()
+
+                FollowChangedDialog.showDialog(supportFragmentManager, true, "followChange")
+
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(id, false))
+                eventBus.post(
+                    FollowBossEvent(
+                        id = entity.id,
+                        isFollow = false,
+                        needLoading = true,
+                        labels = entity.labels
+                    )
+                )
                 entity.isCollect = false
 
                 text_follow.isSelected = false
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
 
-                JPushHelper.tryDelTag(id)
+                JPushHelper.tryDelTag(entity.id)
 
                 showDialog?.tryDismiss()
             }, doFail = {
@@ -168,32 +175,51 @@ class BossHomeActivity : BaseListActivity() {
 
     /**
      * 追踪boss
-     * @param id String
      */
-    private fun followBoss(id: String) {
+    private fun followBoss() {
         showLoadingAlert("尝试追踪...")
 
-        TbsApi.boss().obtainFollowBoss(id)
+        TbsApi.boss().obtainFollowBoss(entity.id)
             .bindDefaultSub(doNext = {
+                FollowAskPushDialog.showDialog(supportFragmentManager, "askPush")
+                    .apply {
+                        onConfirmClick = FollowAskPushDialog.OnConfirmClick {
+                            JPushHelper.tryAddTag(entity.id)
+
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                supportFragmentManager,
+                                false,
+                                "followChange"
+                            )
+                        }
+                        onCancelClick = FollowAskPushDialog.OnCancelClick {
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                supportFragmentManager,
+                                false,
+                                "followChange"
+                            )
+                        }
+                    }
+
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(id, true))
+
+                eventBus.post(
+                    FollowBossEvent(
+                        entity.id, true,
+                        needLoading = true,
+                        labels = entity.labels
+                    )
+                )
 
                 entity.isCollect = true
                 text_follow.isSelected = true
                 text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
-
-                JPushHelper.tryAddTag(id)
-
-                SuccessFollowDialog.showDialog(supportFragmentManager, "successFollowBoss")
-                    .apply {
-                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
-//                            Toasts.show("开启推送")
-                            this.dismiss()
-                        }
-                    }
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {

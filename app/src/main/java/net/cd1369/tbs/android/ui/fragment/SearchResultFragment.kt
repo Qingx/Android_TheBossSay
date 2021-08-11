@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.home
+package net.cd1369.tbs.android.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,12 +19,10 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
-import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.event.SearchEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
-import net.cd1369.tbs.android.ui.dialog.CancelFollowDialog
-import net.cd1369.tbs.android.ui.dialog.FollowCancelDialog
-import net.cd1369.tbs.android.ui.dialog.SuccessFollowDialog
+import net.cd1369.tbs.android.ui.dialog.*
+import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -36,7 +34,6 @@ import kotlin.math.max
  * @email Cymbidium@outlook.com
  */
 class SearchResultFragment : BaseListFragment() {
-    private var showDialog: FollowCancelDialog? = null
     private lateinit var mAdapter: SearchInfoAdapter
 
     private var searchText = ""
@@ -74,11 +71,13 @@ class SearchResultFragment : BaseListFragment() {
 
             override fun onClickFollow(item: BossInfoEntity) {
                 if (item.isCollect) {
-                    showDialog = FollowCancelDialog.showDialog(childFragmentManager, "cancel")
-                    showDialog?.onConfirmClick = FollowCancelDialog.OnConfirmClick {
-                        cancelFollow(item.id)
-                    }
-                } else followBoss(item.id)
+                    FollowAskCancelDialog.showDialog(requireFragmentManager(), "askCancel")
+                        .apply {
+                            onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+                                cancelFollow(item, this)
+                            }
+                        }
+                } else followBoss(item)
             }
         }.also {
             mAdapter = it
@@ -95,26 +94,32 @@ class SearchResultFragment : BaseListFragment() {
 
     /**
      * 取消追踪boss
-     * @param id String
      */
-    private fun cancelFollow(id: String) {
+    private fun cancelFollow(item: BossInfoEntity, dialog: FollowAskCancelDialog?) {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.boss().obtainCancelFollowBoss(id)
+        TbsApi.boss().obtainCancelFollowBoss(item.id)
             .bindDefaultSub(doNext = {
-                mAdapter.doFollowChange(id, false)
+                dialog?.dismiss()
+
+                FollowChangedDialog.showDialog(requireFragmentManager(), true, "followChange")
+
+                mAdapter.doFollowChange(item.id, false)
 
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
 
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(id, isFollow = false))
+                eventBus.post(
+                    FollowBossEvent(
+                        id = item.id,
+                        isFollow = false,
+                        needLoading = true,
+                        labels = item.labels
+                    )
+                )
 
-                JPushHelper.tryDelTag(id)
-
-//                CancelFollowDialog.showDialog(requireFragmentManager(), "cancelFollowBoss")
-                showDialog?.tryDismiss()
+                JPushHelper.tryDelTag(item.id)
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doLast = {
@@ -124,31 +129,51 @@ class SearchResultFragment : BaseListFragment() {
 
     /**
      * 追踪boss
-     * @param id String
      */
-    private fun followBoss(id: String) {
+    private fun followBoss(item: BossInfoEntity) {
         showLoadingAlert("尝试追踪...")
 
-        TbsApi.boss().obtainFollowBoss(id)
+        TbsApi.boss().obtainFollowBoss(item.id)
             .bindDefaultSub(doNext = {
-                mAdapter.doFollowChange(id, true)
+                FollowAskPushDialog.showDialog(requireFragmentManager(), "askPush")
+                    .apply {
+                        onConfirmClick = FollowAskPushDialog.OnConfirmClick {
+                            JPushHelper.tryAddTag(item.id)
+
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                requireFragmentManager(),
+                                false,
+                                "followChange"
+                            )
+                        }
+                        onCancelClick = FollowAskPushDialog.OnCancelClick {
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                requireFragmentManager(),
+                                false,
+                                "followChange"
+                            )
+                        }
+                    }
+
+                mAdapter.doFollowChange(item.id, true)
 
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
 
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(id, isFollow = true))
+                eventBus.post(
+                    FollowBossEvent(
+                        id = item.id,
+                        isFollow = true,
+                        needLoading = true,
+                        labels = item.labels
+                    )
+                )
 
-                JPushHelper.tryAddTag(id)
-
-                SuccessFollowDialog.showDialog(requireFragmentManager(), "successFollowBoss")
-                    .apply {
-                        onConfirmClick = SuccessFollowDialog.OnConfirmClick {
-                            Toasts.show("开启推送")
-                            this.dismiss()
-                        }
-                    }
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doLast = {

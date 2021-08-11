@@ -11,6 +11,9 @@ import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.event.JumpBossEvent
+import net.cd1369.tbs.android.ui.fragment.HomeBossFragment
+import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
+import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -42,9 +45,9 @@ class HomeActivity : BaseActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        fragments.add(TalkFragment.createFragment())
-        fragments.add(BossFragment.createFragment())
-        fragments.add(MineFragment.createFragment())
+        fragments.add(HomeSpeechFragment.createFragment())
+        fragments.add(HomeBossFragment.createFragment())
+        fragments.add(HomeMineFragment.createFragment())
 
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法

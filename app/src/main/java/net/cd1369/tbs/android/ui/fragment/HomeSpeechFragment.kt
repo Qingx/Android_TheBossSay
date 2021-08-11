@@ -1,45 +1,39 @@
-package net.cd1369.tbs.android.ui.home
+package net.cd1369.tbs.android.ui.fragment
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
-import kotlinx.android.synthetic.main.fragment_talk.*
+import kotlinx.android.synthetic.main.fragment_home_speech.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.event.RefreshUserEvent
-import net.cd1369.tbs.android.ui.test.SpeechTackFragment
+import net.cd1369.tbs.android.ui.home.SearchArticleActivity
 import net.cd1369.tbs.android.util.doClick
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Qing on 2021/6/28 11:44 上午
  * @description
  * @email Cymbidium@outlook.com
  */
-class TalkFragment : BaseFragment() {
+class HomeSpeechFragment : BaseFragment() {
     val fragments = mutableListOf<Fragment>()
 
     companion object {
-        fun createFragment(): TalkFragment {
-            return TalkFragment()
+        fun createFragment(): HomeSpeechFragment {
+            return HomeSpeechFragment()
         }
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.fragment_talk
+        return R.layout.fragment_home_speech
     }
 
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
         fragments.add(SpeechTackFragment.createFragment())
-        fragments.add(SquareFragment.createFragment())
+        fragments.add(SpeechSquareFragment.createFragment())
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
