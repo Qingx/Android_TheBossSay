@@ -6,11 +6,13 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.event.JumpBossEvent
+import net.cd1369.tbs.android.util.DownloadHelper
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -49,6 +51,12 @@ class HomeActivity : BaseActivity() {
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
         DeviceID.register(this.application)
+
+        if (WLConfig.isDebug()) {
+            timerDelay(1000) {
+                DownloadHelper.requestDownload("http://download.tbsq.net/tbsq-latest.apk", "v1.0.0")
+            }
+        }
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {

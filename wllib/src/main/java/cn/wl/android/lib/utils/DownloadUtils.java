@@ -13,6 +13,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 
@@ -117,7 +118,7 @@ public class DownloadUtils {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         //移动网络情况下是否允许漫游
         request.setAllowedOverRoaming(false);
-        request.setTitle("陆巡APP" + name);
+        request.setTitle(AppUtils.getAppName() + " " + name);
         request.setDescription("新版本正在下载...");
         request.setVisibleInDownloadsUi(false);
 
@@ -238,7 +239,7 @@ public class DownloadUtils {
                 //下载完成
                 case DownloadManager.STATUS_SUCCESSFUL:
                     isCompleted = true;
-                    Toasts.show("下载成功");
+//                    Toasts.show("下载成功");
                     clearDownloadCallback();
 
                     //下载完成安装APK
@@ -250,7 +251,7 @@ public class DownloadUtils {
                 //下载失败
                 case DownloadManager.STATUS_FAILED:
                     isCompleted = true;
-                    Toasts.show("下载失败");
+//                    Toasts.show("下载失败");
 
                     clearDownloadCallback();
                     EventBus.getDefault().post(new DownloadStatusEvent(false));
