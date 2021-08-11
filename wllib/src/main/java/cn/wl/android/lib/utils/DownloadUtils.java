@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import cn.wl.android.lib.config.WLConfig;
-import cn.wl.android.lib.data.core.DefResult;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -65,6 +62,11 @@ public class DownloadUtils {
         filter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
 
         mContext.registerReceiver(receiver, filter);
+    }
+
+    public String getCurrentDownloadPath(String name) {
+        String savePath = mSPName.getString("V" + name, "");
+        return savePath;
     }
 
     /**

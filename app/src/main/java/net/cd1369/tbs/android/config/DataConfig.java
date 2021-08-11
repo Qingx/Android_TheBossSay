@@ -88,4 +88,5 @@ public class DataConfig extends BaseConfig {
     public String getHotSearch() {
         return getString(KEY.keyHotSearch, "-1");
     }
+
 }
