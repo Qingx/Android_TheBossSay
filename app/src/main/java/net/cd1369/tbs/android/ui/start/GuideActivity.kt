@@ -72,7 +72,6 @@ class GuideActivity : BaseActivity() {
                         UserConfig.get().userEntity.collectNum = data.size
 
                         DataConfig.get().firstUse = false
-                        DataConfig.get().updateTime = Times.current()
 
                         if (tempId.isNullOrEmpty()) {
                             HomeActivity.start(mActivity)

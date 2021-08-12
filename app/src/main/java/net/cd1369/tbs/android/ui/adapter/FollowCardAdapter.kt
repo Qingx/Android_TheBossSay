@@ -1,11 +1,13 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_follow_card.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.avatar
 import net.cd1369.tbs.android.util.doClick
@@ -23,7 +25,7 @@ abstract class FollowCardAdapter :
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
 
-        helper.V.text_red_dots.text = item.updateCount.toString()
+        helper.V.view_red_dots.isVisible = Tools.showRedDots(item.id, item.updateTime)
 
         helper.V doClick {
             onClick(item)

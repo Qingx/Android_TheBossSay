@@ -26,7 +26,9 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.JpushArticleEvent
 import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.event.SetBossTimeEvent
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
@@ -206,5 +208,29 @@ class SpeechTackContentFragment : BaseListFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
         loadData(false)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: SetBossTimeEvent) {
+        val index = mBossList.indexOfFirst {
+            it.id == event.id
+        }
+        if (index != -1) {
+            cardAdapter.notifyItemChanged(index)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: JpushArticleEvent) {
+        val index = mBossList.indexOfFirst {
+            it.id == event.bossId
+        }
+
+        if (index != -1) {
+            mBossList[index].updateTime = event.time
+
+            cardAdapter.data[index].updateTime = event.time
+            cardAdapter.notifyItemChanged(index)
+        }
     }
 }

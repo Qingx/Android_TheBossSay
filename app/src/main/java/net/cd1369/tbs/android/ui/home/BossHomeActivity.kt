@@ -16,12 +16,14 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_boss_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
-import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.event.SetBossTimeEvent
+import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
@@ -30,7 +32,7 @@ import kotlin.math.max
 class BossHomeActivity : BaseListActivity() {
 
     private var showDialog: FollowCancelDialog? = null
-    private lateinit var mAdapter: FollowInfoAdapter
+    private lateinit var mAdapter: BossArticleAdapter
     private var needLoading = true
     private lateinit var entity: BossInfoEntity
 
@@ -45,6 +47,13 @@ class BossHomeActivity : BaseListActivity() {
                 }
             context!!.startActivity(intent)
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        DataConfig.get().setBossTime(entity.id)
+        eventBus.post(SetBossTimeEvent(entity.id))
     }
 
     override fun getLayoutResource(): Any {
@@ -221,7 +230,7 @@ class BossHomeActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : FollowInfoAdapter() {
+        return object : BossArticleAdapter() {
             override fun onClick(item: ArticleEntity) {
                 ArticleActivity.start(mActivity, item.id)
             }

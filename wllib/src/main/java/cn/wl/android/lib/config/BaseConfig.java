@@ -180,8 +180,6 @@ public class BaseConfig {
      */
     public void clear() {
         sp.clear();
-
-
     }
 
 }

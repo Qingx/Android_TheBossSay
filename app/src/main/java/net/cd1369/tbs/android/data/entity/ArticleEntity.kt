@@ -19,7 +19,8 @@ data class ArticleEntity(
     val point: Int? = 0,
     val status: Int,
     val title: String,
-    val originLink: String = "暂无"
+    val originLink: String = "暂无",
+    val isRead: Boolean = false
 ) : MultiItemEntity, Serializable {
 
     fun getTime(): Long = articleTime ?: createTime ?: 0L
@@ -70,7 +71,8 @@ data class ArticleEntity(
             point = 0,
             status = 0,
             title = "",
-            originLink = ""
+            originLink = "",
+            isRead = false
         )
 
         const val AD_TYPE = 100
@@ -92,7 +94,8 @@ data class ArticleEntity(
             point = 0,
             status = 0,
             title = "",
-            originLink = ""
+            originLink = "",
+            isRead = false
         )
     }
 

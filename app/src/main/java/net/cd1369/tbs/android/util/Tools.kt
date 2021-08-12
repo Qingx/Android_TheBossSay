@@ -45,6 +45,7 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.layout_push_message.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
@@ -62,12 +63,17 @@ import kotlin.math.abs
  * @email Cymbidium@outlook.com
  */
 object Tools {
-    internal fun List<BossLabelEntity>?.isLabelsEmpty():Boolean{
-       return !(this!=null&&this.size>1)
+    internal fun List<BossLabelEntity>?.isLabelsEmpty(): Boolean {
+        return !(this != null && this.size > 1)
     }
 
     fun createTempId(): String {
         return "temp${UUID.randomUUID().leastSignificantBits}".replace("-", "")
+    }
+
+    //是否展示小红点
+    fun showRedDots(id: String, time: Long): Boolean {
+        return time >= DataConfig.get().getBossTime(id)
     }
 
     internal fun Int.formatCount(): String {

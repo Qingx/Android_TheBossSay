@@ -8,6 +8,7 @@ import com.google.gson.JsonParser
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.event.HotSearchEvent
+import net.cd1369.tbs.android.event.JpushArticleEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.runUiThread
@@ -56,6 +57,11 @@ class PushReceiver : JPushMessageReceiver() {
                 val articleId = jsonObject["articleId"].asString
                 val title = message.notificationTitle
                 val content = message.notificationContent
+
+                val bossId = jsonObject["bossId"].asString
+                val time = jsonObject["updateTime"].asLong
+
+                EventBus.getDefault().post(JpushArticleEvent(bossId, time))
 
                 runUiThread {
                     showSneaker(title, content, articleId)
