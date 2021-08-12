@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,15 +17,20 @@ import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.*
+import net.cd1369.tbs.android.config.Const
+import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.config.MineItem
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.util.Tools
+import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.doShareSession
 import net.cd1369.tbs.android.util.doShareTimeline
@@ -194,6 +200,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     /**
      * 更新用户信息
      */
+    @SuppressLint("SetTextI18n")
     private fun setUserInfo() {
         val loginStatus = UserConfig.get().loginStatus
         val entity = UserConfig.get().userEntity
@@ -216,12 +223,17 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
+    fun eventBus(event: FollowBossEvent) {
         setUserInfo()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: FollowBossEvent) {
+    fun eventBus(event: LoginEvent) {
+        setUserInfo()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: RefreshUserEvent) {
         setUserInfo()
     }
 

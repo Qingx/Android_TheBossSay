@@ -11,6 +11,7 @@ import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.event.JumpBossEvent
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.ui.fragment.HomeBossFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
@@ -103,5 +104,10 @@ class HomeActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: JumpBossEvent) {
         view_pager.setCurrentItem(1, true)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: LoginEvent) {
+        view_pager.setCurrentItem(0, true)
     }
 }

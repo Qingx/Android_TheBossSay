@@ -14,11 +14,13 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.UserEntity
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.UserInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.ChangeNameDialog
 import net.cd1369.tbs.android.ui.dialog.ConfirmPhoneDialog
 import net.cd1369.tbs.android.ui.start.ConfirmPhoneActivity
+import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -130,15 +132,14 @@ class UserInfoActivity : BaseActivity() {
         }
 
         text_logout doClick {
-            DataConfig.get().tempId = ""
+            DataConfig.get().tempId = Tools.createTempId()
             UserConfig.get().clear()
 
             HttpConfig.reset()
             UserConfig.get().userEntity = UserEntity.empty
-
             Toasts.show("退出成功")
 
-            eventBus.post(RefreshUserEvent())
+            eventBus.post(LoginEvent())
             mActivity?.finish()
         }
     }

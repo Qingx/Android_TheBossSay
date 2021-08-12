@@ -12,12 +12,10 @@ import com.jyn.vcview.VerificationCodeView
 import com.tendcloud.tenddata.TCAgent
 import com.tendcloud.tenddata.TDProfile
 import kotlinx.android.synthetic.main.activity_input_code.*
-import kotlinx.android.synthetic.main.activity_input_code.image_back
-import kotlinx.android.synthetic.main.activity_input_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.startShakeAnim
 
@@ -87,12 +85,12 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
 
 
                 UserConfig.get().loginStatus = true
-                var userInfo = it.userInfo
+                val userInfo = it.userInfo
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.ANONYMOUS, userInfo.nickName)
 
-                eventBus.post(RefreshUserEvent())
+                eventBus.post(LoginEvent())
                 mActivity?.finish()
             }, doFail = {
                 codeError()

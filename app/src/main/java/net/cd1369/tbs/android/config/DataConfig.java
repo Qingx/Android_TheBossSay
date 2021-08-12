@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.config;
 
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
+import net.cd1369.tbs.android.util.Tools;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class DataConfig extends BaseConfig {
     }
 
     public String getTempId() {
-        return getString(KEY.keyTempId, "");
+        return getString(KEY.keyTempId, Tools.INSTANCE.createTempId());
     }
 
     public List<BossLabelEntity> getBossLabels() {

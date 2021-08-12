@@ -27,7 +27,6 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.OptPicEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
-import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
 import net.cd1369.tbs.android.ui.dialog.*
@@ -150,8 +149,14 @@ class SearchFragment : BaseListFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + idSet.size, 0)
                 }
-                eventBus.post(RefreshUserEvent())
-                eventBus.post(FollowBossEvent(needLoading = true))
+
+                eventBus.post(
+                    FollowBossEvent(
+                        needLoading = true,
+                        isFollow = true,
+                        labels = mutableListOf("-1")
+                    )
+                )
 
                 JPushHelper.tryAddAllTag(idSet)
             }

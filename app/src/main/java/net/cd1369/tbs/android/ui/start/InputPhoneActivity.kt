@@ -10,7 +10,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.graphics.translationMatrix
 import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.SpanUtils
@@ -24,12 +23,11 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.WechatLoginCodeEvent
 import net.cd1369.tbs.android.ui.home.WebActivity
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
 import net.cd1369.tbs.android.util.Tools.isShouldHideInput
-import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -151,12 +149,12 @@ class InputPhoneActivity : BaseActivity() {
             .bindDefaultSub(doNext = {
                 HttpConfig.saveToken(it.token)
                 UserConfig.get().loginStatus = true
-                var userInfo = it.userInfo
+                val userInfo = it.userInfo
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
 
-                eventBus.post(RefreshUserEvent())
+                eventBus.post(LoginEvent())
                 mActivity?.finish()
             }, doFail = {
                 Toasts.show("登录失败，${it.msg}")
@@ -226,7 +224,7 @@ class InputPhoneActivity : BaseActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
+    fun eventBus(event: LoginEvent) {
         mActivity?.finish()
     }
 

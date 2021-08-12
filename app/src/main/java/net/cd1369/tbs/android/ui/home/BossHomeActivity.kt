@@ -14,9 +14,6 @@ import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_boss_home.*
-import kotlinx.android.synthetic.main.activity_boss_home.layout_refresh
-import kotlinx.android.synthetic.main.activity_boss_home.rv_content
-import kotlinx.android.synthetic.main.activity_boss_home.text_num
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
@@ -24,14 +21,10 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
-import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
-import net.cd1369.tbs.android.util.avatar
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.max
 
 class BossHomeActivity : BaseListActivity() {

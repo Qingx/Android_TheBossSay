@@ -27,8 +27,6 @@ import okhttp3.RequestBody;
  */
 public class UserRepository extends BaseRepository<UserService> {
 
-//    public static final Observable<TokenEntity> globalRefresh = ;
-
     public UserRepository() {
     }
 

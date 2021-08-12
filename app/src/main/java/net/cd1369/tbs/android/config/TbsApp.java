@@ -130,7 +130,6 @@ public class TbsApp extends MultiDexApplication {
      * @param tempId
      */
     public static void doUserRefresh(TokenEntity entity, String tempId) {
-        DataConfig.get().setTempId(tempId);
         HttpConfig.saveToken(entity.getToken());
         UserConfig.get().setUserEntity(entity.getUserInfo());
     }

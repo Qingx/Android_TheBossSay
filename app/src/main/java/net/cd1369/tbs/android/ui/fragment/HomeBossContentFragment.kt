@@ -11,6 +11,9 @@ import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.footer_count.view.*
 import kotlinx.android.synthetic.main.fragment_home_boss_content.*
+import kotlinx.android.synthetic.main.fragment_home_boss_content.layout_refresh
+import kotlinx.android.synthetic.main.fragment_home_boss_content.rv_content
+import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
@@ -18,6 +21,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
@@ -226,5 +230,10 @@ class HomeBossContentFragment : BaseFragment() {
                 layout_refresh.autoRefresh()
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: LoginEvent) {
+        loadData()
     }
 }

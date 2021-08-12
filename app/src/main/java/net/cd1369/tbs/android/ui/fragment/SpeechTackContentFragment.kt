@@ -26,6 +26,7 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
@@ -46,7 +47,6 @@ class SpeechTackContentFragment : BaseListFragment() {
     private var mRootHeight: Int = 0
     private var headerView: View? = null
     private var mEmptyView: View? = null
-    private var needLoading = true
 
     private lateinit var cardAdapter: FollowCardAdapter
     private lateinit var mAdapter: FollowInfoAdapter
@@ -89,7 +89,6 @@ class SpeechTackContentFragment : BaseListFragment() {
         layout_refresh.setHeaderHeight(60f)
 
         layout_refresh.setOnRefreshListener {
-            needLoading = false
             loadData(false)
         }
 
@@ -151,8 +150,6 @@ class SpeechTackContentFragment : BaseListFragment() {
         if (!loadMore) {
             pageParam?.resetPage()
 
-            if (needLoading) showLoading()
-
             TbsApi.boss().obtainFollowBossList(mLabel, true)
                 .onErrorReturn { mutableListOf() }
                 .flatMap {
@@ -170,7 +167,6 @@ class SpeechTackContentFragment : BaseListFragment() {
 
                     },
                     doDone = {
-                        needLoading = true
                         showContent()
 
                         val userEntity = UserConfig.get().userEntity
@@ -205,5 +201,10 @@ class SpeechTackContentFragment : BaseListFragment() {
         if (mLabel == BossLabelEntity.empty.id || event.labels?.contains(mLabel) == true) {
             layout_refresh.autoRefresh()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: LoginEvent) {
+        loadData(false)
     }
 }
