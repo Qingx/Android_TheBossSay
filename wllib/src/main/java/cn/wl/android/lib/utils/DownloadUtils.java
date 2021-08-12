@@ -10,11 +10,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 
@@ -25,7 +24,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import cn.wl.android.lib.config.WLConfig;
-import cn.wl.android.lib.data.core.DefResult;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -65,6 +63,11 @@ public class DownloadUtils {
         filter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
 
         mContext.registerReceiver(receiver, filter);
+    }
+
+    public String getCurrentDownloadPath(String name) {
+        String savePath = mSPName.getString("V" + name, "");
+        return savePath;
     }
 
     /**
@@ -115,7 +118,7 @@ public class DownloadUtils {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         //移动网络情况下是否允许漫游
         request.setAllowedOverRoaming(false);
-        request.setTitle("陆巡APP" + name);
+        request.setTitle(AppUtils.getAppName() + " " + name);
         request.setDescription("新版本正在下载...");
         request.setVisibleInDownloadsUi(false);
 
@@ -236,7 +239,7 @@ public class DownloadUtils {
                 //下载完成
                 case DownloadManager.STATUS_SUCCESSFUL:
                     isCompleted = true;
-                    Toasts.show("下载成功");
+//                    Toasts.show("下载成功");
                     clearDownloadCallback();
 
                     //下载完成安装APK
@@ -248,7 +251,7 @@ public class DownloadUtils {
                 //下载失败
                 case DownloadManager.STATUS_FAILED:
                     isCompleted = true;
-                    Toasts.show("下载失败");
+//                    Toasts.show("下载失败");
 
                     clearDownloadCallback();
                     EventBus.getDefault().post(new DownloadStatusEvent(false));
