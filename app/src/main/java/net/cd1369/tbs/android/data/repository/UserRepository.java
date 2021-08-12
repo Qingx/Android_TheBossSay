@@ -7,6 +7,7 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
+import net.cd1369.tbs.android.data.entity.VersionEntity;
 import net.cd1369.tbs.android.data.service.UserService;
 
 import java.util.List;
@@ -323,5 +324,17 @@ public class UserRepository extends BaseRepository<UserService> {
         return getService().obtainReadArticle(id)
                 .compose(combine())
                 .compose(success());
+    }
+
+    /**
+     * 检查版本
+     *
+     * @param version
+     * @return
+     */
+    public Observable<VersionEntity> obtainCheckUpdate(String version) {
+        return getService().obtainCheckUpdate(version)
+                .compose(combine())
+                .compose(rebase());
     }
 }

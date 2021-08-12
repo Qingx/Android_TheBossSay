@@ -149,7 +149,7 @@ class ArticleActivity : BaseActivity() {
                 articleTitle = it?.title ?: ""
                 articleDes = it?.descContent ?: ""
                 if (!it.files.isNullOrEmpty()) {
-                    articleCover = it.files[0].avatar()
+                    articleCover = it.files[0].fullUrl()
                 }
 
                 image_collect.isSelected = isCollect

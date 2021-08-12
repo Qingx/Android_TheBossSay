@@ -1,8 +1,6 @@
 package net.cd1369.tbs.android.ui.adapter
 
 import android.annotation.SuppressLint
-import androidx.recyclerview.widget.GridLayoutManager
-import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -16,7 +14,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.avatar
+import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.getArticleItemTime
 
@@ -39,7 +37,7 @@ abstract class FollowInfoAdapter :
             0 -> {
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossVO.head.avatar(),
+                    item.bossVO.head.fullUrl(),
                     helper.V.image_head
                 )
                 helper.V.text_name.text = item.bossVO.name
@@ -52,12 +50,12 @@ abstract class FollowInfoAdapter :
             1 -> {
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossVO.head.avatar(),
+                    item.bossVO.head.fullUrl(),
                     helper.V.image_head
                 )
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
-                GlideApp.displayHead(item.files!!.getOrNull(0)!!.avatar(), helper.V.image_res)
+                GlideApp.displayHead(item.files!!.getOrNull(0)!!.fullUrl(), helper.V.image_res)
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"

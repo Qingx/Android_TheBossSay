@@ -43,7 +43,7 @@ abstract class BossArticleAdapter :
 
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossVO.head.avatar(),
+                    item.bossVO.head.fullUrl(),
                     helper.V.image_head
                 )
                 helper.V.text_name.text = item.bossVO.name
@@ -60,12 +60,12 @@ abstract class BossArticleAdapter :
 
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossVO.head.avatar(),
+                    item.bossVO.head.fullUrl(),
                     helper.V.image_head
                 )
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
-                GlideApp.displayHead(item.files!!.getOrNull(0)!!.avatar(), helper.V.image_res)
+                GlideApp.displayHead(item.files!!.getOrNull(0)!!.fullUrl(), helper.V.image_res)
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"

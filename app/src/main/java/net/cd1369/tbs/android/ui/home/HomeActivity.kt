@@ -7,15 +7,20 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseActivity
+import com.blankj.utilcode.util.AppUtils
 import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
 import net.cd1369.tbs.android.ui.fragment.HomeBossFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
+import net.cd1369.tbs.android.util.DownloadHelper
 import net.cd1369.tbs.android.util.JPushHelper
+import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -58,6 +63,7 @@ class HomeActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
 
+        checkUpdate()
         tryRegisterJPush()
 
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
@@ -99,6 +105,41 @@ class HomeActivity : BaseActivity() {
      */
     private fun tryRegisterJPush() {
         JPushHelper.tryStartPush()
+    }
+
+    /**
+     * 检查更新
+     */
+    private fun checkUpdate() {
+        TbsApi.user().obtainCheckUpdate(AppUtils.getAppVersionName())
+            .bindDefaultSub(
+                doNext = {
+                    CheckUpdateDialog.showDialog(
+                        supportFragmentManager,
+                        "checkUpdate",
+                        !it.forcedUpdating
+                    )
+                        .apply {
+                            onCancelClick = CheckUpdateDialog.OnCancelClick {
+                                dismiss()
+                            }
+
+                            onConfirmClick = CheckUpdateDialog.OnConfirmClick {
+                                DownloadHelper.requestDownload(
+                                    it.fileUrl.fullUrl(),
+                                    "v${it.versions}"
+                                )
+
+                                if (!it.forcedUpdating) {
+                                    dismiss()
+                                }
+                            }
+                        }
+                },
+                doFail = {
+
+                }
+            )
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

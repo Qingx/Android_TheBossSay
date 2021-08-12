@@ -3,14 +3,13 @@ package net.cd1369.tbs.android.ui.adapter
 import android.view.View
 import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.GlideApp
-import com.blankj.utilcode.util.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_search_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.avatar
+import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -30,7 +29,7 @@ abstract class SearchInfoAdapter :
         }
 
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
-        GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
+        GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
         helper.V.layout_follow.isSelected = !item.isCollect

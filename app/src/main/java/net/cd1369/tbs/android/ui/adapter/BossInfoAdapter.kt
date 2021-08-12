@@ -19,7 +19,7 @@ abstract class BossInfoAdapter :
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
         helper.V.isSelected = item.isTop
 
-        GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
+        GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
 
         item.showImage(
             helper.V.image_label1,

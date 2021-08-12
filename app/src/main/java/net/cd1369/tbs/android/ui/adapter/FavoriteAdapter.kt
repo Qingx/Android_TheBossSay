@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.item_favorite.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.FavoriteEntity
-import net.cd1369.tbs.android.data.model.TestFavoriteEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 

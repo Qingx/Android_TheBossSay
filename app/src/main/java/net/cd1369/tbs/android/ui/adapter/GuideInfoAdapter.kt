@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.item_guide_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.avatar
+import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -23,7 +23,7 @@ abstract class GuideInfoAdapter :
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
         helper.V.isSelected = mSelect.contains(item.id)
 
-        GlideApp.displayHead(item.head.avatar(), helper.V.image_head)
+        GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
 

@@ -233,6 +233,13 @@ class BossHomeActivity : BaseListActivity() {
         return object : BossArticleAdapter() {
             override fun onClick(item: ArticleEntity) {
                 ArticleActivity.start(mActivity, item.id)
+                item.isRead = true
+
+                val index = data.indexOfFirst { it.id == item.id }
+
+                if (index != -1) {
+                    notifyItemChanged(index)
+                }
             }
         }.also {
             mAdapter = it
@@ -264,7 +271,7 @@ class BossHomeActivity : BaseListActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setUserInfo() {
-        GlideApp.displayHead(entity.head.avatar(), image_head)
+        GlideApp.displayHead(entity.head.fullUrl(), image_head)
         text_name.text = entity.name
         text_info.text = entity.role
         text_label.text =

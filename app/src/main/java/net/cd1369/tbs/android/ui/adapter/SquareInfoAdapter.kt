@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -21,7 +19,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
-import net.cd1369.tbs.android.util.avatar
+import net.cd1369.tbs.android.util.fullUrl
 
 
 /**
@@ -52,7 +50,7 @@ abstract class SquareInfoAdapter :
         when (helper.itemViewType) {
             0 -> {
                 helper.V.text_title.text = item.title
-                GlideApp.displayHead(item.bossVO.head.avatar(), helper.V.image_head)
+                GlideApp.displayHead(item.bossVO.head.fullUrl(), helper.V.image_head)
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role
                 helper.V.text_hot.text =
@@ -61,7 +59,7 @@ abstract class SquareInfoAdapter :
             }
             1 -> {
                 helper.V.text_title.text = item.title
-                GlideApp.displayHead(item.bossVO.head.avatar(), helper.getView(R.id.image_head))
+                GlideApp.displayHead(item.bossVO.head.fullUrl(), helper.getView(R.id.image_head))
                 GlideApp.display(item.files?.get(0) ?: "", helper.V.image_res)
                 helper.V.text_name.text = item.bossVO.name
                 helper.V.text_info.text = item.bossVO.role

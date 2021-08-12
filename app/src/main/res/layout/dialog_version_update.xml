@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp">
+
+    <ImageView
+        android:id="@+id/image_icon"
+        android:layout_width="135dp"
+        android:layout_height="108dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_follow_success"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:singleLine="true"
+        android:text="检测到新版本"
+        android:textColor="@color/colorTextDark"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_icon" />
+
+    <TextView
+        android:id="@+id/text_notice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="新版本抢先体验"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title" />
+
+    <TextView
+        android:id="@+id/text_cancel"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/draw_loadbg_4"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/colorTextDark"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@id/text_confirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_notice" />
+
+    <TextView
+        android:id="@+id/text_confirm"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/draw_load_accent_4"
+        android:gravity="center"
+        android:text="立即升级"
+        android:textColor="@color/colorWhite"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_cancel"
+        app:layout_constraintTop_toBottomOf="@id/text_notice"
+        app:layout_goneMarginStart="24dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

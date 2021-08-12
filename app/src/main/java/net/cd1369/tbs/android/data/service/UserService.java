@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.data.service;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
+import net.cd1369.tbs.android.data.entity.VersionEntity;
 
 import cn.wl.android.lib.core.WLData;
 import cn.wl.android.lib.core.WLList;
@@ -173,4 +174,13 @@ public interface UserService {
      */
     @GET("/api/article/read/{id}")
     Observable<WLData<Object>> obtainReadArticle(@Path("id") String id);
+
+    /**
+     * 检查版本
+     *
+     * @param version
+     * @return
+     */
+    @GET("/api/version/check/{versionNumber}")
+    Observable<WLData<VersionEntity>> obtainCheckUpdate(@Path("versionNumber") String version);
 }

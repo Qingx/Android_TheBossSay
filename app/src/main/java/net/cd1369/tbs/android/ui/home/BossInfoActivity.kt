@@ -8,7 +8,7 @@ import cn.wl.android.lib.utils.GlideApp
 import kotlinx.android.synthetic.main.activity_boss_info.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.util.avatar
+import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
 
 class BossInfoActivity : BaseActivity() {
@@ -38,7 +38,7 @@ class BossInfoActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        GlideApp.displayHead(entity.head.avatar(), image_head)
+        GlideApp.displayHead(entity.head.fullUrl(), image_head)
         text_name.text = entity.name
         text_info.text = entity.role
         text_content.text = entity.info
