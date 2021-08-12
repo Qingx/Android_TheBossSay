@@ -7,16 +7,16 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseActivity
-import kotlinx.android.synthetic.main.activity_contact.*
+import kotlinx.android.synthetic.main.activity_mine_contact_author.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.ContactItem
 import net.cd1369.tbs.android.ui.adapter.ContactItemAdapter
 import net.cd1369.tbs.android.util.doClick
 
-class ContactActivity : BaseActivity() {
+class MineContactAuthorActivity : BaseActivity() {
     companion object {
         fun start(context: Context?) {
-            val intent = Intent(context, ContactActivity::class.java)
+            val intent = Intent(context, MineContactAuthorActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
@@ -25,7 +25,7 @@ class ContactActivity : BaseActivity() {
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_contact
+        return R.layout.activity_mine_contact_author
     }
 
     @SuppressLint("SetTextI18n")

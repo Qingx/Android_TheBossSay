@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.start
+package net.cd1369.tbs.android.ui.home
 
 import android.content.Context
 import android.content.Intent
@@ -18,24 +18,23 @@ import com.blankj.utilcode.util.ColorUtils
 import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tendcloud.tenddata.TCAgent
 import com.tendcloud.tenddata.TDProfile
-import kotlinx.android.synthetic.main.activity_input_phone.*
+import kotlinx.android.synthetic.main.activity_login_phone_wechat.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.WechatLoginCodeEvent
-import net.cd1369.tbs.android.ui.home.WebActivity
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
 import net.cd1369.tbs.android.util.Tools.isShouldHideInput
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class InputPhoneActivity : BaseActivity() {
+class LoginPhoneWechatActivity : BaseActivity() {
     companion object {
         fun start(context: Context?) {
-            val intent = Intent(context, InputPhoneActivity::class.java)
+            val intent = Intent(context, LoginPhoneWechatActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
@@ -44,7 +43,7 @@ class InputPhoneActivity : BaseActivity() {
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_input_phone
+        return R.layout.activity_login_phone_wechat
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
@@ -170,7 +169,7 @@ class InputPhoneActivity : BaseActivity() {
             .bindDefaultSub(doNext = {
                 Toasts.show("验证码发送成功")
 
-                InputCodeActivity.start(mActivity, edit_input.text.toString().trim(), it)
+                LoginInputCodeActivity.start(mActivity, edit_input.text.toString().trim(), it)
             }, doFail = {
                 Toasts.show("验证码发送失败，${it.msg}")
             }, doDone = {

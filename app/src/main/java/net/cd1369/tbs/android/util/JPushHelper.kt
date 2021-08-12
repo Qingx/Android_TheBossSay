@@ -42,8 +42,8 @@ object JPushHelper {
             JPushInterface.resumePush(mContext)
         }
 
-        var userId = user.id
-        var alias = UserConfig.get().alias
+        val userId = user.id
+        val alias = UserConfig.get().alias
 
         if (alias != userId) {
             tryRegisterAlias(userId)

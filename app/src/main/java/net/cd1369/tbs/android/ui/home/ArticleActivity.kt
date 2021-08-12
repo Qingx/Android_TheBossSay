@@ -18,7 +18,6 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
 import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
-import net.cd1369.tbs.android.ui.start.InputPhoneActivity
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
 import kotlin.math.max
@@ -90,7 +89,7 @@ class ArticleActivity : BaseActivity() {
                 } else doCollect()
             } else {
                 Toasts.show("请先登录！")
-                InputPhoneActivity.start(mActivity)
+                LoginPhoneWechatActivity.start(mActivity)
             }
         }
 

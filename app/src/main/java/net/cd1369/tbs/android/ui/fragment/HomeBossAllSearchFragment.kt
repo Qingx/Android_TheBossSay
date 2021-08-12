@@ -13,7 +13,7 @@ import cn.wl.android.lib.utils.SpanUtils
 import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.ColorUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.fragment_search_result.*
+import kotlinx.android.synthetic.main.fragment_home_boss_all_search.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
@@ -21,7 +21,9 @@ import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.SearchEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
-import net.cd1369.tbs.android.ui.dialog.*
+import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
+import net.cd1369.tbs.android.ui.dialog.FollowAskPushDialog
+import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import org.greenrobot.eventbus.Subscribe
@@ -33,19 +35,19 @@ import kotlin.math.max
  * @description
  * @email Cymbidium@outlook.com
  */
-class SearchResultFragment : BaseListFragment() {
+class HomeBossAllSearchFragment : BaseListFragment() {
     private lateinit var mAdapter: SearchInfoAdapter
 
     private var searchText = ""
 
     companion object {
-        fun createFragment(): SearchResultFragment {
-            return SearchResultFragment()
+        fun createFragment(): HomeBossAllSearchFragment {
+            return HomeBossAllSearchFragment()
         }
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.fragment_search_result
+        return R.layout.fragment_home_boss_all_search
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {

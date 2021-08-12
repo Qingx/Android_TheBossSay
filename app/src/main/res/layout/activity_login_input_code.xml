@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBg"
-    tools:context=".ui.start.InputCodeActivity">
+    tools:context=".ui.home.LoginInputCodeActivity">
 
     <Space
         android:id="@+id/status_bar"

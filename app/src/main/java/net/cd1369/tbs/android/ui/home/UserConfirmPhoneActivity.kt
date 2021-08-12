@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.start
+package net.cd1369.tbs.android.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,22 +8,21 @@ import android.view.View
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import com.jyn.vcview.VerificationCodeView
-import kotlinx.android.synthetic.main.activity_confirm_phone.*
+import kotlinx.android.synthetic.main.activity_user_confirm_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.event.RefreshUserEvent
-import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class ConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
+class UserConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
     private lateinit var phoneNumber: String
     private lateinit var rnd: String
 
     companion object {
         fun start(context: Context?, phone: String, rnd: String) {
-            val intent = Intent(context, ConfirmPhoneActivity::class.java)
+            val intent = Intent(context, UserConfirmPhoneActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra("phone", phone)
@@ -34,7 +33,7 @@ class ConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishLi
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_confirm_phone
+        return R.layout.activity_user_confirm_phone
     }
 
     override fun beforeCreateView(savedInstanceState: Bundle?) {
@@ -68,7 +67,7 @@ class ConfirmPhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishLi
 
         TbsApi.user().obtainConfirmPhone(phoneNumber, content, rnd).bindDefaultSub(doDone = {
             Toasts.show("验证成功")
-            ChangePhoneActivity.start(mActivity)
+            UserChangePhoneActivity.start(mActivity)
             mActivity?.finish()
         }, doFail = {
             Toasts.show("验证失败，${it.msg}")

@@ -15,10 +15,10 @@ import kotlinx.android.synthetic.main.activity_about_us.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 
-class AboutUsActivity : BaseActivity() {
+class MineAboutAppActivity : BaseActivity() {
     companion object {
         fun start(context: Context?) {
-            val intent = Intent(context, AboutUsActivity::class.java)
+            val intent = Intent(context, MineAboutAppActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }

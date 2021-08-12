@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.start
+package net.cd1369.tbs.android.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +11,7 @@ import cn.wl.android.lib.utils.Toasts
 import com.jyn.vcview.VerificationCodeView
 import com.tendcloud.tenddata.TCAgent
 import com.tendcloud.tenddata.TDProfile
-import kotlinx.android.synthetic.main.activity_input_code.*
+import kotlinx.android.synthetic.main.activity_login_input_code.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
@@ -19,13 +19,13 @@ import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.startShakeAnim
 
-class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
+class LoginInputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
     private lateinit var phoneNumber: String
     private lateinit var rnd: String
 
     companion object {
         fun start(context: Context?, phoneNumber: String, rnd: String) {
-            val intent = Intent(context, InputCodeActivity::class.java)
+            val intent = Intent(context, LoginInputCodeActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra("phoneNumber", phoneNumber)
@@ -36,7 +36,7 @@ class InputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListe
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_input_code
+        return R.layout.activity_login_input_code
     }
 
     override fun beforeCreateView(savedInstanceState: Bundle?) {

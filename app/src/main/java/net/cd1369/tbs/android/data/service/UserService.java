@@ -67,6 +67,15 @@ public interface UserService {
     Observable<WLData<TokenEntity>> obtainSignWechat(@Body RequestBody body);
 
     /**
+     * 微信绑定
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/account/wechat/bound")
+    Observable<WLData<TokenEntity>> obtainBindWechat(@Body RequestBody body);
+
+    /**
      * 修改账号昵称
      *
      * @param body
@@ -92,6 +101,15 @@ public interface UserService {
      */
     @POST("/api/account/check-change")
     Observable<WLData<Object>> obtainChangePhone(@Body RequestBody body);
+
+    /**
+     * 绑定手机号
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/account/check-bound")
+    Observable<WLData<Object>> obtainBindPhone(@Body RequestBody body);
 
     /**
      * 获取用户收藏夹列表

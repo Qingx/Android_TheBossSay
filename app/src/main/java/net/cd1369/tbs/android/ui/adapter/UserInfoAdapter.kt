@@ -25,16 +25,23 @@ abstract class UserInfoAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.
         val name: String
         val id: String
         val phone: String
+        val weChat: String
         if (loginStatus) {
             name = entity.nickName
             id = "ID：${entity.id}"
             phone = if (entity?.phone.isNullOrEmpty()) {
-                "微信用户暂无手机号"
+                "绑定手机号"
             } else entity.phone.replaceRange(3, 11, "********")
+            weChat = if (entity?.wxName.isNullOrEmpty()) {
+                "绑定微信"
+            } else {
+                entity.wxName
+            }
         } else {
             name = "请先登录！"
             id = "游客：${DataConfig.get().tempId}"
             phone = "请先登录！"
+            weChat = "请先登录！"
         }
 
         when (item) {
@@ -46,9 +53,13 @@ abstract class UserInfoAdapter : BaseQuickAdapter<Int, BaseViewHolder>(R.layout.
                 helper.V.text_name.text = "账号ID"
                 helper.V.text_content.text = id
             }
-            else -> {
+            2 -> {
                 helper.V.text_name.text = "登录手机号"
                 helper.V.text_content.text = phone
+            }
+            3 -> {
+                helper.V.text_name.text = "登录微信"
+                helper.V.text_content.text = weChat
             }
         }
 

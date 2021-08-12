@@ -1,4 +1,4 @@
-package net.cd1369.tbs.android.ui.start
+package net.cd1369.tbs.android.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,36 +12,43 @@ import androidx.core.view.isVisible
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import com.jyn.vcview.VerificationCodeView
-import kotlinx.android.synthetic.main.activity_change_phone.*
-import kotlinx.android.synthetic.main.activity_change_phone.edit_input
-import kotlinx.android.synthetic.main.activity_change_phone.text_confirm
+import kotlinx.android.synthetic.main.activity_user_change_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
-import kotlin.math.max
 
-class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
+class UserChangePhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinishListener {
+    private var isChange = true
     private var phoneNumber: String? = null
     private var rnd: String? = null
 
     companion object {
-        fun start(context: Context?) {
-            val intent = Intent(context, ChangePhoneActivity::class.java)
+        fun start(context: Context?, isChange: Boolean = true) {
+            val intent = Intent(context, UserChangePhoneActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra("isChange", isChange)
                 }
             context!!.startActivity(intent)
         }
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_change_phone
+        return R.layout.activity_user_change_phone
+    }
+
+    override fun beforeCreateView(savedInstanceState: Bundle?) {
+        super.beforeCreateView(savedInstanceState)
+
+        isChange = intent.getBooleanExtra("isChange", true)
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        text_page_name.text = if (isChange) "修改手机号" else "绑定手机号"
+
         layout_code.isVisible = false
 
         edit_input.addTextChangedListener(object : TextWatcher {
@@ -82,16 +89,44 @@ class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishL
     }
 
     override fun onComplete(view: View?, content: String?) {
-        showLoadingAlert("正在更新...")
+        if (isChange) {
+            tryChangePhone(content)
+        } else {
+            tryBindPhone(content)
+        }
+    }
+
+    //尝试绑定手机号
+    private fun tryBindPhone(content: String?) {
+        showLoadingAlert("正在绑定...")
+
+        TbsApi.user().obtainBindPhone(phoneNumber, content, rnd)
+            .bindDefaultSub(doNext = {
+                val entity = UserConfig.get().userEntity
+                entity.phone = phoneNumber!!
+                UserConfig.get().userEntity = entity
+
+                Toasts.show("绑定成功")
+                eventBus.post(RefreshUserEvent())
+                mActivity?.finish()
+            }, doFail = {
+                Toasts.show("绑定失败,${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    //尝试修改手机号
+    private fun tryChangePhone(content: String?) {
+        showLoadingAlert("正在修改...")
 
         TbsApi.user().obtainChangePhone(phoneNumber, content, rnd)
             .bindDefaultSub(doNext = {
                 val entity = UserConfig.get().userEntity
                 entity.phone = phoneNumber!!
-
                 UserConfig.get().userEntity = entity
 
-                Toasts.show("更新成功")
+                Toasts.show("修改成功")
                 eventBus.post(RefreshUserEvent())
                 mActivity?.finish()
             }, doFail = {
@@ -102,9 +137,10 @@ class ChangePhoneActivity() : BaseActivity(), VerificationCodeView.OnCodeFinishL
     }
 
     private fun trySendCode() {
+        val type = if (isChange) 2 else 3
         if (isInputAvailable(true)) {
             showLoadingAlert("发送验证码...")
-            TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), 2)
+            TbsApi.user().obtainSendCode(edit_input.text.toString().trim(), type)
                 .bindDefaultSub(doNext = {
                     phoneNumber = edit_input.text.toString().trim()
                     rnd = it

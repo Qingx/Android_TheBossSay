@@ -113,6 +113,23 @@ public class UserRepository extends BaseRepository<UserService> {
     }
 
     /**
+     * 微信绑定
+     *
+     * @param code
+     * @return
+     */
+    public Observable<TokenEntity> obtainBindWechat(String code) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("code", code);
+            jo.put("deviceId", DataConfig.get().getTempId());
+        });
+
+        return getService().obtainBindWechat(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
      * 修改账号昵称
      *
      * @param name
@@ -167,6 +184,25 @@ public class UserRepository extends BaseRepository<UserService> {
     }
 
     /**
+     * 绑定手机号
+     *
+     * @param phone
+     * @param code
+     * @return
+     */
+    public Observable<Boolean> obtainBindPhone(String phone, String code, String rnd) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("call", phone);
+            jo.put("code", code);
+            jo.put("rnd", rnd);
+        });
+
+        return getService().obtainBindPhone(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
      * 获取用户收藏夹列表
      *
      * @return
@@ -176,7 +212,6 @@ public class UserRepository extends BaseRepository<UserService> {
                 .compose(combine())
                 .compose(rebase());
     }
-
 
 
     /**

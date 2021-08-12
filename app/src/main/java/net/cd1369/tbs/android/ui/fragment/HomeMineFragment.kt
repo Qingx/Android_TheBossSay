@@ -28,9 +28,8 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
-import net.cd1369.tbs.android.ui.start.InputPhoneActivity
+import net.cd1369.tbs.android.ui.home.LoginPhoneWechatActivity
 import net.cd1369.tbs.android.util.Tools
-import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.doShareSession
 import net.cd1369.tbs.android.util.doShareTimeline
@@ -74,8 +73,8 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.Favorite -> onClickFavorite()
                     MineItem.History -> onClickHistory()
                     MineItem.Share -> onShare()
-                    MineItem.About -> AboutUsActivity.start(mActivity)
-                    MineItem.Contact -> ContactActivity.start(mActivity)
+                    MineItem.About -> MineAboutAppActivity.start(mActivity)
+                    MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
 //                    MineItem.Clear -> onClickClear()
                     else -> Toasts.show(item.itemName)
                 }
@@ -136,7 +135,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         adapter.addHeaderView(header)
 
         header!!.layout_history doClick {
-            TodayHistoryActivity.start(mActivity)
+            MineHistoryTodayActivity.start(mActivity)
         }
 
         header!!.layout_favorite doClick {
@@ -170,30 +169,30 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     //点击用户信息
     private fun onClickInfo() {
         if (UserConfig.get().loginStatus) {
-            UserInfoActivity.start(mActivity)
+            MineChangeUserActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
-            InputPhoneActivity.start(mActivity)
+            LoginPhoneWechatActivity.start(mActivity)
         }
     }
 
     //点击我的收藏
     private fun onClickFavorite() {
         if (UserConfig.get().loginStatus) {
-            FavoriteActivity.start(mActivity)
+            MineCollectArticleActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
-            InputPhoneActivity.start(mActivity)
+            LoginPhoneWechatActivity.start(mActivity)
         }
     }
 
     //点击历史记录
     private fun onClickHistory() {
         if (UserConfig.get().loginStatus) {
-            HistoryActivity.start(mActivity)
+            MineHistoryAllActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
-            InputPhoneActivity.start(mActivity)
+            LoginPhoneWechatActivity.start(mActivity)
         }
     }
 

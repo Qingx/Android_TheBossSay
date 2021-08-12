@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBg"
-    tools:context=".ui.home.ContactActivity">
+    tools:context=".ui.home.MineContactAuthorActivity">
 
     <net.cd1369.tbs.android.widget.WlCardView
         android:id="@+id/layout_top"

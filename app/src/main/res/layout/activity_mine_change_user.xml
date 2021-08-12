@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBg"
-    tools:context=".ui.home.HistoryActivity">
+    tools:context=".ui.home.MineChangeUserActivity">
 
     <FrameLayout
         android:id="@+id/status_bar"
@@ -38,46 +38,53 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:singleLine="true"
+            android:text="账号修改"
             android:textColor="@color/colorTextDark"
             android:textSize="16dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="阅读记录" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/layout_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_top">
+        app:layout_constraintTop_toBottomOf="@id/layout_top"
+        app:srlDragRate="0.75"
+        app:srlEnableLoadMore="true"
+        app:srlEnablePureScrollMode="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:overScrollMode="never" />
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/text_logout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="44dp"
+        android:background="@drawable/draw_loadbg_4"
+        android:gravity="center"
+        android:text="退出登录"
+        android:textColor="@color/colorTextDark"
+        android:textSize="16dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_top">
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <include layout="@layout/layout_default_holder" />
-    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

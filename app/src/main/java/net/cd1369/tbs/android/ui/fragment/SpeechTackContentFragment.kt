@@ -31,7 +31,7 @@ import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
-import net.cd1369.tbs.android.ui.home.SearchActivity
+import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -119,7 +119,7 @@ class SpeechTackContentFragment : BaseListFragment() {
         cardAdapter.emptyView = cardEmptyView
 
         cardEmptyView!!.text_add doClick {
-            SearchActivity.start(mActivity)
+            HomeBossAllActivity.start(mActivity)
         }
 
         layout_refresh.post {

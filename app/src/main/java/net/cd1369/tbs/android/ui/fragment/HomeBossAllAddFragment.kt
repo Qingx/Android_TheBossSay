@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_home_boss_all_add.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
@@ -44,7 +44,7 @@ import kotlin.math.max
  * @description
  * @email Cymbidium@outlook.com
  */
-class SearchFragment : BaseListFragment() {
+class HomeBossAllAddFragment : BaseListFragment() {
 
     private lateinit var tabAdapter: SearchTabAdapter
     private lateinit var mAdapter: SearchInfoAdapter
@@ -56,13 +56,13 @@ class SearchFragment : BaseListFragment() {
     private var mSelectTab = ""
 
     companion object {
-        fun createFragment(): SearchFragment {
-            return SearchFragment()
+        fun createFragment(): HomeBossAllAddFragment {
+            return HomeBossAllAddFragment()
         }
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.fragment_search
+        return R.layout.fragment_home_boss_all_add
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {

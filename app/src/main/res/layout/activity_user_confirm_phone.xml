@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPageBg"
-    tools:context=".ui.home.UserInfoActivity">
+    tools:context=".ui.home.UserConfirmPhoneActivity">
 
     <FrameLayout
         android:id="@+id/status_bar"
@@ -42,7 +41,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:singleLine="true"
-            android:text="账号修改"
+            android:text="修改手机号"
             android:textColor="@color/colorTextDark"
             android:textSize="16dp"
             android:textStyle="bold"
@@ -53,38 +52,56 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+    <TextView
+        android:id="@+id/text_title"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/text_logout"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/colorTextDark"
+        android:textSize="18dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_top"
-        app:srlDragRate="0.75"
-        app:srlEnableLoadMore="true"
-        app:srlEnablePureScrollMode="true">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never" />
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        tools:text="我们已经向尾号5329发送了一条验证码" />
 
     <TextView
-        android:id="@+id/text_logout"
+        android:id="@+id/text_info"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="44dp"
-        android:background="@drawable/draw_loadbg_4"
-        android:gravity="center"
-        android:text="退出登录"
-        android:textColor="@color/colorTextDark"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="4dp"
+        android:gravity="start|top"
+        android:maxLines="2"
+        android:singleLine="false"
+        android:textColor="@color/colorTextGray"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title"
+        tools:text="如果5329是您当前账号登录的手机号\n请填写短信验证码以继续" />
 
+    <com.jyn.vcview.VerificationCodeView
+        android:id="@+id/code_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_info"
+        app:vcv_et_bg="@drawable/edit_code_view"
+        app:vcv_et_cursor="@drawable/edit_code_view_cursor"
+        app:vcv_et_cursor_visible="true"
+        app:vcv_et_inputType="number"
+        app:vcv_et_number="6"
+        app:vcv_et_text_color="@color/colorTextDark"
+        app:vcv_et_text_size="8dp"
+        app:vcv_et_width="48dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

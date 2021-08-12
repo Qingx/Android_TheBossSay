@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.footer_count.view.*
 import kotlinx.android.synthetic.main.fragment_home_boss_content.*
 import kotlinx.android.synthetic.main.fragment_home_boss_content.layout_refresh
 import kotlinx.android.synthetic.main.fragment_home_boss_content.rv_content
-import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
@@ -26,7 +25,7 @@ import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
-import net.cd1369.tbs.android.ui.home.SearchActivity
+import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.OnChangeCallback
 import net.cd1369.tbs.android.util.doClick
@@ -123,7 +122,7 @@ class HomeBossContentFragment : BaseFragment() {
         mAdapter.addFooterView(footerView)
 
         button_float doClick {
-            SearchActivity.start(mActivity)
+            HomeBossAllActivity.start(mActivity)
         }
     }
 

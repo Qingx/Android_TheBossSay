@@ -12,7 +12,7 @@ import cn.wl.android.lib.ui.BaseListActivity
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.activity_history.*
+import kotlinx.android.synthetic.main.activity_mine_history_all.*
 import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
@@ -22,14 +22,14 @@ import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
 import net.cd1369.tbs.android.util.doClick
 import kotlin.math.max
 
-class TodayHistoryActivity : BaseListActivity() {
+class MineHistoryTodayActivity : BaseListActivity() {
     private lateinit var mAdapter: HistoryContentAdapter
     private var needLoading = true
     private var number = UserConfig.get().userEntity.readNum ?: 0
 
     companion object {
         fun start(context: Context?) {
-            val intent = Intent(context, TodayHistoryActivity::class.java)
+            val intent = Intent(context, MineHistoryTodayActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
@@ -38,7 +38,7 @@ class TodayHistoryActivity : BaseListActivity() {
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_history
+        return R.layout.activity_mine_history_all
     }
 
     @SuppressLint("SetTextI18n")

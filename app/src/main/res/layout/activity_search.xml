@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBg"
-    tools:context=".ui.home.SearchActivity">
+    tools:context=".ui.home.HomeBossAllActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_title_bar"

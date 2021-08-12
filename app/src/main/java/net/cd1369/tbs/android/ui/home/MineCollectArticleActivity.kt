@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.activity_favorite.*
+import kotlinx.android.synthetic.main.activity_mine_collect_article.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
@@ -22,14 +22,14 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.max
 
-class FavoriteActivity : BaseActivity() {
+class MineCollectArticleActivity : BaseActivity() {
     private lateinit var mAdapter: FavoriteAdapter
     private var needLoading = true
     private var totalNum = UserConfig.get().userEntity.collectNum
 
     companion object {
         fun start(context: Context?) {
-            val intent = Intent(context, FavoriteActivity::class.java)
+            val intent = Intent(context, MineCollectArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
@@ -38,7 +38,7 @@ class FavoriteActivity : BaseActivity() {
     }
 
     override fun getLayoutResource(): Any {
-        return R.layout.activity_favorite
+        return R.layout.activity_mine_collect_article
     }
 
     @SuppressLint("SetTextI18n")
