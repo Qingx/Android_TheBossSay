@@ -15,7 +15,11 @@ import cn.wl.android.lib.utils.ActStack
 import cn.wl.android.lib.utils.SpanUtils
 import com.blankj.utilcode.util.ColorUtils
 import kotlinx.android.synthetic.main.dialog_service_privacy.*
+import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const.MI_PRIVACY_URL
+import net.cd1369.tbs.android.config.Const.PRIVACY_URL
+import net.cd1369.tbs.android.config.Const.SERVICE_URL
 import net.cd1369.tbs.android.ui.home.WebActivity
 import net.cd1369.tbs.android.util.doClick
 
@@ -25,9 +29,9 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 class ServicePrivacyDialog : DialogFragment() {
-     var doConfirm: Runnable? = null
+    var doConfirm: Runnable? = null
 
-    companion object{
+    companion object {
         fun showDialog(fragmentManager: FragmentManager, tag: String): ServicePrivacyDialog {
             return ServicePrivacyDialog().apply {
                 show(fragmentManager, tag)
@@ -46,6 +50,8 @@ class ServicePrivacyDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val privacyUrl = if (BuildConfig.ENV != "MI") PRIVACY_URL else MI_PRIVACY_URL
+
         text_content.movementMethod = LinkMovementMethod.getInstance()
 
         text_content.text =
@@ -63,7 +69,7 @@ class ServicePrivacyDialog : DialogFragment() {
                         WebActivity.start(
                             context,
                             "服务条款",
-                            "http://file.tianjiemedia.com/serviceProtocol.html"
+                            SERVICE_URL
                         )
                     }
                 })
@@ -81,7 +87,7 @@ class ServicePrivacyDialog : DialogFragment() {
                         WebActivity.start(
                             context,
                             "隐私政策",
-                            "http://file.tianjiemedia.com/privacyService.html"
+                            privacyUrl
                         )
                     }
                 })

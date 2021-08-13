@@ -19,7 +19,10 @@ import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tendcloud.tenddata.TCAgent
 import com.tendcloud.tenddata.TDProfile
 import kotlinx.android.synthetic.main.activity_login_phone_wechat.*
+import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const
+import net.cd1369.tbs.android.config.Const.SERVICE_URL
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
@@ -63,6 +66,8 @@ class LoginPhoneWechatActivity : BaseActivity() {
             }
         })
 
+        val privacyUrl = if (BuildConfig.ENV != "MI") Const.PRIVACY_URL else Const.MI_PRIVACY_URL
+
         text_permission.movementMethod = LinkMovementMethod.getInstance()
 
         text_permission.text = SpanUtils.getBuilder("我已阅读并同意")
@@ -78,7 +83,7 @@ class LoginPhoneWechatActivity : BaseActivity() {
                     WebActivity.start(
                         mActivity,
                         "服务条款",
-                        "http://file.tianjiemedia.com/serviceProtocol.html"
+                        SERVICE_URL
                     )
                 }
             })
@@ -96,7 +101,7 @@ class LoginPhoneWechatActivity : BaseActivity() {
                     WebActivity.start(
                         mActivity,
                         "隐私政策",
-                        "http://file.tianjiemedia.com/privacyService.html"
+                        privacyUrl
                     )
                 }
             })

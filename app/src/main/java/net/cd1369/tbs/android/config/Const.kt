@@ -1,5 +1,7 @@
 package net.cd1369.tbs.android.config
 
+import net.cd1369.tbs.android.BuildConfig
+
 object Const {
 
 //    boss说-安卓
@@ -13,5 +15,9 @@ object Const {
     const val LUNCH_ID = "10004896"
     const val BANNER_ID = "10004898"
 
-    const val SHARE_URL="http://index.tianjiemedia.com/"
+    const val SHARE_URL = "http://index.tianjiemedia.com/"
+
+    const val SERVICE_URL = "http://file.tianjiemedia.com/serviceProtocol.html"
+    const val PRIVACY_URL = "http://file.tianjiemedia.com/privacyService.html"
+    const val MI_PRIVACY_URL = "http://file.tianjiemedia.com/BeiJingBossUserPrivacyAgreement.htm"
 }

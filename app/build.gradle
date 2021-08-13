@@ -18,7 +18,7 @@ android {
         targetSdkVersion 30
         versionCode rootAndroid.versionCode
         versionName rootAndroid.versionName
-        flavorDimensions "1.1"
+        flavorDimensions "1.2"
 
         multiDexEnabled true
 
@@ -81,6 +81,8 @@ android {
 
 //            buildConfigField("String", "BASE_URL", "\"http://192.168.1.125:8088/\"") //阿里云
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
+            buildConfigField("String", "ENV", "\"DEV\"")
+
 
             manifestPlaceholders = [
                     APP_Channel  : "DEV",
@@ -95,6 +97,24 @@ android {
             buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
             buildConfigField("String", "DOWN_URL", "\"http://192.144.169.58:8888/\"")
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
+            buildConfigField("String", "ENV", "\"UAT\"")
+
+            manifestPlaceholders = [
+                    APP_Channel  : "UAT",
+                    JPUSH_PKGNAME: "net.cd1369.tbs.android",
+                    JPUSH_APPKEY : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+            ]
+        }
+
+        MI{
+            resValue "string", "app_name_env", "Boss说"
+
+            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
+            buildConfigField("String", "DOWN_URL", "\"http://192.144.169.58:8888/\"")
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
+            buildConfigField("String", "ENV", "\"MI\"")
+
 
             manifestPlaceholders = [
                     APP_Channel  : "UAT",
