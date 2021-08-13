@@ -8,6 +8,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
+import cn.wl.android.lib.utils.DateFormat
+import cn.wl.android.lib.utils.Times
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_article.*
 import net.cd1369.tbs.android.R
@@ -250,7 +252,17 @@ class ArticleActivity : BaseActivity() {
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
             .bindDefaultSub(doNext = {
+                val lastTime = UserConfig.get().lastReadTime
+                val nowTime = Times.current()
+                UserConfig.get().lastReadTime = lastTime
+
+                val todayZero: Long = DateFormat.getTodayZero(nowTime)
+
                 UserConfig.get().updateUser {
+                    if (todayZero >= lastTime) {
+                        it.readNum = 0
+                    }
+
                     it.readNum = max((it.readNum ?: 0) + 1, 0)
                 }
                 eventBus.post(RefreshUserEvent())

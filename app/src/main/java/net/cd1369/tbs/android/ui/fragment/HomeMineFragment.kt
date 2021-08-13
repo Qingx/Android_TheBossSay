@@ -62,20 +62,12 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
 
         mAdapter = object : MineItemAdapter() {
             override fun onItemClick(item: MineItem) {
-
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("thebosssays://thebosssays/launch?id=1423235941224644610")
-                )
-                startActivity(intent)
-
                 when (item) {
                     MineItem.Favorite -> onClickFavorite()
                     MineItem.History -> onClickHistory()
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
                     MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
-//                    MineItem.Clear -> onClickClear()
                     else -> Toasts.show(item.itemName)
                 }
             }

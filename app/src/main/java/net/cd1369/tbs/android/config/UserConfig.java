@@ -5,6 +5,7 @@ import net.cd1369.tbs.android.util.JPushHelper;
 
 import cn.wl.android.lib.config.BaseConfig;
 import cn.wl.android.lib.data.core.HttpConfig;
+import cn.wl.android.lib.utils.Times;
 import io.reactivex.functions.Consumer;
 
 public class UserConfig extends BaseConfig {
@@ -25,10 +26,12 @@ public class UserConfig extends BaseConfig {
         String keyIsLogin = "KEY_IS_LOGIN";
         String keyUser = "KEY_USER";
         String PushAlias = "push_alias";
+        String kepLastRead = "KEY_LAST_READ";
     }
 
     private boolean loginStatus; //是否登录
     private UserEntity userEntity;
+    private Long lastReadTime;
 
     public void setLoginStatus(boolean loginStatus) {
         putBoolean(KEY.keyIsLogin, loginStatus);
@@ -36,6 +39,14 @@ public class UserConfig extends BaseConfig {
 
     public boolean getLoginStatus() {
         return getBoolean(KEY.keyIsLogin, false);
+    }
+
+    public void setLastReadTime(Long time) {
+        putLong(KEY.kepLastRead, time);
+    }
+
+    public Long getLastReadTime() {
+        return getLong(KEY.kepLastRead, Times.current());
     }
 
     public void setUserEntity(UserEntity entity) {
