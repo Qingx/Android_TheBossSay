@@ -111,7 +111,7 @@ class SearchBossActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : BossSearchInfoAdapter() {
             override fun onClick(item: BossInfoEntity) {
-                Toasts.show(item.id)
+                BossHomeActivity.start(mActivity, item)
             }
         }.also {
             mAdapter = it
