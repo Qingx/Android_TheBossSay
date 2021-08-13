@@ -4,6 +4,11 @@ ext {
             compileSdkVersion: 29,
             minSdkVersion    : 24,
             targetSdkVersion : 29,
+            /**
+             * 2021-07-29 v1.0.7
+             * 2021-08-05 v1.0.8
+             * 2021-08-12 v1.0.9
+             */
             versionCode      : 1009,
             versionName      : "1.0.9+1",
             testVersionCode  : 1006,   // 2020-06-29
