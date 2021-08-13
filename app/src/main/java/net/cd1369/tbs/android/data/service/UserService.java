@@ -181,6 +181,6 @@ public interface UserService {
      * @param version
      * @return
      */
-    @GET("/api/version/check/{versionNumber}")
+    @GET("/api/version/check/android/{versionNumber}/")
     Observable<WLData<VersionEntity>> obtainCheckUpdate(@Path("versionNumber") String version);
 }
