@@ -77,12 +77,9 @@ android {
             versionName "${rootAndroid.testVersionName}.${releaseTime()}"
 
             buildConfigField("String", "FILE_URL", "\"http://file-tr.hii-m.net/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://download-tr.hii-m.net/\"")
-
-//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.125:8088/\"") //阿里云
+            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
             buildConfigField("String", "ENV", "\"DEV\"")
-
 
             manifestPlaceholders = [
                     APP_Channel  : "DEV",
@@ -95,7 +92,7 @@ android {
             resValue "string", "app_name_env", "Boss说"
 
             buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://192.144.169.58:8888/\"")
+            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
             buildConfigField("String", "ENV", "\"UAT\"")
 
@@ -107,11 +104,11 @@ android {
             ]
         }
 
-        MI{
+        MI {
             resValue "string", "app_name_env", "Boss说"
 
             buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://192.144.169.58:8888/\"")
+            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
             buildConfigField("String", "ENV", "\"MI\"")
 

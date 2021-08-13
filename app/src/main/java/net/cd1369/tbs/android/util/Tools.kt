@@ -666,6 +666,19 @@ internal fun String?.fullUrl(): String {
     return this ?: ""
 }
 
+internal fun String?.fullDownloadUrl(): String {
+    if (!this.isNullOrEmpty()) {
+        if (!this.startsWith("http")) {
+            return if (this.startsWith('/')) {
+                WLConfig.getDownUrl() + this.substring(1)
+            } else {
+                WLConfig.getDownUrl() + this
+            }
+        }
+    }
+    return this ?: ""
+}
+
 /**
  * 极光推送
  * @param title CharSequence

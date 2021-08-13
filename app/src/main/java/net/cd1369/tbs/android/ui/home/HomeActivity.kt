@@ -18,10 +18,8 @@ import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
 import net.cd1369.tbs.android.ui.fragment.HomeBossFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
-import net.cd1369.tbs.android.util.DownloadHelper
-import net.cd1369.tbs.android.util.JPushHelper
-import net.cd1369.tbs.android.util.fullUrl
-import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.Tools.logE
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -126,7 +124,7 @@ class HomeActivity : BaseActivity() {
 
                             onConfirmClick = CheckUpdateDialog.OnConfirmClick {
                                 DownloadHelper.requestDownload(
-                                    it.fileUrl.fullUrl(),
+                                    it.fileUrl.fullDownloadUrl(),
                                     "v${it.versions}"
                                 )
 

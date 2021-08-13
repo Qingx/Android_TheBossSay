@@ -10,10 +10,10 @@ ext {
              * 2021-08-12 v1.0.9
              * 2021-08-13 v1.0.10
              */
-            versionCode      : 1010,
-            versionName      : "1.0.10+1",
-            testVersionCode  : 1010,   // 2020-06-29
-            testVersionName  : "1.0.10+1",
+            versionCode      : 1009,
+            versionName      : "1.0.9+1",
+            testVersionCode  : 1009,   // 2020-06-29
+            testVersionName  : "1.0.9+1",
     ]
 
 }
