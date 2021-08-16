@@ -9,9 +9,7 @@ import android.webkit.WebViewClient
 import androidx.core.view.isVisible
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
-import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
-import cn.wl.android.lib.utils.Times
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.activity_article.image_back
