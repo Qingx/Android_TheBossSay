@@ -206,4 +206,5 @@ dependencies {
 
     implementation "com.github.gzu-liyujiang:Android_CN_OAID:4.2.1"
     implementation "io.coil-kt:coil:1.0.0"
+    implementation 'cn.tseeey:justtextview:0.1.0'
 }

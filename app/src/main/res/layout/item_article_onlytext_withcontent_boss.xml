@@ -41,12 +41,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/draw_update_text"
             android:gravity="center"
-            android:paddingHorizontal="4dp"
-            android:paddingVertical="2dp"
+            android:paddingHorizontal="2dp"
+            android:paddingVertical="1dp"
             android:singleLine="true"
             android:text="最近更新"
             android:textColor="@color/colorWhite"
-            android:textSize="12dp"
+            android:textSize="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

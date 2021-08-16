@@ -238,7 +238,7 @@ object Tools {
             .takeUntil { t: Int -> t <= 0 }
             .subscribe {
                 doDown(it)
-                if (it <= 0) {
+                if (it <= 1) {
                     dialog?.dismiss()
                 }
             }
