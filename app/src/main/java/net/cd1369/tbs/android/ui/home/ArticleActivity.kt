@@ -6,20 +6,27 @@ import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.isVisible
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.DateFormat
+import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Times
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_article.*
+import kotlinx.android.synthetic.main.activity_article.image_back
+import kotlinx.android.synthetic.main.activity_article.image_head
+import kotlinx.android.synthetic.main.activity_article.text_follow
+import kotlinx.android.synthetic.main.activity_article.text_name
+import kotlinx.android.synthetic.main.activity_boss_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
-import net.cd1369.tbs.android.ui.dialog.CreateFolderDialog
-import net.cd1369.tbs.android.ui.dialog.SelectFolderDialog
-import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
 import kotlin.math.max
@@ -32,13 +39,21 @@ class ArticleActivity : BaseActivity() {
     private var articleDes: String? = null
     private var articleCover: String = ""
 
+    private var bossId: String? = null
+    private var bossEntity: BossInfoEntity? = null
+    private var isTack = false
+    private var mLabels: MutableList<String>? = null
+
+    private var fromBoss: Boolean = false
+
     companion object {
-        fun start(context: Context?, id: String) {
+        fun start(context: Context?, id: String, fromBoss: Boolean = false) {
             val intent = Intent(context, ArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtras(Bundle().apply {
                         putString("articleId", id)
+                        putBoolean("fromBoss", fromBoss)
                     })
                 }
             context!!.startActivity(intent)
@@ -52,12 +67,14 @@ class ArticleActivity : BaseActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        var userEntity = UserConfig.get().userEntity
+        val userEntity = UserConfig.get().userEntity
 
         articleId = intent.getStringExtra("articleId") as String
         articleUrl = "${WLConfig.getBaseUrl()}#/article?" +
                 "id=$articleId" +
                 "&version=${userEntity?.version ?: "1000"}"
+
+        fromBoss = intent.getBooleanExtra("fromBoss", false)
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
@@ -82,9 +99,11 @@ class ArticleActivity : BaseActivity() {
             }
         })
 
+        layout_boss.isVisible = false
+
         tryReadArticle(articleId!!)
 
-        image_collect doClick {
+        layout_collect doClick {
             if (UserConfig.get().loginStatus) {
                 if (isCollect!!) {
                     cancelCollect()
@@ -95,8 +114,29 @@ class ArticleActivity : BaseActivity() {
             }
         }
 
-        image_share doClick {
+        layout_share doClick {
             onShare()
+        }
+
+        text_follow doClick {
+            if (isTack) {
+                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
+                    .apply {
+                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+                            cancelFollow(this)
+                        }
+                    }
+            } else {
+                followBoss()
+            }
+        }
+
+        layout_info doClick {
+            if (fromBoss) {
+                onBackPressed()
+            } else {
+                BossHomeActivity.start(mActivity, bossEntity!!)
+            }
         }
 
         image_back doClick {
@@ -155,6 +195,21 @@ class ArticleActivity : BaseActivity() {
                 }
 
                 image_collect.isSelected = isCollect
+                text_collect.isSelected = isCollect
+                text_collect.text = if (isCollect) "已收藏" else "收藏"
+
+                layout_boss.isVisible = true
+
+                bossEntity = it.bossVO
+                isTack = it.bossVO.isCollect
+                bossId = it.bossId
+                mLabels = it.bossVO.labels
+
+                GlideApp.displayHead(it.bossVO.head, image_head)
+                text_name.text = it.bossVO.name
+                text_role.text = it.bossVO.role
+                text_follow.text = if (it.bossVO.isCollect) "已追踪" else "追踪"
+                text_follow.isSelected = it.bossVO.isCollect
             }
     }
 
@@ -164,7 +219,10 @@ class ArticleActivity : BaseActivity() {
         TbsApi.user().obtainCancelFavoriteArticle(articleId)
             .bindDefaultSub(doNext = {
                 isCollect = false
-                image_collect.isSelected = false
+                this@ArticleActivity.image_collect.isSelected = false
+                this@ArticleActivity.text_collect.isSelected =
+                    false
+                this@ArticleActivity.text_collect.text = "收藏"
 
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
@@ -206,6 +264,9 @@ class ArticleActivity : BaseActivity() {
                                                     isCollect = true
                                                     this@ArticleActivity.image_collect.isSelected =
                                                         true
+                                                    this@ArticleActivity.text_collect.isSelected =
+                                                        true
+                                                    this@ArticleActivity.text_collect.text = "已收藏"
 
                                                     UserConfig.get().updateUser {
                                                         it.collectNum =
@@ -231,6 +292,9 @@ class ArticleActivity : BaseActivity() {
                                 .bindDefaultSub(doNext = {
                                     isCollect = true
                                     this@ArticleActivity.image_collect.isSelected = true
+                                    this@ArticleActivity.text_collect.isSelected =
+                                        true
+                                    this@ArticleActivity.text_collect.text = "已收藏"
 
                                     Toasts.show("收藏成功")
 
@@ -246,25 +310,103 @@ class ArticleActivity : BaseActivity() {
     }
 
     /**
+     * 取消追踪boss
+     */
+    private fun cancelFollow(dialog: FollowAskCancelDialog?) {
+        showLoadingAlert("尝试取消...")
+
+        TbsApi.boss().obtainCancelFollowBoss(bossId)
+            .bindDefaultSub(doNext = {
+                dialog?.dismiss()
+
+                FollowChangedDialog.showDialog(supportFragmentManager, true, "followChange")
+
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                }
+                eventBus.post(
+                    FollowBossEvent(
+                        id = bossId,
+                        isFollow = false,
+                        needLoading = true,
+                        labels = mLabels
+                    )
+                )
+
+                isTack = false
+                text_follow.isSelected = false
+                text_follow.text = "追踪"
+
+                JPushHelper.tryDelTag(bossId!!)
+
+            }, doFail = {
+                Toasts.show("取消失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    /**
+     * 追踪boss
+     */
+    private fun followBoss() {
+        showLoadingAlert("尝试追踪...")
+
+        TbsApi.boss().obtainFollowBoss(bossId)
+            .bindDefaultSub(doNext = {
+                FollowAskPushDialog.showDialog(supportFragmentManager, "askPush")
+                    .apply {
+                        onConfirmClick = FollowAskPushDialog.OnConfirmClick {
+                            JPushHelper.tryAddTag(bossId!!)
+
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                supportFragmentManager,
+                                false,
+                                "followChange"
+                            )
+                        }
+                        onCancelClick = FollowAskPushDialog.OnCancelClick {
+                            this.dismiss()
+
+                            FollowChangedDialog.showDialog(
+                                supportFragmentManager,
+                                false,
+                                "followChange"
+                            )
+                        }
+                    }
+
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) + 1, 0)
+                }
+
+                eventBus.post(
+                    FollowBossEvent(
+                        bossId, true,
+                        needLoading = true,
+                        labels = mLabels
+                    )
+                )
+
+                isTack = true
+                text_follow.isSelected = true
+                text_follow.text = "已追踪"
+            }, doFail = {
+                Toasts.show("追踪失败，${it.msg}")
+            }, doDone = {
+                hideLoadingAlert()
+            })
+    }
+
+    /**
      * 尝试阅读记录文章
      * @param articleId String
      */
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
             .bindDefaultSub(doNext = {
-                val lastTime = UserConfig.get().lastReadTime
-                val nowTime = Times.current()
-                UserConfig.get().lastReadTime = lastTime
-
-                val todayZero: Long = DateFormat.getTodayZero(nowTime)
-
-                UserConfig.get().updateUser {
-                    if (todayZero >= lastTime) {
-                        it.readNum = 0
-                    }
-
-                    it.readNum = max((it.readNum ?: 0) + 1, 0)
-                }
                 eventBus.post(RefreshUserEvent())
             }, doFail = {
 

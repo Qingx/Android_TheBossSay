@@ -48,6 +48,7 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.TbsApp.getContext
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import java.util.*
@@ -55,6 +56,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.abs
+import kotlin.math.max
 
 
 /**
@@ -63,6 +65,22 @@ import kotlin.math.abs
  * @email Cymbidium@outlook.com
  */
 object Tools {
+    fun addTodayRead() {
+        val lastTime = UserConfig.get().lastReadTime
+        val nowTime = Times.current()
+        UserConfig.get().lastReadTime = lastTime
+
+        val todayZero: Long = DateFormat.getTodayZero(nowTime)
+
+        UserConfig.get().updateUser {
+            if (todayZero >= lastTime) {
+                it.readNum = 0
+            }
+
+            it.readNum = max((it.readNum ?: 0) + 1, 0)
+        }
+    }
+
     internal fun List<BossLabelEntity>?.isLabelsEmpty(): Boolean {
         return !(this != null && this.size > 1)
     }

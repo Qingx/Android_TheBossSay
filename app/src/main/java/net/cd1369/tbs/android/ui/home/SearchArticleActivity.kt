@@ -18,6 +18,7 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -44,6 +45,10 @@ class SearchArticleActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
+                if (!item.isRead) {
+                    Tools.addTodayRead()
+                }
+
                 ArticleActivity.start(mActivity, item.id)
             }
         }.also {

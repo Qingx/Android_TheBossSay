@@ -17,6 +17,7 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.FavoriteAdapter
 import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
+import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -64,6 +65,10 @@ class MineCollectArticleActivity : BaseActivity() {
 
         mAdapter = object : FavoriteAdapter() {
             override fun onContentItemClick(entity: ArticleEntity) {
+                if (!entity.isRead) {
+                    Tools.addTodayRead()
+                }
+
                 ArticleActivity.start(mActivity, entity.id)
             }
 
