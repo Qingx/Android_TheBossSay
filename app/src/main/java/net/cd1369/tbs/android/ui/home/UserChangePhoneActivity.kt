@@ -151,7 +151,7 @@ class UserChangePhoneActivity : BaseActivity(), VerificationCodeView.OnCodeFinis
                     layout_code.isVisible = true
                     countDown()
                 }, doFail = {
-                    Toasts.show("发送失败,${it.msg}")
+                    Toasts.show(it.msg)
                 }, doDone = {
                     hideLoadingAlert()
                 })

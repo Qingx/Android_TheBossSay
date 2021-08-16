@@ -120,7 +120,7 @@ class LoginInputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinish
 
                 countDown()
             }, doFail = {
-                Toasts.show("验证码发送失败，${it.msg}")
+                Toasts.show(it.msg)
             }, doDone = {
                 hideLoadingAlert()
             })
