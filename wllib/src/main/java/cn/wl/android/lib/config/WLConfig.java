@@ -62,8 +62,6 @@ public final class WLConfig {
         if (isInit.compareAndSet(false, true)) {
             WLConfig.isDebug = isDebug;
             WLConfig.mContext = context;
-
-            Utils.init(context);
         }
     }
 

@@ -78,20 +78,6 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
         tryShowService()
-
-        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
-            .flatMap {
-                it.add(0, BossLabelEntity.empty)
-                DataConfig.get().bossLabels = it
-
-                TbsApi.boss().obtainGuideBoss()
-                    .onErrorReturn { mutableListOf() }
-            }.bindDefaultSub {
-                bossList = it
-                hasLoadBoss = true
-
-                tryLunchApp()
-            }
     }
 
     /**
@@ -109,18 +95,16 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
                     .subscribe({
                         hasService = true
 
-                        timerDelay(100) {
-                            tryLunchApp()
-                        }
+                        tryLoadBoos()
                     }) {
                         hasService = true
 
-                        timerDelay(100) {
-                            tryLunchApp()
-                        }
+                        tryLoadBoos()
                     }
             }
         } else {
+            TbsApp.tryInitThree(applicationContext)
+
             hasService = true
             //开屏初始化；adContainer为广告容器，skipView不需要自定义可以为null
             //开屏初始化；adContainer为广告容器，skipView不需要自定义可以为null
@@ -132,6 +116,30 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
             // 如果您的App没有适配到Android6.0（即targetSDKVersion < 23）或者已经提前申请权限，
             // 那么只需要在这里直接调用loadAd方法。
             advanceSplash?.loadStrategy()
+
+            tryLoadBoos()
+        }
+    }
+
+    private fun tryLoadBoos() {
+        if (bossList.isNullOrEmpty()) {
+            TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
+                .flatMap {
+                    it.add(0, BossLabelEntity.empty)
+                    DataConfig.get().bossLabels = it
+
+                    TbsApi.boss().obtainGuideBoss()
+                        .onErrorReturn { mutableListOf() }
+                }.bindDefaultSub {
+                    bossList = it
+                    hasLoadBoss = true
+
+                    tryLunchApp()
+                }
+        } else {
+            hasLoadBoss = true
+
+            tryLunchApp()
         }
     }
 
