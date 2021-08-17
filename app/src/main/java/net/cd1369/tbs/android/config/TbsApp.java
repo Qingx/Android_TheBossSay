@@ -103,6 +103,11 @@ public class TbsApp extends MultiDexApplication {
         tryInitThree(mContext);
     }
 
+    /**
+     * 初始化第三方lib
+     *
+     * @param context
+     */
     public static void tryInitThree(Context context) {
         if (DataConfig.get().isNeedService()) {
             return;

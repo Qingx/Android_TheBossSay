@@ -1,18 +1,15 @@
 package net.cd1369.tbs.android.ui.start
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
-import cn.wl.android.lib.ui.BaseActivity
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener
 import com.advance.model.AdvanceError
-import com.baidu.mobads.AppActivity
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +25,6 @@ import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
-import net.cd1369.tbs.android.util.LabelManager
 import java.util.concurrent.TimeUnit
 
 /**
