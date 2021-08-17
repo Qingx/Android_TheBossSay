@@ -62,7 +62,7 @@ public class UserRepository extends BaseRepository<UserService> {
      * 发送验证码
      *
      * @param phone
-     * @param type  0 登录 1验证当前手机号 2修改手机号
+     * @param type  0 登录 1验证当前手机号 2修改手机号 3绑定手机号
      * @return
      */
     public Observable<String> obtainSendCode(String phone, int type) {

@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-//    id 'org.greenrobot.greendao'
 }
 
 def rootPro = rootProject.ext
@@ -120,6 +119,23 @@ android {
                     JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
             ]
         }
+
+        YYB {
+            resValue "string", "app_name_env", "Boss说"
+
+            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
+            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
+            buildConfigField("String", "ENV", "\"YYB\"")
+
+
+            manifestPlaceholders = [
+                    APP_Channel  : "UAT",
+                    JPUSH_PKGNAME: "net.cd1369.tbs.android",
+                    JPUSH_APPKEY : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+            ]
+        }
     }
 
     repositories {
@@ -170,8 +186,6 @@ dependencies {
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'//recyclerView左滑删除
     implementation 'com.jyn.verificationcodeview:verificationcodeview:1.0.1'
     implementation 'com.irozon.sneaker:sneaker:2.0.0'
-//    implementation 'org.greenrobot:greendao:3.3.0'
-//    implementation 'org.greenrobot:greendao-generator:3.3.0'
     implementation 'com.google.zxing:core:3.3.0'
 
     implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0
@@ -192,4 +206,5 @@ dependencies {
 
     implementation "com.github.gzu-liyujiang:Android_CN_OAID:4.2.1"
     implementation "io.coil-kt:coil:1.0.0"
+    implementation 'cn.tseeey:justtextview:0.1.0'
 }

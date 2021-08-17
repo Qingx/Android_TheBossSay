@@ -104,7 +104,7 @@ class MineChangeUserActivity : BaseActivity() {
                                         this?.dismiss()
                                         UserConfirmPhoneActivity.start(mActivity, phone, it)
                                     }, doFail = {
-                                        Toasts.show("发送失败，${it.msg}")
+                                        Toasts.show(it.msg)
                                     }, doDone = {
                                         hideLoadingAlert()
                                     })

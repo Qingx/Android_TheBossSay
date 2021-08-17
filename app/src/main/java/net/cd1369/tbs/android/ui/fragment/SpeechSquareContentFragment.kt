@@ -15,6 +15,7 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.util.Tools
 
 /**
  * Created by Xiang on 2021/8/11 12:06
@@ -46,6 +47,10 @@ class SpeechSquareContentFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SquareInfoAdapter() {
             override fun onClick(item: ArticleEntity) {
+                if (!item.isRead) {
+                    Tools.addTodayRead()
+                }
+
                 ArticleActivity.start(mActivity, item.id)
             }
         }.also {

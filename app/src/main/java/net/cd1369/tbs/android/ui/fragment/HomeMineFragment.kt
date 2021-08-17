@@ -16,6 +16,7 @@ import com.advance.model.AdvanceError
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
+import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
@@ -68,6 +69,16 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
                     MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
+                    MineItem.HuangLi -> WebActivity.start(
+                        mActivity,
+                        MineItem.HuangLi.itemName,
+                        "https://m.laohuangli.net/"
+                    )
+                    MineItem.XingZuo -> WebActivity.start(
+                        mActivity,
+                        MineItem.XingZuo.itemName,
+                        "https://3g.d1xz.net/astro/"
+                    )
                     else -> Toasts.show(item.itemName)
                 }
             }
@@ -88,7 +99,12 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         }
 
         timerDelay(40) {
-            mAdapter.setNewData(MineItem.values().toMutableList())
+            val items = MineItem.values().toMutableList()
+            if (BuildConfig.ENV != "YYB") {
+                items.remove(MineItem.XingZuo)
+                items.remove(MineItem.HuangLi)
+            }
+            mAdapter.setNewData(items)
             mAdapter.onRefreshLogin()
         }
 

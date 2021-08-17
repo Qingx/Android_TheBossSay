@@ -167,7 +167,6 @@ class BossHomeActivity : BaseListActivity() {
 
                 JPushHelper.tryDelTag(entity.id)
 
-                showDialog?.tryDismiss()
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doDone = {
@@ -232,7 +231,11 @@ class BossHomeActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : BossArticleAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id)
+                if (!item.isRead) {
+                    Tools.addTodayRead()
+                }
+
+                ArticleActivity.start(mActivity, item.id, true)
                 item.isRead = true
 
                 val index = data.indexOfFirst { it.id == item.id }

@@ -176,7 +176,7 @@ class LoginPhoneWechatActivity : BaseActivity() {
 
                 LoginInputCodeActivity.start(mActivity, edit_input.text.toString().trim(), it)
             }, doFail = {
-                Toasts.show("验证码发送失败，${it.msg}")
+                Toasts.show(it.msg)
             }, doDone = {
                 hideLoadingAlert()
             })
