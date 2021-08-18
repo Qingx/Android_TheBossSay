@@ -127,6 +127,9 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         }
     }
 
+    /**
+     * 尝试加载boss信息
+     */
     private fun tryLoadBoos() {
         if (bossList.isNullOrEmpty()) {
             TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }

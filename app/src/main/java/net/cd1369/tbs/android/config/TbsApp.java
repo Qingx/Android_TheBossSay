@@ -100,7 +100,7 @@ public class TbsApp extends MultiDexApplication {
             }
         };
 
-        tryInitThree(mContext);
+//        tryInitThree(mContext);
     }
 
     /**
