@@ -49,6 +49,8 @@ public class TbsApp extends MultiDexApplication {
     private static String weChatId = "wx5fd9da0bd24efe83"; //微信appId
     private static IWXAPI iwxapi;
 
+    private static volatile boolean hasInitThree = false;
+
     public static String getWeChatId() {
         return weChatId;
     }
@@ -61,8 +63,6 @@ public class TbsApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-
-        Utils.init(this);
 
         WLConfig.init(mContext, BuildConfig.DEBUG);
         WLConfig.initHttp(new WLConfig.UrlProvider() {
@@ -88,8 +88,6 @@ public class TbsApp extends MultiDexApplication {
 
         BaseApi.mProvider = () -> RetryHolder.mTempRetry;
 
-        registerToWeChat();
-
         BaseCommonActivity.mCall = new OnActivityCallback() {
             @Override
             public void onCreated(Activity activity) {
@@ -101,12 +99,26 @@ public class TbsApp extends MultiDexApplication {
                 TCAgent.onPageEnd(activity, activity.getClass().getSimpleName());
             }
         };
+
+//        tryInitThree(mContext);
     }
 
+    /**
+     * 初始化第三方lib
+     *
+     * @param context
+     */
     public static void tryInitThree(Context context) {
         if (DataConfig.get().isNeedService()) {
             return;
         }
+
+        if (hasInitThree) return;
+        hasInitThree = true;
+
+        Utils.init(context);
+
+        registerToWeChat();
 
         //必要配置：初始化聚合SDK，三个参数依次为context上下文，appId媒体id，isDebug调试模式开关
         AdvanceSDK.initSDK(context, Const.AD_ID, BuildConfig.DEBUG);
@@ -158,7 +170,7 @@ public class TbsApp extends MultiDexApplication {
     /**
      * 注册至微信
      */
-    private void registerToWeChat() {
+    private static void registerToWeChat() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
         iwxapi = WXAPIFactory.createWXAPI(mContext, weChatId, true);
 
@@ -166,7 +178,7 @@ public class TbsApp extends MultiDexApplication {
         iwxapi.registerApp(weChatId);
 
         //建议动态监听微信启动广播进行注册到微信
-        registerReceiver(new BroadcastReceiver() {
+        mContext.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 

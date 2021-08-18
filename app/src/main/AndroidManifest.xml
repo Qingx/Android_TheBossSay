@@ -104,7 +104,8 @@
         <activity android:name=".ui.start.GuideActivity" />
         <activity
             android:name=".ui.start.SplashActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/FullTheme"/>
         <activity android:name=".ui.home.BossInfoActivity" />
         <activity android:name=".ui.home.BossHomeActivity" />
         <activity

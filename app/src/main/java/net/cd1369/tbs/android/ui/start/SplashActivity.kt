@@ -6,10 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
-import cn.wl.android.lib.ui.BaseActivity
+import androidx.fragment.app.FragmentActivity
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener
 import com.advance.model.AdvanceError
+import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
@@ -21,7 +25,7 @@ import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
-import net.cd1369.tbs.android.util.LabelManager
+import java.util.concurrent.TimeUnit
 
 /**
  * @Email 15025496981@163.com
@@ -29,8 +33,11 @@ import net.cd1369.tbs.android.util.LabelManager
  * @time 16:28 2021/7/23
  * @desc
  */
-class SplashActivity : BaseActivity(), AdvanceSplashListener {
+class SplashActivity : FragmentActivity(), AdvanceSplashListener {
 
+    private val rxPermission: RxPermissions by lazy {
+        RxPermissions(this)
+    }
     private var sdkId: String = ""
 
     private var hasAdShow = false
@@ -72,26 +79,11 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
         }
     }
 
-    override fun getLayoutResource(): Any {
-        return R.layout.activity_splash
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_splash)
 
-    override fun initViewCreated(savedInstanceState: Bundle?) {
         tryShowService()
-
-        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
-            .flatMap {
-                it.add(0, BossLabelEntity.empty)
-                DataConfig.get().bossLabels = it
-
-                TbsApi.boss().obtainGuideBoss()
-                    .onErrorReturn { mutableListOf() }
-            }.bindDefaultSub {
-                bossList = it
-                hasLoadBoss = true
-
-                tryLunchApp()
-            }
     }
 
     /**
@@ -109,18 +101,16 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
                     .subscribe({
                         hasService = true
 
-                        timerDelay(100) {
-                            tryLunchApp()
-                        }
+                        tryLoadBoos()
                     }) {
                         hasService = true
 
-                        timerDelay(100) {
-                            tryLunchApp()
-                        }
+                        tryLoadBoos()
                     }
             }
         } else {
+            TbsApp.tryInitThree(applicationContext)
+
             hasService = true
             //开屏初始化；adContainer为广告容器，skipView不需要自定义可以为null
             //开屏初始化；adContainer为广告容器，skipView不需要自定义可以为null
@@ -132,6 +122,36 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
             // 如果您的App没有适配到Android6.0（即targetSDKVersion < 23）或者已经提前申请权限，
             // 那么只需要在这里直接调用loadAd方法。
             advanceSplash?.loadStrategy()
+
+            tryLoadBoos()
+        }
+    }
+
+    /**
+     * 尝试加载boss信息
+     */
+    private fun tryLoadBoos() {
+        if (bossList.isNullOrEmpty()) {
+            TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
+                .flatMap {
+                    it.add(0, BossLabelEntity.empty)
+                    DataConfig.get().bossLabels = it
+
+                    TbsApi.boss().obtainGuideBoss()
+                        .onErrorReturn { mutableListOf() }
+                }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    bossList = it
+                    hasLoadBoss = true
+
+                    tryLunchApp()
+                }) {
+
+                }
+        } else {
+            hasLoadBoss = true
+
+            tryLunchApp()
         }
     }
 
@@ -152,21 +172,21 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
 
             if (firstUse && !bossList.isNullOrEmpty()) {
                 val guideBoss = bossList.filter { it.guide }
-                GuideActivity.start(mActivity, ArrayList(guideBoss))
-                mActivity?.finish()
+                GuideActivity.start(this, ArrayList(guideBoss))
+                finish()
             } else {
                 if (tempId.isNullOrEmpty()) {
-                    HomeActivity.start(mActivity)
-                    mActivity?.finish()
+                    HomeActivity.start(this)
+                    finish()
                 } else {
-                    var intentHome = Intent(mActivity, HomeActivity::class.java)
+                    var intentHome = Intent(this, HomeActivity::class.java)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                    var intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                    var intentArticle = Intent(this, ArticleActivity::class.java)
                     intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     intentArticle.putExtra("articleId", tempId)
 
-                    mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                    startActivities(arrayOf(intentHome, intentArticle))
                 }
             }
         }
@@ -208,11 +228,22 @@ class SplashActivity : BaseActivity(), AdvanceSplashListener {
         }
     }
 
+    private fun timerDelay(time: Int, function: () -> Unit): Disposable {
+        return Observable.timer(time.toLong(), TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                function.invoke()
+            }) {
+
+            }
+    }
+
     override fun onAdShow() {
         iv_wel.isVisible = false
     }
 
     override fun onAdLoaded() {
     }
+
 
 }

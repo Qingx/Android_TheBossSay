@@ -69,7 +69,9 @@ class GuideActivity : BaseActivity() {
                         Toasts.show("追踪成功")
                         hideLoadingAlert()
 
-                        UserConfig.get().userEntity.collectNum = data.size
+                        UserConfig.get().updateUser {
+                            it.collectNum = data.size
+                        }
 
                         DataConfig.get().firstUse = false
 
