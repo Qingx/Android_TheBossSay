@@ -2,6 +2,7 @@ package net.cd1369.tbs.android.data.repository;
 
 
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
+import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
@@ -296,14 +297,24 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param bossId
      * @return
      */
-    public Observable<Boolean> topicBoss(String bossId, boolean target) {
+    public Observable<Boolean> obtainTopicBoss(String bossId, boolean target) {
         RequestBody requestBody = bodyFromCreator(map -> {
             map.put("bossId", bossId);
             map.put("top", target);
         });
-        return getService().topicBoss(requestBody)
+        return getService().obtainTopicBoss(requestBody)
                 .compose(combine())
                 .compose(success());
     }
 
+    /**
+     * 获取banner
+     *
+     * @return
+     */
+    public Observable<List<BannerEntity>> obtainBanner() {
+        return getService().obtainBanner()
+                .compose(combine())
+                .compose(rebase());
+    }
 }

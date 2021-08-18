@@ -42,6 +42,8 @@ public class BossInfoEntity implements Serializable {
     private boolean top; //是否置顶
     private long relTime; //置顶时间
 
+    private String bossType; //boss类型:新boss:newBoss,热门boss:hotBoss,没有标签:without
+
     public boolean checkLabels(String label) {
         if (Lists.isEmpty(labels)) return false;
         if (TextUtils.isEmpty(label)) return false;
@@ -91,7 +93,7 @@ public class BossInfoEntity implements Serializable {
 
     public BossInfoEntity(String id, String name, String head, String role, String info, long date,
                           boolean isCollect, boolean isPoint, boolean deleted, boolean guide, int point, int collect,
-                          int updateCount, int totalCount, int readCount, Long updateTime, Long createTime) {
+                          int updateCount, int totalCount, int readCount, Long updateTime, Long createTime, String bossType) {
         this.id = id;
         this.name = name;
         this.head = head;
@@ -109,6 +111,7 @@ public class BossInfoEntity implements Serializable {
         this.readCount = readCount;
         this.updateTime = updateTime;
         this.createTime = createTime;
+        this.bossType = bossType;
     }
 
     public BossInfoEntity() {
@@ -268,6 +271,14 @@ public class BossInfoEntity implements Serializable {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public void setBossType(String bossType) {
+        this.bossType = bossType;
+    }
+
+    public String getBossType() {
+        return this.bossType;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.data.service;
 
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
+import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
@@ -124,6 +125,13 @@ public interface BossService {
      * @return
      */
     @POST("/api/boss/top-boss")
-    Observable<WLList<OptPicEntity>> topicBoss(@Body RequestBody body);
+    Observable<WLList<OptPicEntity>> obtainTopicBoss(@Body RequestBody body);
 
+    /**
+     * 获取banner
+     *
+     * @return
+     */
+    @GET("/api/operationPicture/get/banner")
+    Observable<WLList<BannerEntity>> obtainBanner();
 }

@@ -7,10 +7,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_search_info.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.BossLabelItem
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.fullUrl
 
 /**
  * Created by Qing on 2021/6/30 5:01 下午
@@ -38,6 +39,11 @@ abstract class SearchInfoAdapter :
         helper.V.ll_info_select.isSelected = item.id in mIdSet
         helper.V.ll_info_select doClick {
             selectItem(it, item)
+        }
+
+        helper.V.image_type.isVisible = BossLabelItem.get(item.bossType) != BossLabelItem.Empty
+        if (item.bossType != BossLabelItem.Empty.code) {
+            GlideApp.display(BossLabelItem.get(item.bossType).icon, helper.V.image_type)
         }
 
         helper.V.layout_follow doClick {

@@ -89,14 +89,14 @@
             android:id="@+id/ll_info_select"
             android:layout_width="@dimen/font_18"
             android:layout_height="@dimen/font_18"
+            android:layout_marginTop="-4dp"
+            android:layout_marginRight="-4dp"
             android:background="@drawable/draw_head_sel"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="@+id/image_head"
             app:layout_constraintTop_toTopOf="@+id/image_head"
-            android:layout_marginRight="-4dp"
-            android:layout_marginTop="-4dp"
             tools:visibility="visible">
 
             <ImageView
@@ -106,6 +106,15 @@
                 android:src="@drawable/draw_check_sel" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <ImageView
+            android:id="@+id/image_type"
+            android:layout_width="28dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_boss_label_hot" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

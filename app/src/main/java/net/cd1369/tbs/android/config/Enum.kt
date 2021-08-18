@@ -8,6 +8,25 @@ import net.cd1369.tbs.android.R
  * @description
  * @email Cymbidium@outlook.com
  */
+enum class BossLabelItem(val code: String, val itemName: String, @DrawableRes val icon: Int) {
+    Hot("hotBoss", "热门", R.drawable.ic_boss_label_hot),
+    New("newBoss", "最新", R.drawable.ic_boss_label_new),
+    Empty("without", "无标签", 0);
+
+    companion object {
+        fun get(code: String): BossLabelItem {
+            val values = values()
+
+            for (value: BossLabelItem in values) {
+                if (value.code == code) {
+                    return value
+                }
+            }
+            return Empty
+        }
+    }
+}
+
 enum class MineItem(val code: String, val itemName: String, @DrawableRes val icon: Int) {
     Favorite("0", "我的收藏", R.drawable.ic_mine_favorite),
     History("1", "阅读记录", R.drawable.ic_mine_history),

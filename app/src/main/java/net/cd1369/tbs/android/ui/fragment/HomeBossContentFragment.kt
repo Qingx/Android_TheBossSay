@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
@@ -13,14 +14,17 @@ import kotlinx.android.synthetic.main.footer_count.view.*
 import kotlinx.android.synthetic.main.fragment_home_boss_content.*
 import kotlinx.android.synthetic.main.fragment_home_boss_content.layout_refresh
 import kotlinx.android.synthetic.main.fragment_home_boss_content.rv_content
+import kotlinx.android.synthetic.main.header_boss_content.view.*
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.entity.BannerEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.ui.adapter.BannerViewAdapter
 import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
@@ -46,6 +50,8 @@ class HomeBossContentFragment : BaseFragment() {
     private var footerView: View? = null
 
     private lateinit var mAdapter: BossInfoAdapter
+    private var mBanners = mutableListOf<BannerEntity>()
+    private lateinit var headerView: View
 
     companion object {
         fun createFragment(label: String): HomeBossContentFragment {
@@ -87,6 +93,10 @@ class HomeBossContentFragment : BaseFragment() {
             loadData()
         }
 
+        headerView = LayoutInflater.from(mActivity).inflate(R.layout.header_boss_content, null)
+        headerView.layout_banner.addBannerLifecycleObserver(this)
+        headerView.layout_banner.setLoopTime(4000)
+
         mAdapter = object : BossInfoAdapter() {
             override fun onDoTop(item: BossInfoEntity, v: View, index: Int) {
                 tryChangeTopic(item, v, index)
@@ -106,6 +116,8 @@ class HomeBossContentFragment : BaseFragment() {
             }
         }
         mAdapter.registerAdapterDataObserver(mCall)
+
+        mAdapter.addHeaderView(headerView)
 
         rv_content.adapter = mAdapter
         rv_content.layoutManager =
@@ -133,9 +145,19 @@ class HomeBossContentFragment : BaseFragment() {
             showLoading()
         }
 
-        TbsApi.boss().obtainFollowBossList(mLabel, false)
-            .onErrorReturn { mutableListOf() }
+        TbsApi.boss().obtainBanner().onErrorReturn {
+            mutableListOf()
+        }.flatMap {
+            mBanners = it
+            return@flatMap TbsApi.boss().obtainFollowBossList(mLabel, false)
+        }.onErrorReturn { mutableListOf() }
             .bindDefaultSub(doNext = {
+                headerView.layout_banner.isVisible = !mBanners.isNullOrEmpty()
+                if (!mBanners.isNullOrEmpty()) {
+                    headerView.layout_banner.adapter = BannerViewAdapter(mActivity, mBanners)
+                    headerView.layout_banner.start()
+                }
+
                 mAdapter.setNewData(it)
             }, doLast = {
                 showContent()
@@ -149,7 +171,7 @@ class HomeBossContentFragment : BaseFragment() {
         showLoadingAlert("正在保存...")
 
 
-        TbsApi.boss().topicBoss(item.id, topic)
+        TbsApi.boss().obtainTopicBoss(item.id, topic)
             .delay(600, TimeUnit.MILLISECONDS)
             .bindToastSub("") {
                 v.isSelected = topic
