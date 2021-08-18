@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -69,6 +70,8 @@ class HomeActivity : BaseActivity() {
         checkUpdate()
         tryRegisterJPush()
 
+        layout_tools.isVisible = BuildConfig.ENV == "YYB"
+
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
             override fun getItemCount(): Int {
                 return fragments.size
@@ -81,9 +84,12 @@ class HomeActivity : BaseActivity() {
 
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                val index = if (BuildConfig.ENV == "YYB") 3 else 2
+
                 layout_talk.isSelected = position == 0
                 layout_boss.isSelected = position == 1
-                layout_mine.isSelected = position == 2
+                layout_mine.isSelected = position == index
+                layout_tools.isSelected = position == 2
             }
         })
 
@@ -99,6 +105,11 @@ class HomeActivity : BaseActivity() {
         }
 
         layout_mine doClick {
+            val index = if (BuildConfig.ENV == "YYB") 3 else 2
+            view_pager.setCurrentItem(index, false)
+        }
+
+        layout_tools doClick {
             view_pager.setCurrentItem(2, false)
         }
     }

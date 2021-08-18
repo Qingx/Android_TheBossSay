@@ -92,6 +92,38 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_tools"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="4dp"
+                android:background="@drawable/draw_tab_indicator"
+                tools:background="@color/colorAccent" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_tools" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="工具"
+                android:textColor="@color/color_black_gray"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout_mine"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

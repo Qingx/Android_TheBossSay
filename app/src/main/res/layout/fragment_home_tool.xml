@@ -4,13 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="工具"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <FrameLayout
+        android:id="@+id/status_bar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/status_bar_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <net.cd1369.tbs.android.widget.WlCardView
+        android:id="@+id/layout_top"
+        android:layout_width="0dp"
+        android:layout_height="201dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rcv_bottomLeftRadiu="12dp"
+        app:rcv_bottomRightRadiu="12dp">
+
+        <ImageView
+            android:id="@+id/image_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_tools_bg" />
+
+    </net.cd1369.tbs.android.widget.WlCardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="56dp"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="商务工具箱"
+        android:textColor="@color/colorTextDark"
+        android:textSize="28dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/layout_top"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:overScrollMode="never"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_top" />
 </androidx.constraintlayout.widget.ConstraintLayout>
