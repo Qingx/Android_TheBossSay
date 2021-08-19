@@ -50,8 +50,6 @@ class HomeBossContentFragment : BaseFragment() {
     private var footerView: View? = null
 
     private lateinit var mAdapter: BossInfoAdapter
-    private var mBanners = mutableListOf<BannerEntity>()
-    private lateinit var headerView: View
 
     companion object {
         fun createFragment(label: String): HomeBossContentFragment {
@@ -93,10 +91,6 @@ class HomeBossContentFragment : BaseFragment() {
             loadData()
         }
 
-        headerView = LayoutInflater.from(mActivity).inflate(R.layout.header_boss_content, null)
-        headerView.layout_banner.addBannerLifecycleObserver(this)
-        headerView.layout_banner.setLoopTime(4000)
-
         mAdapter = object : BossInfoAdapter() {
             override fun onDoTop(item: BossInfoEntity, v: View, index: Int) {
                 tryChangeTopic(item, v, index)
@@ -116,8 +110,6 @@ class HomeBossContentFragment : BaseFragment() {
             }
         }
         mAdapter.registerAdapterDataObserver(mCall)
-
-        mAdapter.addHeaderView(headerView)
 
         rv_content.adapter = mAdapter
         rv_content.layoutManager =
@@ -145,19 +137,9 @@ class HomeBossContentFragment : BaseFragment() {
             showLoading()
         }
 
-        TbsApi.boss().obtainBanner().onErrorReturn {
-            mutableListOf()
-        }.flatMap {
-            mBanners = it
-            return@flatMap TbsApi.boss().obtainFollowBossList(mLabel, false)
-        }.onErrorReturn { mutableListOf() }
+        TbsApi.boss().obtainFollowBossList(mLabel, false)
+            .onErrorReturn { mutableListOf() }
             .bindDefaultSub(doNext = {
-                headerView.layout_banner.isVisible = !mBanners.isNullOrEmpty()
-                if (!mBanners.isNullOrEmpty()) {
-                    headerView.layout_banner.adapter = BannerViewAdapter(mActivity, mBanners)
-                    headerView.layout_banner.start()
-                }
-
                 mAdapter.setNewData(it)
             }, doLast = {
                 showContent()
