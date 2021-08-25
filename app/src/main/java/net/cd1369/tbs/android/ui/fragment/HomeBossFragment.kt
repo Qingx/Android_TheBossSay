@@ -41,6 +41,8 @@ class HomeBossFragment : BaseFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+        text_title.paint.isFakeBoldText = true
+
         rv_tab.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false) {
                 override fun canScrollVertically() = false

@@ -16,9 +16,7 @@ import kotlinx.android.synthetic.main.empty_boss_card_view.view.*
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.layout_refresh
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.rv_content
 import kotlinx.android.synthetic.main.header_speech_content.*
-import kotlinx.android.synthetic.main.header_speech_content.view.layout_title
-import kotlinx.android.synthetic.main.header_speech_content.view.rv_card
-import kotlinx.android.synthetic.main.header_speech_content.view.text_num
+import kotlinx.android.synthetic.main.header_speech_content.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
@@ -106,6 +104,7 @@ class SpeechTackContentFragment : BaseListFragment() {
         }
 
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.header_speech_content, null)
+        headerView!!.text_title.paint.isFakeBoldText = true
         headerView!!.rv_card.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false) {
                 override fun canScrollVertically(): Boolean {

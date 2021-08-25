@@ -39,6 +39,7 @@ class HomeSpeechFragment : BaseFragment() {
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
         text_follow.isSelected = true
         text_follow.textSize = 24f
+        text_follow.paint.isFakeBoldText = true
 
         view_pager.adapter = object : FragmentStateAdapter(mFragment) {
             override fun getItemCount(): Int {
@@ -52,6 +53,9 @@ class HomeSpeechFragment : BaseFragment() {
 
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                text_follow.paint.isFakeBoldText = position == 0
+                text_square.paint.isFakeBoldText = position == 1
+
                 if (position == 0) {
                     text_follow.isSelected = true
                     text_follow.textSize = 24f
