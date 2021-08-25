@@ -10,9 +10,11 @@ import android.text.TextUtils;
 import androidx.multidex.MultiDexApplication;
 
 import com.advance.AdvanceSDK;
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.Utils;
 import com.github.gzuliyujiang.oaid.DeviceID;
 import com.mercury.sdk.core.config.MercuryAD;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -115,6 +117,12 @@ public class TbsApp extends MultiDexApplication {
 
         if (hasInitThree) return;
         hasInitThree = true;
+
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(mContext);
+        strategy.setAppChannel(BuildConfig.ENV);
+        strategy.setAppVersion(AppUtils.getAppVersionName());
+
+        CrashReport.initCrashReport(mContext, "0bdb6ca170", WLConfig.isDebug(), strategy);
 
         Utils.init(context);
 

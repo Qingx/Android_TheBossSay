@@ -239,7 +239,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
     }
 
     override fun onAdShow() {
-        iv_wel.isVisible = false
+        group.isVisible = false
     }
 
     override fun onAdLoaded() {

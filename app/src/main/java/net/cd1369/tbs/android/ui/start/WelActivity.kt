@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.ui.start
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import cn.wl.android.lib.ui.BaseActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit
  * @time 11:56 2021/8/6
  * @desc 网页启动界面
  */
-class WelActivity : Activity() {
+class WelActivity : AppCompatActivity() {
 
     private var mDis: Disposable? = null
 

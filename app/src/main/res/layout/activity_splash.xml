@@ -4,22 +4,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.start.SplashActivity">
 
+    <!--    <ImageView-->
+    <!--        android:id="@+id/iv_wel"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:scaleType="centerCrop"-->
+    <!--        android:src="@drawable/ic_splash"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
     <ImageView
-        android:id="@+id/iv_wel"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_splash"
+        android:id="@+id/ic_word"
+        android:layout_width="@dimen/font_24"
+        android:layout_height="343dp"
+        android:src="@mipmap/img_logo_word"
+        app:layout_constraintBottom_toTopOf="@+id/ic_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <ImageView
+        android:id="@+id/ic_back"
+        android:layout_width="300dp"
+        android:layout_height="@dimen/size_none"
+        android:layout_marginTop="@dimen/padding_32"
+        android:background="@mipmap/img_logo_back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintDimensionRatio="316:48"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_word" />
+
+    <ImageView
+        android:id="@+id/ic_logo"
+        android:layout_width="@dimen/font_28"
+        android:layout_height="@dimen/font_28"
+        android:src="@mipmap/ic_logo_wel"
+        app:layout_constraintBottom_toTopOf="@+id/tv_hint"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.95"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_8"
+        android:text="BOSS说-追踪大佬的言论"
+        android:textStyle="bold"
+        android:textSize="@dimen/font_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_logo" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ic_back, ic_logo, ic_back, tv_hint" />
 
     <FrameLayout
         android:id="@+id/fl_wel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

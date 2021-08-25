@@ -106,4 +106,5 @@ dependencies {
 
     // 基础依赖包，必须要依赖
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    api 'com.tencent.bugly:crashreport:2.2.0'
 }
