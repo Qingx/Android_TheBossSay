@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'org.greenrobot.greendao'
+
 }
 
 def rootPro = rootProject.ext
@@ -151,11 +153,11 @@ android {
         abortOnError false
     }
 
-//    greendao {
-//        schemaVersion 1
-//        daoPackage 'com.greendao.gen'
-//        targetGenDir 'src/main/java'
-//    }
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.greendao.gen'
+        targetGenDir 'src/main/java'
+    }
 }
 
 /**
@@ -176,6 +178,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation files('libs/SaaS_AppAnalytics_Android_SDK_V4.0.65.jar')
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -208,4 +211,7 @@ dependencies {
     implementation "io.coil-kt:coil:1.0.0"
     implementation 'cn.tseeey:justtextview:0.1.0'
     implementation 'com.youth.banner:banner:2.1.0'
+
+    implementation 'org.greenrobot:greendao:3.3.0'
+    implementation 'org.greenrobot:greendao-generator:3.3.0'
 }

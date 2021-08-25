@@ -1,8 +1,6 @@
 package net.cd1369.tbs.android.ui.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +14,6 @@ import com.advance.model.AdvanceError
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
-import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
@@ -29,7 +26,7 @@ import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
-import net.cd1369.tbs.android.ui.home.LoginPhoneWechatActivity
+import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.doShareSession
@@ -69,16 +66,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
                     MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
-                    MineItem.HuangLi -> WebActivity.start(
-                        mActivity,
-                        MineItem.HuangLi.itemName,
-                        "https://m.laohuangli.net/"
-                    )
-                    MineItem.XingZuo -> WebActivity.start(
-                        mActivity,
-                        MineItem.XingZuo.itemName,
-                        "https://3g.d1xz.net/astro/"
-                    )
+                    MineItem.Score -> TestActivity.start(mActivity)
                     else -> Toasts.show(item.itemName)
                 }
             }
@@ -100,10 +88,6 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
 
         timerDelay(40) {
             val items = MineItem.values().toMutableList()
-            if (BuildConfig.ENV != "YYB") {
-                items.remove(MineItem.XingZuo)
-                items.remove(MineItem.HuangLi)
-            }
             mAdapter.setNewData(items)
             mAdapter.onRefreshLogin()
         }

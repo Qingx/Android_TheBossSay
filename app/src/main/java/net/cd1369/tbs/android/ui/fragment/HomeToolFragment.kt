@@ -4,14 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.wl.android.lib.ui.BaseFragment
-import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.fragment_mine.*
-import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.MineItem
-import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
-import net.cd1369.tbs.android.ui.home.MineAboutAppActivity
-import net.cd1369.tbs.android.ui.home.MineContactAuthorActivity
+import net.cd1369.tbs.android.config.ToolItem
+import net.cd1369.tbs.android.ui.adapter.ToolItemAdapter
 import net.cd1369.tbs.android.ui.home.WebActivity
 
 /**
@@ -20,7 +16,7 @@ import net.cd1369.tbs.android.ui.home.WebActivity
  * @email Cymbidium@outlook.com
  */
 class HomeToolFragment : BaseFragment() {
-    private lateinit var mAdapter: MineItemAdapter
+    private lateinit var mAdapter: ToolItemAdapter
 
     companion object {
         fun createFragment(): HomeToolFragment {
@@ -33,20 +29,19 @@ class HomeToolFragment : BaseFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
-        mAdapter = object : MineItemAdapter() {
-            override fun onItemClick(item: MineItem) {
+        mAdapter = object : ToolItemAdapter() {
+            override fun onItemClick(item: ToolItem) {
                 when (item) {
-                    MineItem.HuangLi -> WebActivity.start(
+                    ToolItem.HuangLi -> WebActivity.start(
                         mActivity,
-                        MineItem.HuangLi.itemName,
+                        ToolItem.HuangLi.itemName,
                         "https://m.laohuangli.net/"
                     )
-                    MineItem.XingZuo -> WebActivity.start(
+                    ToolItem.XingZuo -> WebActivity.start(
                         mActivity,
-                        MineItem.XingZuo.itemName,
+                        ToolItem.XingZuo.itemName,
                         "https://3g.d1xz.net/astro/"
                     )
-                    else -> Toasts.show(item.itemName)
                 }
             }
         }
@@ -54,13 +49,7 @@ class HomeToolFragment : BaseFragment() {
         rv_content.layoutManager = LinearLayoutManager(mActivity)
         rv_content.adapter = mAdapter
 
-        val items = MineItem.values().toMutableList()
-        items.remove(MineItem.Favorite)
-        items.remove(MineItem.History)
-        items.remove(MineItem.Share)
-        items.remove(MineItem.About)
-        items.remove(MineItem.Contact)
-
+        val items = ToolItem.values().toMutableList()
         mAdapter.setNewData(items)
     }
 }
