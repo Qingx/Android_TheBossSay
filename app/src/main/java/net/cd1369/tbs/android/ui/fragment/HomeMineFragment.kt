@@ -95,6 +95,14 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         setUserInfo()
     }
 
+    private fun testAdd(){
+
+    }
+
+    private fun testGet(){
+
+    }
+
     /**
      * 添加底部布局
      * @param adapter MineItemAdapter
