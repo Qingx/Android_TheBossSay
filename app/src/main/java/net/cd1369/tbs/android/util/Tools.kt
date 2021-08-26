@@ -50,6 +50,7 @@ import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -81,7 +82,7 @@ object Tools {
         }
     }
 
-    internal fun List<BossLabelEntity>?.isLabelsEmpty(): Boolean {
+    internal fun List<LabelModel>?.isLabelsEmpty(): Boolean {
         return !(this != null && this.size > 1)
     }
 

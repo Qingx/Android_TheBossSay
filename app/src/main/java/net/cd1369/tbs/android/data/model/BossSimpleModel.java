@@ -1,5 +1,7 @@
 package net.cd1369.tbs.android.data.model;
 
+import android.widget.ImageView;
+
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.util.StringConvert;
 
@@ -8,10 +10,16 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 import org.greenrobot.greendao.annotation.Generated;
+
+import cn.wl.android.lib.utils.GlideApp;
+import cn.wl.android.lib.utils.Lists;
+import cn.wl.android.lib.utils.Times;
+import cn.wl.android.lib.utils.ViewHelper;
 
 /**
  * Created by Xiang on 2021/8/26 10:08
@@ -135,21 +143,47 @@ public class BossSimpleModel implements Comparable<BossSimpleModel> {
     }
 
     public boolean checkSort(BossSimpleModel boss) {
-        if (id.equals(boss.id))
+        if (this.id.equals(boss.id))
             return false;
 
         if (boss.top) {
-            if (!top) return true;
+            if (!this.top) return true;
         } else {
-            if (top) return false;
+            if (this.top) return false;
         }
-        return updateTime < boss.updateTime;
+        return this.updateTime < boss.updateTime;
     }
 
     public Long getSort() {
         if (this.top) {
-            return this.updateTime + 20 * 365 * 24 * 60 * 60 * 1000;
+            return this.updateTime + (20 * 365 * 24 * 60 * 60 * 1000);
         } else return this.updateTime;
+    }
+
+    public void showImage(ImageView iv1, ImageView iv2) {
+        List<String> photoUrl = this.photoUrl;
+
+        if (Lists.isEmpty(photoUrl)) {
+            ViewHelper.setVisible(iv1, false);
+            ViewHelper.setVisible(iv2, false);
+        } else if (photoUrl.size() == 1) {
+            ViewHelper.setVisible(iv1, true);
+            ViewHelper.setVisible(iv2, false);
+
+            GlideApp.display(photoUrl.get(0), iv1);
+        } else if (photoUrl.size() > 1) {
+            ViewHelper.setVisible(iv1, true);
+            ViewHelper.setVisible(iv2, true);
+
+            GlideApp.display(photoUrl.get(0), iv1);
+            GlideApp.display(photoUrl.get(1), iv2);
+        }
+    }
+
+    public boolean isLatest() {
+        long diff = Times.current() - this.updateTime;
+        long days = diff / (1000 * 60 * 60 * 24);
+        return days <= 30L;
     }
 
     @Override

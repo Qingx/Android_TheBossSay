@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.util.*
 
 /**
@@ -15,9 +16,9 @@ import net.cd1369.tbs.android.util.*
  * @email Cymbidium@outlook.com
  */
 abstract class BossInfoAdapter :
-    BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_boss_info) {
-    override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
-        helper.V.isSelected = item.isTop
+    BaseQuickAdapter<BossSimpleModel, BaseViewHolder>(R.layout.item_boss_info) {
+    override fun convert(helper: BaseViewHolder, item: BossSimpleModel) {
+        helper.V.isSelected = item.top
 
         GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
 
@@ -51,12 +52,12 @@ abstract class BossInfoAdapter :
         }
     }
 
-    abstract fun onDoTop(item: BossInfoEntity, v: View, index: Int)
+    abstract fun onDoTop(item: BossSimpleModel, v: View, index: Int)
 
-    abstract fun onCancelFollow(item: BossInfoEntity)
-    abstract fun onClick(item: BossInfoEntity)
+    abstract fun onCancelFollow(item: BossSimpleModel)
+    abstract fun onClick(item: BossSimpleModel)
 
-    fun notifyTopic(item: BossInfoEntity): Int {
+    fun notifyTopic(item: BossSimpleModel): Int {
         val rmIndex = mData.indexOf(item)
         val lastIndex = mData.lastIndex
 

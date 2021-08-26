@@ -47,7 +47,7 @@ class ArticleDaoManager(val context: Context) {
         return helper!!.writableDatabase
     }
 
-    private fun insertList(list: MutableList<ArticleSimpleModel>) {
+    fun insertList(list: MutableList<ArticleSimpleModel>) {
         articleDao!!.insertOrReplaceInTx(list)
     }
 
@@ -56,7 +56,7 @@ class ArticleDaoManager(val context: Context) {
         return articleDao!!.queryBuilder().build().list()
     }
 
-    private fun deleteAll() {
+    fun deleteAll() {
         val list = findAll()
         articleDao!!.deleteInTx(list)
     }

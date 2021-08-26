@@ -4,8 +4,10 @@ package net.cd1369.tbs.android.data.repository;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
-import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
+import net.cd1369.tbs.android.data.model.ArticleSimpleModel;
+import net.cd1369.tbs.android.data.model.BossSimpleModel;
+import net.cd1369.tbs.android.data.model.LabelModel;
 import net.cd1369.tbs.android.data.service.BossService;
 
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ public class BossRepository extends BaseRepository<BossService> {
      *
      * @return
      */
-    public Observable<List<BossLabelEntity>> obtainBossLabels() {
+    public Observable<List<LabelModel>> obtainBossLabels() {
         return getService().obtainBossLabels()
                 .compose(combine())
                 .compose(rebase());
@@ -59,17 +61,17 @@ public class BossRepository extends BaseRepository<BossService> {
     /**
      * 获取已追踪的boss列表 已追踪且有更新的boss列表
      *
-     * @param labels
+     * @param label
      * @param mustUpdate
      * @return
      */
-    public Observable<List<BossInfoEntity>> obtainFollowBossList(String labels, boolean mustUpdate) {
+    public Observable<List<BossSimpleModel>> obtainFollowBossList(Long label, boolean mustUpdate) {
         RequestBody body = bodyFromCreator(jo -> {
             jo.put("mustUpdate", mustUpdate);
 
-            if (!labels.equals("-1")) {
-                List<String> list = new ArrayList<>();
-                list.add(labels);
+            if (!label.equals(-1L)) {
+                List<Long> list = new ArrayList<>();
+                list.add(label);
                 jo.put("labels", list);
             }
         });
@@ -85,6 +87,7 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param pageParam
      * @return
      */
+    @Deprecated
     public Observable<Page<ArticleEntity>> obtainFollowArticle(String label, PageParam pageParam) {
         RequestBody body = bodyFromCreator(pageParam, jo -> {
             if (!label.equals("-1")) {
@@ -95,6 +98,26 @@ public class BossRepository extends BaseRepository<BossService> {
         });
 
         return getService().obtainFollowArticle(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取追踪 最近更新文章
+     *
+     * @param pageParam
+     * @return
+     */
+    public Observable<Page<ArticleSimpleModel>> obtainTackArticle(Long label, PageParam pageParam) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            if (!label.toString().equals("-1")) {
+                List<String> list = new ArrayList<>();
+                list.add(label.toString());
+                jo.put("labels", list);
+            }
+        });
+
+        return getService().obtainTackArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }
@@ -261,7 +284,7 @@ public class BossRepository extends BaseRepository<BossService> {
      *
      * @return
      */
-    public Observable<List<BossInfoEntity>> obtainGuideBoss() {
+    public Observable<List<BossSimpleModel>> obtainGuideBoss() {
         return getService().obtainGuideBoss()
                 .compose(combine())
                 .compose(rebase());

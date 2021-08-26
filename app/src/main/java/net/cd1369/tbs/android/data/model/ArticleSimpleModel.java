@@ -1,5 +1,7 @@
 package net.cd1369.tbs.android.data.model;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 import net.cd1369.tbs.android.util.StringConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -7,6 +9,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
@@ -18,7 +21,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @email Cymbidium@outlook.com
  */
 @Entity
-public class ArticleSimpleModel {
+public class ArticleSimpleModel implements MultiItemEntity {
     @Id
     private Long id; //id
     @Property(nameInDb = "TITLE")
@@ -76,13 +79,6 @@ public class ArticleSimpleModel {
     public ArticleSimpleModel() {
     }
 
-    private Long getTime() {
-        if (articleTime == null) {
-            return releaseTime;
-        } else {
-            return articleTime;
-        }
-    }
 
     public Long getId() {
         return this.id;
@@ -204,4 +200,22 @@ public class ArticleSimpleModel {
         this.returnType = returnType;
     }
 
+    public Long getShowTime() {
+        if (this.articleTime == null) {
+            return this.releaseTime;
+        } else {
+            return this.articleTime;
+        }
+    }
+
+    @Override
+    public int getItemType() {
+        if (this.files == null || this.files.size() <= 0) {
+            return 0;
+        } else if (this.files.size() <= 1) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
 }

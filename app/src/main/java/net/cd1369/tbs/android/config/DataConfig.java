@@ -44,14 +44,17 @@ public class DataConfig extends BaseConfig {
         String keyHotSearch = "KEY_HOT_SEARCH";
         String keyNeedService = "keyNeedService";
         String keyBossTime = "keyBossTime";
+        String keyTackTotalNum = "keyTackTotalNum";
+        String keyHasData = "keyHasData";
     }
 
     private boolean firstUse; //是否第一次使用app
     private String tempId; //设备id
     private Long updateTime;
     private String hotSearch;
-    private List<BossLabelEntity> bossLabels;
     private Long bossTime;
+    private int tackTotalNum;
+    private boolean hasData;
 
     /**
      * 判断是否需要显示服务
@@ -82,20 +85,28 @@ public class DataConfig extends BaseConfig {
         return getString(KEY.keyTempId, Tools.INSTANCE.createTempId());
     }
 
-    public List<BossLabelEntity> getBossLabels() {
-        return this.bossLabels;
-    }
-
-    public void setBossLabels(List<BossLabelEntity> list) {
-        this.bossLabels = list;
-    }
-
     public void setHotSearch(String hotSearch) {
         putString(KEY.keyHotSearch, hotSearch);
     }
 
     public String getHotSearch() {
         return getString(KEY.keyHotSearch, "-1");
+    }
+
+    public void setTackTotalNum(int num) {
+        putInt(KEY.keyTackTotalNum, num);
+    }
+
+    public int getTackTotalNum() {
+        return getInt(KEY.keyTackTotalNum, 0);
+    }
+
+    public void setHasData(boolean hasData) {
+        putBoolean(KEY.keyHasData, hasData);
+    }
+
+    public boolean getHasData() {
+        return getBoolean(KEY.keyHasData, true);
     }
 
     public void setBossTime(String bossId) {

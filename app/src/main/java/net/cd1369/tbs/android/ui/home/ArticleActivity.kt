@@ -26,6 +26,7 @@ import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.WelActivity
+import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.*
 import kotlin.math.max
 
@@ -133,7 +134,7 @@ class ArticleActivity : BaseActivity() {
             if (fromBoss) {
                 onBackPressed()
             } else {
-                BossHomeActivity.start(mActivity, bossEntity!!)
+                TestActivity.start(mActivity)
             }
         }
 

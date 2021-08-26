@@ -27,7 +27,7 @@ import net.cd1369.tbs.android.util.Tools
  * @email Cymbidium@outlook.com
  */
 class SpeechSquareContentFragment : BaseListFragment() {
-    private lateinit var mLabel: String
+    private var mLabel: Long = -1L
     private var needLoading = true
 
     private lateinit var mAdapter: SquareInfoAdapter
@@ -36,10 +36,10 @@ class SpeechSquareContentFragment : BaseListFragment() {
     private lateinit var headerView: View
 
     companion object {
-        fun createFragment(label: String): SpeechSquareContentFragment {
+        fun createFragment(label: Long): SpeechSquareContentFragment {
             return SpeechSquareContentFragment().apply {
                 arguments = Bundle().apply {
-                    putString("label", label)
+                    putLong("label", label)
                 }
             }
         }
@@ -48,7 +48,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        mLabel = arguments?.getString("label") as String
+        mLabel = arguments?.getLong("label") as Long
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -109,7 +109,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
             }.flatMap {
                 mBanners = it
 
-                return@flatMap TbsApi.boss().obtainAllArticle(pageParam, mLabel)
+                return@flatMap TbsApi.boss().obtainAllArticle(pageParam, mLabel.toString())
             }.onErrorReturn {
                 Page.empty()
             }.bindPageSubscribe(
@@ -128,7 +128,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
                     layout_refresh.finishRefresh()
                 })
         } else {
-            TbsApi.boss().obtainAllArticle(pageParam, mLabel)
+            TbsApi.boss().obtainAllArticle(pageParam, mLabel.toString())
                 .onErrorReturn { Page.empty() }
                 .bindPageSubscribe(
                     loadMore = true,

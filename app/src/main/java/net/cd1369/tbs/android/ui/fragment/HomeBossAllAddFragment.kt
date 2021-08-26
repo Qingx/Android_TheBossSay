@@ -29,6 +29,7 @@ import net.cd1369.tbs.android.data.entity.OptPicEntity
 import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
 import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
+import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.BossInfoActivity
@@ -187,7 +188,7 @@ class HomeBossAllAddFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : SearchInfoAdapter() {
             override fun onItemClick(item: BossInfoEntity) {
-                BossHomeActivity.start(mActivity, item)
+                BossHomeActivity.start(mActivity, item.id)
             }
 
             override fun onClickFollow(item: BossInfoEntity) {
@@ -350,9 +351,10 @@ class HomeBossAllAddFragment : BaseListFragment() {
 
         loadOptPic()
 
-        tabAdapter.setNewData(DataConfig.get().bossLabels)
+        val labels = LabelDaoManager.getInstance(mActivity).findAll()
+        tabAdapter.setNewData(labels)
 
-        mSelectTab = DataConfig.get().bossLabels[0].id
+        mSelectTab = "-1"
 
         TbsApi.boss().obtainAllBossList(pageParam, "-1")
             .onErrorReturn { Page.empty() }

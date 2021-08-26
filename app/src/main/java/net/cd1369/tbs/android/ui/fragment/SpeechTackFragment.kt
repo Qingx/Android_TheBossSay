@@ -9,14 +9,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_speech_tack.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
-import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.data.db.LabelDaoManager
+import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.Tools.isLabelsEmpty
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Xiang on 2021/8/11 10:00
@@ -25,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class SpeechTackFragment : BaseFragment() {
     private lateinit var tabAdapter: HomeTabAdapter
-    private lateinit var mLabels: MutableList<BossLabelEntity>
+    private lateinit var mLabels: MutableList<LabelModel>
 
     companion object {
         fun createFragment(): SpeechTackFragment {
@@ -46,7 +43,7 @@ class SpeechTackFragment : BaseFragment() {
         tabAdapter = object : HomeTabAdapter() {
             override fun onSelect(select: String) {
                 val index = mLabels.indexOfFirst {
-                    it.id == select
+                    it.id.toString() == select
                 }
 
                 if (index != -1) {
@@ -63,7 +60,7 @@ class SpeechTackFragment : BaseFragment() {
     override fun loadData() {
         super.loadData()
 
-        mLabels = DataConfig.get().bossLabels
+        mLabels = LabelDaoManager.getInstance(mActivity).findAll()
 
         if (!mLabels.isLabelsEmpty()) {
             tabAdapter.setNewData(mLabels)
@@ -81,8 +78,8 @@ class SpeechTackFragment : BaseFragment() {
             view_pager.offscreenPageLimit = mLabels.size
         } else {
             TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }.bindSubscribe {
-                it.add(0, BossLabelEntity.empty)
-                DataConfig.get().bossLabels = it
+                it.add(0, LabelModel.empty)
+                LabelDaoManager.getInstance(mActivity).insertList(it)
                 mLabels = it
 
                 tabAdapter.setNewData(mLabels)

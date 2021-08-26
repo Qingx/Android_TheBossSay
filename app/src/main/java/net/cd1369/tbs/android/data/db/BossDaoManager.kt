@@ -25,7 +25,8 @@ class BossDaoManager(val context: Context) {
 
     companion object {
         private var bossDaoManager: BossDaoManager? = null
-        fun getInstance(context: Context): BossDaoManager? {
+
+        fun getInstance(context: Context): BossDaoManager {
             if (bossDaoManager == null) {
                 synchronized(LabelDaoManager::class.java) {
                     if (bossDaoManager == null) {
@@ -33,7 +34,7 @@ class BossDaoManager(val context: Context) {
                     }
                 }
             }
-            return bossDaoManager
+            return bossDaoManager!!
         }
     }
 
@@ -55,7 +56,7 @@ class BossDaoManager(val context: Context) {
         bossDao!!.insertOrReplace(model)
     }
 
-    fun insertList(models: MutableList<BossSimpleModel?>) {
+    fun insertList(models: MutableList<BossSimpleModel>) {
         bossDao!!.insertOrReplaceInTx(models)
     }
 
@@ -64,7 +65,8 @@ class BossDaoManager(val context: Context) {
     }
 
     fun findAll(): MutableList<BossSimpleModel> {
-        return bossDao!!.queryBuilder().build().list()
+        val list = bossDao!!.queryBuilder().build().list()
+        return list
     }
 
     fun delete(id: Long) {
@@ -81,29 +83,28 @@ class BossDaoManager(val context: Context) {
     fun findByLabel(label: String): MutableList<BossSimpleModel> {
         val allList = findAll()
         var list = mutableListOf<BossSimpleModel>()
-        if (!allList.isNullOrEmpty()) {
-            list = allList.filter {
+        list = if (label == "-1") {
+            allList
+        } else {
+            allList.filter {
                 it.labels.contains(label)
             }.toMutableList()
-            list.sort()
         }
+        list.sort()
         return list
     }
 
     fun findLatest(label: String): MutableList<BossSimpleModel> {
         val allList = findAll()
         var list = mutableListOf<BossSimpleModel>()
-        if (!allList.isNullOrEmpty()) {
-            list = allList.filter {
-                it.labels.contains(label) && isLatest(it.updateTime)
+        list = if (label == "-1") {
+            allList
+        } else {
+            allList.filter {
+                it.labels.contains(label) && it.isLatest
             }.toMutableList()
-            list.sort()
         }
+        list.sort()
         return list
-    }
-
-    private fun isLatest(time: Long): Boolean {
-        val current = Times.current()
-        return (current - time) <= (1000 * 60 * 60 * 24 * 30)
     }
 }

@@ -13,25 +13,22 @@ import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.empty_boss_card_view.view.*
-import kotlinx.android.synthetic.main.fragment_speech_tack_content.layout_refresh
-import kotlinx.android.synthetic.main.fragment_speech_tack_content.rv_content
-import kotlinx.android.synthetic.main.header_speech_content.*
+import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.header_speech_content.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.ArticleEntity
-import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
-import net.cd1369.tbs.android.event.FollowBossEvent
-import net.cd1369.tbs.android.event.JpushArticleEvent
-import net.cd1369.tbs.android.event.LoginEvent
-import net.cd1369.tbs.android.event.SetBossTimeEvent
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
+import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.model.ArticleSimpleModel
+import net.cd1369.tbs.android.data.model.BossSimpleModel
+import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
-import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
+import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -43,7 +40,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class SpeechTackContentFragment : BaseListFragment() {
-    private lateinit var mLabel: String
+    private var mLabel: Long = -1L
     private var cardEmptyView: View? = null
     private var mRootHeight: Int = 0
     private var headerView: View? = null
@@ -51,13 +48,15 @@ class SpeechTackContentFragment : BaseListFragment() {
 
     private lateinit var cardAdapter: FollowCardAdapter
     private lateinit var mAdapter: FollowInfoAdapter
-    private lateinit var mBossList: MutableList<BossInfoEntity>
+    private lateinit var mBossList: MutableList<BossSimpleModel>
+
+    private var firstInit = true
 
     companion object {
-        fun createFragment(label: String): SpeechTackContentFragment {
+        fun createFragment(label: Long): SpeechTackContentFragment {
             return SpeechTackContentFragment().apply {
                 arguments = Bundle().apply {
-                    putString("label", label)
+                    putLong("label", label)
                 }
             }
         }
@@ -66,17 +65,17 @@ class SpeechTackContentFragment : BaseListFragment() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        mLabel = arguments?.getString("label") as String
+        mLabel = arguments?.getLong("label", -1L) as Long
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : FollowInfoAdapter() {
-            override fun onClick(item: ArticleEntity) {
+            override fun onClick(item: ArticleSimpleModel) {
                 if (!item.isRead) {
                     Tools.addTodayRead()
                 }
 
-                ArticleActivity.start(mActivity, item.id)
+                ArticleActivity.start(mActivity, item.id.toString())
             }
         }.also {
             mAdapter = it
@@ -98,8 +97,8 @@ class SpeechTackContentFragment : BaseListFragment() {
         }
 
         cardAdapter = object : FollowCardAdapter() {
-            override fun onClick(item: BossInfoEntity) {
-                BossHomeActivity.start(mActivity, entity = item)
+            override fun onClick(item: BossSimpleModel) {
+                TestActivity.start(mActivity)
             }
         }
 
@@ -135,7 +134,7 @@ class SpeechTackContentFragment : BaseListFragment() {
 
     private fun showContentEmpty(show: Boolean) {
         if (mEmptyView == null) {
-            mEmptyView = vs_follow_empty.inflate()
+            mEmptyView = headerView?.vs_follow_empty?.inflate()
 
             var sumHeight = headerView?.rv_card?.height ?: 0
             sumHeight += headerView?.layout_title?.height ?: 0
@@ -149,75 +148,263 @@ class SpeechTackContentFragment : BaseListFragment() {
         mEmptyView?.isVisible = show
     }
 
+    /**
+     * 标签-全部 进入时处理数据
+     */
+    @SuppressLint("SetTextI18n")
+    private fun initAllData() {
+        firstInit = false
+
+        mBossList = BossDaoManager.getInstance(mActivity).findLatest("-1")
+        cardAdapter.setNewData(mBossList)
+
+        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
+
+        val articleList = ArticleDaoManager.getInstance(mActivity).findAll()
+        mAdapter.setNewData(articleList)
+
+        val traceNum = UserConfig.get().userEntity.traceNum ?: 0
+
+        if (traceNum > 0) {
+            cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
+        } else {
+            cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
+        }
+
+        headerView?.text_title?.text = if (articleList[0].returnType == "0") {
+            "最近更新"
+        } else {
+            "为你推荐"
+        }
+
+        showContentEmpty(articleList.isNullOrEmpty())
+
+        showContent()
+    }
+
+    /**
+     * 标签-其他 进入时处理数据
+     */
+    @SuppressLint("SetTextI18n")
+    private fun initOtherData() {
+        firstInit = false
+
+        showLoading()
+
+        mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
+        cardAdapter.setNewData(mBossList)
+
+
+        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
+
+        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+            .onErrorReturn { Page.empty() }
+            .bindPageSubscribe(
+                loadMore = false,
+                doNext = {
+                    mAdapter.setNewData(it)
+                },
+                doDone = {
+                    val traceNum = UserConfig.get().userEntity.traceNum ?: 0
+
+                    if (traceNum > 0) {
+                        cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
+                    } else {
+                        cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
+                    }
+
+                    headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
+                        "最近更新"
+                    } else {
+                        "为你推荐"
+                    }
+
+                    showContentEmpty(mAdapter.data.isNullOrEmpty())
+
+                    showContent()
+                }
+            )
+    }
+
+    /**
+     * 下拉刷新时处理数据
+     */
+    private fun refreshData() {
+        TbsApi.boss().obtainFollowBossList(-1L, false)
+            .onErrorReturn { mutableListOf() }
+            .flatMap {
+                mBossList = if (mLabel == -1L) {
+                    BossDaoManager.getInstance(mActivity).insertList(it)
+                    it.filter {
+                        it.isLatest
+                    }.toMutableList()
+                } else {
+                    it.filter {
+                        it.labels.contains(mLabel.toString()) && it.isLatest
+                    }.toMutableList()
+                }
+
+                TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+            }.bindPageSubscribe(loadMore = false, doNext = {
+                if (mLabel == -1L) {
+                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
+                    DataConfig.get().tackTotalNum = pageParam!!.total
+                    DataConfig.get().hasData = true
+                }
+                cardAdapter.setNewData(mBossList)
+                mAdapter.setNewData(it)
+
+                layout_refresh.finishRefresh(true)
+
+            }, doFail = {
+                layout_refresh.finishRefresh(false)
+
+            }, doDone = {
+                val traceNum = UserConfig.get().userEntity.traceNum ?: 0
+
+                if (traceNum > 0) {
+                    cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
+                } else {
+                    cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
+                }
+
+                headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
+                    "最近更新"
+                } else {
+                    "为你推荐"
+                }
+
+                showContentEmpty(mAdapter.data.isNullOrEmpty())
+
+                showContent()
+            })
+    }
+
+    /**
+     * 加载更多数据
+     */
+    private fun loadMoreData() {
+        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+            .onErrorReturn { Page.empty() }
+            .bindPageSubscribe(loadMore = true, doNext = {
+                mAdapter.addData(it)
+
+                layout_refresh.finishLoadMore(true)
+            }, doFail = {
+                layout_refresh.finishLoadMore(false)
+            })
+    }
+
     @SuppressLint("SetTextI18n")
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
         if (!loadMore) {
             pageParam?.resetPage()
+        }
 
-            TbsApi.boss().obtainFollowBossList(mLabel, true)
-                .onErrorReturn { mutableListOf() }
-                .flatMap {
-                    mBossList = it
+        when {
+            firstInit && mLabel == -1L -> initAllData()
+            firstInit && mLabel != -1L -> initOtherData()
+            !firstInit && !loadMore -> refreshData()
+            !firstInit && loadMore -> loadMoreData()
+        }
+    }
 
-                    TbsApi.boss().obtainFollowArticle(mLabel, pageParam)
-                }.onErrorReturn { Page.empty() }
-                .bindPageSubscribe(
-                    loadMore = false,
-                    doNext = {
-                        cardAdapter.setNewData(mBossList)
+    /**
+     * eventBus 关注(批量关注)/取消关注时处理数据
+     */
+    private fun eventData() {
+        mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
 
-                        headerView!!.text_num.text = "共${(pageParam?.total ?: 0)}篇"
-                        mAdapter.setNewData(it)
+        pageParam?.resetPage()
+        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+            .bindPageSubscribe(loadMore = false, doNext = {
+                if (mLabel == -1L) {
+                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
+                    DataConfig.get().tackTotalNum = pageParam!!.total
+                    DataConfig.get().hasData = true
+                }
 
-                    },
-                    doDone = {
-                        showContent()
+                cardAdapter.setNewData(mBossList)
+                mAdapter.setNewData(it)
+            }, doDone = {
+                val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
-                        val userEntity = UserConfig.get().userEntity
-                        val traceNum = userEntity.traceNum ?: 0
+                if (traceNum > 0) {
+                    cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
+                } else {
+                    cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
+                }
 
-                        if (traceNum > 0) {
-                            cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
-                        } else {
-                            cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
-                        }
+                headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
+                    "最近更新"
+                } else {
+                    "为你推荐"
+                }
 
-                        layout_refresh.finishRefresh()
+                showContentEmpty(mAdapter.data.isNullOrEmpty())
+            })
+    }
 
-                        showContentEmpty(mAdapter.data.isNullOrEmpty())
-                    }
-                )
-        } else {
-            TbsApi.boss().obtainFollowArticle(mLabel, pageParam)
-                .bindPageSubscribe(
-                    loadMore = true,
-                    doNext = {
-                        mAdapter.addData(it)
-                    },
-                    doDone = {
-                        layout_refresh.finishLoadMore()
-                    })
+    /**
+     * eventBus 登录(退出登录)时处理数据
+     */
+    private fun loginData() {
+        pageParam?.resetPage()
+
+        mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
+
+        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+            .bindPageSubscribe(loadMore = false, doNext = {
+                if (mLabel == -1L) {
+                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
+                    DataConfig.get().tackTotalNum = pageParam!!.total
+                    DataConfig.get().hasData = true
+                }
+
+                cardAdapter.setNewData(mBossList)
+                mAdapter.setNewData(it)
+            }, doDone = {
+                val traceNum = UserConfig.get().userEntity.traceNum ?: 0
+
+                if (traceNum > 0) {
+                    cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
+                } else {
+                    cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
+                }
+
+                headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
+                    "最近更新"
+                } else {
+                    "为你推荐"
+                }
+
+                showContentEmpty(mAdapter.data.isNullOrEmpty())
+            })
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: BossTackEvent) {
+        if (mLabel == -1L || event.labels.contains(mLabel.toString())) {
+            eventData()
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: FollowBossEvent) {
-        if (mLabel == BossLabelEntity.empty.id || event.labels?.contains(mLabel) == true) {
-            layout_refresh.autoRefresh()
-        }
+    fun eventBus(event: BossBatchTackEvent) {
+        eventData()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
-        loadData(false)
+        loginData()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: SetBossTimeEvent) {
         val index = mBossList.indexOfFirst {
-            it.id == event.id
+            it.id.toString() == event.id
         }
         if (index != -1) {
             cardAdapter.notifyItemChanged(index)
@@ -227,7 +414,7 @@ class SpeechTackContentFragment : BaseListFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: JpushArticleEvent) {
         val index = mBossList.indexOfFirst {
-            it.id == event.bossId
+            it.id.toString() == event.bossId
         }
 
         if (index != -1) {

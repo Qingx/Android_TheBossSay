@@ -6,15 +6,19 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.Page
+import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseActivity
-import cn.wl.android.lib.utils.Times
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_guide.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
+import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.ui.adapter.GuideInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
@@ -23,16 +27,14 @@ import net.cd1369.tbs.android.util.doClick
 
 class GuideActivity : BaseActivity() {
 
-    private lateinit var mLabels: ArrayList<BossInfoEntity>
-
     companion object {
-        fun start(context: Context?, list: ArrayList<BossInfoEntity>) {
+        private lateinit var bossList: MutableList<BossSimpleModel>
+
+        fun start(context: Context?, list: MutableList<BossSimpleModel>) {
             val intent = Intent(context, GuideActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtras(Bundle().apply {
-                        putSerializable("labels", list)
-                    })
+                    bossList = list
                 }
             context!!.startActivity(intent)
         }
@@ -44,8 +46,6 @@ class GuideActivity : BaseActivity() {
 
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
-
-        mLabels = intent.getSerializableExtra("labels") as ArrayList<BossInfoEntity>
     }
 
     @SuppressLint("SetTextI18n")
@@ -59,12 +59,25 @@ class GuideActivity : BaseActivity() {
         }
 
         val adapter = object : GuideInfoAdapter() {
-            override fun onAddFollow(data: MutableList<String>) {
+            override fun onAddFollow(data: MutableList<Long>) {
                 showLoadingAlert("搜寻并追踪...")
 
-                var tempId = WelActivity.tempId
+                val select: List<String> = data.map {
+                    it.toString()
+                }
+                TbsApi.boss().obtainGuideFollow(select)
+                    .flatMap {
 
-                TbsApi.boss().obtainGuideFollow(data)
+                        val tackList = bossList.filter {
+                            data.contains(it.id)
+                        }.toMutableList()
+
+                        if (!tackList.isNullOrEmpty()) {
+                            BossDaoManager.getInstance(mActivity).insertList(tackList)
+                        }
+
+                        TbsApi.boss().obtainTackArticle(-1L, PageParam.create(1, 10))
+                    }
                     .bindDefaultSub(doNext = {
                         Toasts.show("追踪成功")
                         hideLoadingAlert()
@@ -75,18 +88,23 @@ class GuideActivity : BaseActivity() {
 
                         DataConfig.get().firstUse = false
 
-                        if (tempId.isNullOrEmpty()) {
+                        DataConfig.get().tackTotalNum = it.total
+                        DataConfig.get().hasData = it.hasData()
+                        ArticleDaoManager.getInstance(mActivity).insertList(it.records)
+
+                        if (WelActivity.tempId.isNullOrEmpty()) {
                             HomeActivity.start(mActivity)
                             mActivity?.finish()
                         } else {
-                            var intentHome = Intent(mActivity, HomeActivity::class.java)
+                            val intentHome = Intent(mActivity, HomeActivity::class.java)
                             intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                            var intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                            val intentArticle = Intent(mActivity, ArticleActivity::class.java)
                             intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            intentArticle.putExtra("articleId", tempId)
+                            intentArticle.putExtra("articleId", WelActivity.tempId)
 
                             mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                            mActivity?.finish()
                         }
                     }, doFail = {
                         hideLoadingAlert()
@@ -104,7 +122,7 @@ class GuideActivity : BaseActivity() {
                 }
             }
 
-        adapter.setNewData(mLabels)
+        adapter.setNewData(bossList)
 
         layout_add doClick {
             adapter.addFollow()
@@ -115,7 +133,7 @@ class GuideActivity : BaseActivity() {
         }
 
         text_time doClick {
-            var tempId = WelActivity.tempId
+            val tempId = WelActivity.tempId
 
             if (text_time.text == "跳过") {
                 DataConfig.get().firstUse = false
@@ -124,10 +142,10 @@ class GuideActivity : BaseActivity() {
                     HomeActivity.start(mActivity)
                     mActivity?.finish()
                 } else {
-                    var intentHome = Intent(mActivity, HomeActivity::class.java)
+                    val intentHome = Intent(mActivity, HomeActivity::class.java)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                    var intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                    val intentArticle = Intent(mActivity, ArticleActivity::class.java)
                     intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     intentArticle.putExtra("articleId", tempId)
 

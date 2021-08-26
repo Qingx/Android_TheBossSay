@@ -37,13 +37,11 @@ class BossHomeActivity : BaseListActivity() {
     private lateinit var entity: BossInfoEntity
 
     companion object {
-        fun start(context: Context?, entity: BossInfoEntity) {
+        fun start(context: Context?, bossId: String) {
             val intent = Intent(context, BossHomeActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtras(Bundle().apply {
-                        putSerializable("entity", entity)
-                    })
+                    putExtra("bossId", bossId)
                 }
             context!!.startActivity(intent)
         }
@@ -63,63 +61,62 @@ class BossHomeActivity : BaseListActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        entity = intent.getSerializableExtra("entity") as BossInfoEntity
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        setUserInfo()
-
-        layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
-        layout_refresh.setHeaderHeight(60f)
-
-        layout_refresh.setOnRefreshListener {
-            needLoading = false
-            loadData(false)
-        }
-
-        rv_content.adapter = mAdapter
-        rv_content.layoutManager =
-            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
-                override fun canScrollHorizontally(): Boolean {
-                    return false
-                }
-            }
-
-        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
-        mAdapter.emptyView = emptyView
-
-        text_follow doClick {
-            if (entity.isCollect) {
-                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
-                    .apply {
-                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
-                            cancelFollow(this)
-                        }
-                    }
-            } else followBoss()
-        }
-
-        image_back doClick {
-            onBackPressed()
-        }
-
-        text_content doClick {
-            BossInfoActivity.start(mActivity, entity)
-        }
-
-        image_share doClick {
-            onShare()
-        }
-
-        image_setting doClick {
-            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
-                .apply {
-                    onConfirm = Runnable {
-                        JPushHelper.tryAddTag(entity.id)
-                        dialog?.dismiss()
-                    }
-                }
-        }
+//        setUserInfo()
+//
+//        layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
+//        layout_refresh.setHeaderHeight(60f)
+//
+//        layout_refresh.setOnRefreshListener {
+//            needLoading = false
+//            loadData(false)
+//        }
+//
+//        rv_content.adapter = mAdapter
+//        rv_content.layoutManager =
+//            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
+//                override fun canScrollHorizontally(): Boolean {
+//                    return false
+//                }
+//            }
+//
+//        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+//        mAdapter.emptyView = emptyView
+//
+//        text_follow doClick {
+//            if (entity.isCollect) {
+//                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
+//                    .apply {
+//                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+//                            cancelFollow(this)
+//                        }
+//                    }
+//            } else followBoss()
+//        }
+//
+//        image_back doClick {
+//            onBackPressed()
+//        }
+//
+//        text_content doClick {
+//            BossInfoActivity.start(mActivity, entity)
+//        }
+//
+//        image_share doClick {
+//            onShare()
+//        }
+//
+//        image_setting doClick {
+//            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
+//                .apply {
+//                    onConfirm = Runnable {
+//                        JPushHelper.tryAddTag(entity.id)
+//                        dialog?.dismiss()
+//                    }
+//                }
+//        }
     }
 
     private fun onShare() {

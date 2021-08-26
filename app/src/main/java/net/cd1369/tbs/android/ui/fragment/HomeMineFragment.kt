@@ -19,6 +19,7 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.data.model.BossSimpleModel
@@ -111,7 +112,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     }
 
     private fun testGet() {
-        val list = LabelDaoManager.getInstance(mActivity).findAll()
+        val list = ArticleDaoManager.getInstance(mActivity).findAll()
 //        BossDaoManager.getInstance(mActivity).deleteAll();
 //        val list = BossDaoManager.getInstance(mActivity).findAll()
         list.logE(prefix = "daoManager")

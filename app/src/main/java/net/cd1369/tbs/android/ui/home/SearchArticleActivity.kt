@@ -43,17 +43,18 @@ class SearchArticleActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : FollowInfoAdapter() {
-            override fun onClick(item: ArticleEntity) {
-                if (!item.isRead) {
-                    Tools.addTodayRead()
-                }
-
-                ArticleActivity.start(mActivity, item.id)
-            }
-        }.also {
-            mAdapter = it
-        }
+        return mAdapter
+//        return object : FollowInfoAdapter() {
+//            override fun onClick(item: ArticleEntity) {
+//                if (!item.isRead) {
+//                    Tools.addTodayRead()
+//                }
+//
+//                ArticleActivity.start(mActivity, item.id)
+//            }
+//        }.also {
+//            mAdapter = it
+//        }
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
@@ -115,22 +116,22 @@ class SearchArticleActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-        if (!loadMore) {
-            pageParam?.resetPage()
-            if (needLoading) showLoading()
-        }
-
-        TbsApi.boss().obtainSearchArticle(pageParam, searchText)
-            .onErrorReturn {
-                Page.empty()
-            }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                if (loadMore) mAdapter.addData(it)
-                else mAdapter.setNewData(it)
-            }, doDone = {
-                showContent()
-                layout_refresh.finishRefresh()
-                layout_refresh.finishLoadMore()
-            })
+//        if (!loadMore) {
+//            pageParam?.resetPage()
+//            if (needLoading) showLoading()
+//        }
+//
+//        TbsApi.boss().obtainSearchArticle(pageParam, searchText)
+//            .onErrorReturn {
+//                Page.empty()
+//            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+//                if (loadMore) mAdapter.addData(it)
+//                else mAdapter.setNewData(it)
+//            }, doDone = {
+//                showContent()
+//                layout_refresh.finishRefresh()
+//                layout_refresh.finishLoadMore()
+//            })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

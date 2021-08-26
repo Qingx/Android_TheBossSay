@@ -109,13 +109,14 @@ class SearchBossActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : BossSearchInfoAdapter() {
-            override fun onClick(item: BossInfoEntity) {
-                BossHomeActivity.start(mActivity, item)
-            }
-        }.also {
-            mAdapter = it
-        }
+        return mAdapter
+//        return object : BossSearchInfoAdapter() {
+//            override fun onClick(item: BossInfoEntity) {
+//                BossHomeActivity.start(mActivity, item)
+//            }
+//        }.also {
+//            mAdapter = it
+//        }
     }
 
     override fun loadData(loadMore: Boolean) {
