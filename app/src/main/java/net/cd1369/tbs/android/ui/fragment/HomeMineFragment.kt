@@ -66,8 +66,8 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
                     MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
-                    MineItem.Score -> TestActivity.start(mActivity)
-                    MineItem.Clear -> Toasts.show(item.itemName)
+                    MineItem.Score -> testAdd()
+                    MineItem.Clear -> testGet()
                 }
             }
         }
@@ -95,11 +95,11 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         setUserInfo()
     }
 
-    private fun testAdd(){
+    private fun testAdd() {
 
     }
 
-    private fun testGet(){
+    private fun testGet() {
 
     }
 
