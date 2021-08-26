@@ -67,7 +67,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
                     MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
                     MineItem.Score -> TestActivity.start(mActivity)
-                    else -> Toasts.show(item.itemName)
+                    MineItem.Clear -> Toasts.show(item.itemName)
                 }
             }
         }
