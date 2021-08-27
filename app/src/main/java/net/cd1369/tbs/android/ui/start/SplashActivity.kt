@@ -1,12 +1,15 @@
 package net.cd1369.tbs.android.ui.start
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import cn.wl.android.lib.core.Page
+import cn.wl.android.lib.core.PageParam
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener
 import com.advance.model.AdvanceError
@@ -20,8 +23,10 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
-import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
+import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.db.LabelDaoManager
+import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
@@ -42,11 +47,11 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
 
     private var hasAdShow = false
     private var hasService = false
-    private var hasLoadBoss = false
+//    private var hasLoadBoss = false
 
-    private var gotoLock = false
+//    private var gotoLock = false
 
-    private var bossList: List<BossInfoEntity> = mutableListOf()
+    //    private var bossList: List<BossInfoEntity> = mutableListOf()
     private var advanceSplash: AdvanceSplash? = null
 
     private val serviceDialog by lazy {
@@ -101,11 +106,11 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
                     .subscribe({
                         hasService = true
 
-                        tryLoadBoos()
+                        doAgreeService()
                     }) {
                         hasService = true
 
-                        tryLoadBoos()
+                        HomeActivity.start(this)
                     }
             }
         } else {
@@ -123,79 +128,141 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
             // 那么只需要在这里直接调用loadAd方法。
             advanceSplash?.loadStrategy()
 
-            tryLoadBoos()
+            doSecondUse()
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun doAgreeService() {
+        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
+            .flatMap {
+                it.add(0, LabelModel.empty)
+                LabelDaoManager.getInstance(this).insertList(it)
+
+                TbsApi.boss().obtainGuideBoss()
+            }.onErrorReturn { mutableListOf() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                GuideActivity.start(this, it)
+            }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun doSecondUse() {
+        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
+            .flatMap {
+                it.add(0, LabelModel.empty)
+                LabelDaoManager.getInstance(this).insertList(it)
+
+                TbsApi.boss().obtainFollowBossList(-1L, false)
+            }.flatMap {
+                BossDaoManager.getInstance(this).insertList(it)
+
+                TbsApi.boss().obtainTackArticle(-1L, PageParam.create(1, 10))
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                DataConfig.get().tackTotalNum = it.total
+                DataConfig.get().hasData = it.hasData()
+                ArticleDaoManager.getInstance(this).insertList(it.records)
+
+                if (WelActivity.tempId.isNullOrEmpty()) {
+                    HomeActivity.start(this)
+                    finish()
+                } else {
+                    doWelcome()
+                }
+            }, {
+                if (WelActivity.tempId.isNullOrEmpty()) {
+                    HomeActivity.start(this)
+                    finish()
+                } else {
+                    doWelcome()
+                }
+            })
+    }
+
+    private fun doWelcome() {
+        val intentHome = Intent(this, HomeActivity::class.java)
+        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+        val intentArticle = Intent(this, ArticleActivity::class.java)
+        intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intentArticle.putExtra("articleId", WelActivity.tempId)
+
+        startActivities(arrayOf(intentHome, intentArticle))
+        finish()
     }
 
     /**
      * 尝试加载boss信息
      */
-    private fun tryLoadBoos() {
-        if (bossList.isNullOrEmpty()) {
-            TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
-                .flatMap {
-                    it.add(0, BossLabelEntity.empty)
-                    DataConfig.get().bossLabels = it
-
-                    TbsApi.boss().obtainGuideBoss()
-                        .onErrorReturn { mutableListOf() }
-                }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    bossList = it
-                    hasLoadBoss = true
-
-                    tryLunchApp()
-                }) {
-
-                }
-        } else {
-            hasLoadBoss = true
-
-            tryLunchApp()
-        }
-    }
+//    private fun tryLoadBoos() {
+//        if (bossList.isNullOrEmpty()) {
+//            TbsApi.boss().obtainLabels().onErrorReturn { mutableListOf() }
+//                .flatMap {
+//                    it.add(0, LabelModel.empty)
+//                    LabelDaoManager.getInstance(mContext).insertList(it)
+//
+//                    TbsApi.boss().obtainGuideBoss()
+//                        .onErrorReturn { mutableListOf() }
+//                }.observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({
+//                    bossList = it
+//                    hasLoadBoss = true
+//
+//                    tryLunchApp()
+//                }) {
+//
+//                }
+//        } else {
+//            hasLoadBoss = true
+//
+//            tryLunchApp()
+//        }
+//    }
 
     /**
      * 尝试拉起app
      */
-    private fun tryLunchApp() {
-        if (hasService && hasLoadBoss && hasAdShow) {
-            if (gotoLock) {
-                return
-            }
-
-            gotoLock = true
-
-            val firstUse = DataConfig.get().firstUse
-
-            var tempId = WelActivity.tempId
-
-            if (firstUse && !bossList.isNullOrEmpty()) {
-                val guideBoss = bossList.filter { it.guide }
-                GuideActivity.start(this, ArrayList(guideBoss))
-                finish()
-            } else {
-                if (tempId.isNullOrEmpty()) {
-                    HomeActivity.start(this)
-                    finish()
-                } else {
-                    var intentHome = Intent(this, HomeActivity::class.java)
-                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-                    var intentArticle = Intent(this, ArticleActivity::class.java)
-                    intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intentArticle.putExtra("articleId", tempId)
-
-                    startActivities(arrayOf(intentHome, intentArticle))
-                }
-            }
-        }
-    }
+//    private fun tryLunchApp() {
+//        if (hasService && hasLoadBoss && hasAdShow) {
+//            if (gotoLock) {
+//                return
+//            }
+//
+//            gotoLock = true
+//
+//            val firstUse = DataConfig.get().firstUse
+//
+//            var tempId = WelActivity.tempId
+//
+//            if (firstUse && !bossList.isNullOrEmpty()) {
+//                val guideBoss = bossList.filter { it.guide }
+//                GuideActivity.start(this, ArrayList(guideBoss))
+//                finish()
+//            } else {
+//                if (tempId.isNullOrEmpty()) {
+//                    HomeActivity.start(this)
+//                    finish()
+//                } else {
+//                    var intentHome = Intent(this, HomeActivity::class.java)
+//                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//
+//                    var intentArticle = Intent(this, ArticleActivity::class.java)
+//                    intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                    intentArticle.putExtra("articleId", tempId)
+//
+//                    startActivities(arrayOf(intentHome, intentArticle))
+//                }
+//            }
+//        }
+//    }
 
     override fun onAdFailed(p0: AdvanceError) {
         hasAdShow = true
 
-        tryLunchApp()
+//        tryLunchApp()
 
         Log.e("OkHttp", p0.toString())
     }
@@ -208,7 +275,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         hasAdShow = true
 
         timerDelay(100) {
-            tryLunchApp()
+//            tryLunchApp()
         }
     }
 
@@ -216,7 +283,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         hasAdShow = true
 
         timerDelay(100) {
-            tryLunchApp()
+//            tryLunchApp()
         }
     }
 
@@ -224,7 +291,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         hasAdShow = true
 
         timerDelay(100) {
-            tryLunchApp()
+//            tryLunchApp()
         }
     }
 

@@ -4,32 +4,31 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.footer_count.view.*
-import kotlinx.android.synthetic.main.fragment_home_boss_content.*
-import kotlinx.android.synthetic.main.fragment_home_boss_content.layout_refresh
-import kotlinx.android.synthetic.main.fragment_home_boss_content.rv_content
-import kotlinx.android.synthetic.main.header_boss_content.view.*
+import kotlinx.android.synthetic.main.fragment_home_boss.*
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.BannerEntity
-import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
-import net.cd1369.tbs.android.event.FollowBossEvent
+import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.db.LabelDaoManager
+import net.cd1369.tbs.android.data.model.BossSimpleModel
+import net.cd1369.tbs.android.data.model.LabelModel
+import net.cd1369.tbs.android.event.BossBatchTackEvent
+import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.event.LoginEvent
-import net.cd1369.tbs.android.ui.adapter.BannerViewAdapter
-import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.BossTackAdapter
+import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
-import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
+import net.cd1369.tbs.android.ui.home.SearchBossActivity
+import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.OnChangeCallback
 import net.cd1369.tbs.android.util.doClick
@@ -39,27 +38,30 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
 /**
- * Created by Xiang on 2021/8/11 12:32
+ * Created by Xiang on 2021/8/11 12:24
  * @description
  * @email Cymbidium@outlook.com
  */
 class HomeBossContentFragment : BaseFragment() {
-    private lateinit var mLabel: String
-    private var needLoading = true
+    private lateinit var tabAdapter: HomeTabAdapter
+    private lateinit var mLabels: MutableList<LabelModel>
+    private lateinit var mBossList: MutableList<BossSimpleModel>
+
+    private lateinit var mAdapter: BossTackAdapter
+    private var currentLabel = "-1"
 
     private var footerView: View? = null
 
-    private lateinit var mAdapter: BossInfoAdapter
+    private var firstInit = true
 
     companion object {
-        fun createFragment(label: String): HomeBossContentFragment {
+        fun createFragment(): HomeBossContentFragment {
             return HomeBossContentFragment()
-                .apply {
-                    arguments = Bundle().apply {
-                        putString("label", label)
-                    }
-                }
         }
+    }
+
+    override fun getLayoutResource(): Any {
+        return R.layout.fragment_home_boss
     }
 
     private val mCall = object : OnChangeCallback() {
@@ -70,14 +72,10 @@ class HomeBossContentFragment : BaseFragment() {
         }
     }
 
-    override fun getLayoutResource(): Any {
-        return R.layout.fragment_home_boss_content
-    }
-
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        mLabel = arguments?.getString("label") as String
+        mLabels = LabelDaoManager.getInstance(mActivity).findAll()
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -87,16 +85,34 @@ class HomeBossContentFragment : BaseFragment() {
         layout_refresh.setHeaderHeight(60f)
 
         layout_refresh.setOnRefreshListener {
-            needLoading = false
             loadData()
         }
 
-        mAdapter = object : BossInfoAdapter() {
-            override fun onDoTop(item: BossInfoEntity, v: View, index: Int) {
+        text_title.paint.isFakeBoldText = true
+
+        rv_tab.layoutManager =
+            object : LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false) {
+                override fun canScrollVertically() = false
+            }
+
+        tabAdapter = object : HomeTabAdapter() {
+            override fun onSelect(select: String) {
+                currentLabel = select
+
+                mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+                mAdapter.setNewData(mBossList)
+            }
+        }
+
+        rv_tab.adapter = tabAdapter
+        tabAdapter.setNewData(mLabels)
+
+        mAdapter = object : BossTackAdapter() {
+            override fun onDoTop(item: BossSimpleModel, v: View, index: Int) {
                 tryChangeTopic(item, v, index)
             }
 
-            override fun onCancelFollow(item: BossInfoEntity) {
+            override fun onCancelFollow(item: BossSimpleModel) {
                 FollowAskCancelDialog.showDialog(requireFragmentManager(), "askCancel")
                     .apply {
                         onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
@@ -105,8 +121,8 @@ class HomeBossContentFragment : BaseFragment() {
                     }
             }
 
-            override fun onClick(item: BossInfoEntity) {
-                BossHomeActivity.start(mActivity, entity = item)
+            override fun onClick(item: BossSimpleModel) {
+                TestActivity.start(mActivity)
             }
         }
         mAdapter.registerAdapterDataObserver(mCall)
@@ -125,40 +141,27 @@ class HomeBossContentFragment : BaseFragment() {
         footerView = LayoutInflater.from(mActivity).inflate(R.layout.footer_count, null)
         mAdapter.addFooterView(footerView)
 
+        image_search doClick {
+            SearchBossActivity.start(mActivity)
+        }
+
         button_float doClick {
             HomeBossAllActivity.start(mActivity)
         }
     }
 
-    override fun loadData() {
-        super.loadData()
-
-        if (needLoading) {
-            showLoading()
-        }
-
-        TbsApi.boss().obtainFollowBossList(mLabel, false)
-            .onErrorReturn { mutableListOf() }
-            .bindDefaultSub(doNext = {
-                mAdapter.setNewData(it)
-            }, doLast = {
-                showContent()
-
-                layout_refresh.finishRefresh()
-            })
-    }
-
-    private fun tryChangeTopic(item: BossInfoEntity, v: View, index: Int) {
-        val topic: Boolean = !item.isTop
+    private fun tryChangeTopic(item: BossSimpleModel, v: View, index: Int) {
+        val topic: Boolean = !item.top
         showLoadingAlert("正在保存...")
 
-
-        TbsApi.boss().obtainTopicBoss(item.id, topic)
+        TbsApi.boss().obtainTopicBoss(item.id.toString(), topic)
             .delay(600, TimeUnit.MILLISECONDS)
             .bindToastSub("") {
                 v.isSelected = topic
                 item.top = topic
                 v.text_top.text = "取消置顶".takeIf { item.top } ?: "置顶"
+
+                BossDaoManager.getInstance(mActivity).update(item)
 
                 val layoutManager = rv_content.layoutManager as LinearLayoutManager
                 val fp = layoutManager.findFirstVisibleItemPosition()
@@ -178,10 +181,10 @@ class HomeBossContentFragment : BaseFragment() {
             }
     }
 
-    private fun doCancelFollow(item: BossInfoEntity, dialog: FollowAskCancelDialog?) {
+    private fun doCancelFollow(item: BossSimpleModel, dialog: FollowAskCancelDialog?) {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.boss().obtainCancelFollowBoss(item.id)
+        TbsApi.boss().obtainCancelFollowBoss(item.id.toString())
             .bindDefaultSub(
                 doNext = {
                     dialog?.dismiss()
@@ -192,19 +195,21 @@ class HomeBossContentFragment : BaseFragment() {
                         it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                     }
 
+                    BossDaoManager.getInstance(mActivity).delete(item.id)
+
                     eventBus.post(
-                        FollowBossEvent(
-                            id = item.id,
+                        BossTackEvent(
+                            id = item.id.toString(),
                             isFollow = false,
-                            needLoading = false,
-                            labels = item.labels
+                            labels = item.labels,
+                            fromBossContent = true
                         )
                     )
                     val index = mAdapter.data.indexOfFirst {
                         it.id == item.id
                     }
 
-                    JPushHelper.tryDelTag(item.id)
+                    JPushHelper.tryDelTag(item.id.toString())
 
                     if (index != -1) {
                         mAdapter.remove(index)
@@ -214,10 +219,42 @@ class HomeBossContentFragment : BaseFragment() {
                     Toasts.show("取消失败，${it.msg}")
                 },
                 doLast = {
-                    needLoading = true
                     hideLoadingAlert()
                 },
             )
+    }
+
+    override fun loadData() {
+        super.loadData()
+
+        if (firstInit) {
+            firstInit = false
+            mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+            mAdapter.setNewData(mBossList)
+        } else {
+            TbsApi.boss().obtainFollowBossList(-1, false)
+                .onErrorReturn { mutableListOf() }
+                .bindDefaultSub(
+                    doNext = {
+                        BossDaoManager.getInstance(mActivity).insertList(it)
+
+                        mBossList = if (currentLabel == "-1") {
+                            it
+                        } else {
+                            it.filter {
+                                it.labels.contains(currentLabel)
+                            }.toMutableList()
+                        }
+
+                        mAdapter.setNewData(mBossList)
+
+                        layout_refresh.finishRefresh(true)
+                    },
+                    doFail = {
+                        layout_refresh.finishRefresh(false)
+                    }
+                )
+        }
     }
 
     override fun onDestroyView() {
@@ -226,17 +263,41 @@ class HomeBossContentFragment : BaseFragment() {
         super.onDestroyView()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: FollowBossEvent) {
-        if (event.needLoading) {
-            if (mLabel == BossLabelEntity.empty.id || event.labels?.contains(mLabel) == true) {
-                layout_refresh.autoRefresh()
+    private fun loginData() {
+        TbsApi.boss().obtainFollowBossList(-1L, false)
+            .onErrorReturn { mutableListOf() }
+            .bindDefaultSub {
+                mBossList = it
+                val list = if (currentLabel == "-1") {
+                    BossDaoManager.getInstance(mActivity).insertList(it)
+                    it.filter {
+                        it.isLatest
+                    }.toMutableList()
+                } else {
+                    it.filter {
+                        it.labels.contains(currentLabel) && it.isLatest
+                    }.toMutableList()
+                }
+                mAdapter.setNewData(list)
             }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: BossTackEvent) {
+        if (!event.fromBossContent) {
+            mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+            mAdapter.setNewData(mBossList)
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: BossBatchTackEvent) {
+        mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+        mAdapter.setNewData(mBossList)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
-        loadData()
+        loginData()
     }
 }

@@ -17,12 +17,11 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
-import net.cd1369.tbs.android.ui.fragment.HomeBossFragment
+import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
 import net.cd1369.tbs.android.util.*
-import net.cd1369.tbs.android.util.Tools.logE
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -53,7 +52,7 @@ class HomeActivity : BaseActivity() {
         super.beforeCreateView(savedInstanceState)
 
         fragments.add(HomeSpeechFragment.createFragment())
-        fragments.add(HomeBossFragment.createFragment())
+        fragments.add(HomeBossContentFragment.createFragment())
         if (BuildConfig.ENV == "YYB") {
             fragments.add(HomeToolFragment.createFragment())
         }

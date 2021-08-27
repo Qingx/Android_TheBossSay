@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_boss_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
@@ -21,7 +17,6 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.SetBossTimeEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.dialog.*
@@ -37,13 +32,11 @@ class BossHomeActivity : BaseListActivity() {
     private lateinit var entity: BossInfoEntity
 
     companion object {
-        fun start(context: Context?, entity: BossInfoEntity) {
+        fun start(context: Context?, bossId: String) {
             val intent = Intent(context, BossHomeActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtras(Bundle().apply {
-                        putSerializable("entity", entity)
-                    })
+                    putExtra("bossId", bossId)
                 }
             context!!.startActivity(intent)
         }
@@ -63,63 +56,62 @@ class BossHomeActivity : BaseListActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        entity = intent.getSerializableExtra("entity") as BossInfoEntity
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        setUserInfo()
-
-        layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
-        layout_refresh.setHeaderHeight(60f)
-
-        layout_refresh.setOnRefreshListener {
-            needLoading = false
-            loadData(false)
-        }
-
-        rv_content.adapter = mAdapter
-        rv_content.layoutManager =
-            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
-                override fun canScrollHorizontally(): Boolean {
-                    return false
-                }
-            }
-
-        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
-        mAdapter.emptyView = emptyView
-
-        text_follow doClick {
-            if (entity.isCollect) {
-                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
-                    .apply {
-                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
-                            cancelFollow(this)
-                        }
-                    }
-            } else followBoss()
-        }
-
-        image_back doClick {
-            onBackPressed()
-        }
-
-        text_content doClick {
-            BossInfoActivity.start(mActivity, entity)
-        }
-
-        image_share doClick {
-            onShare()
-        }
-
-        image_setting doClick {
-            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
-                .apply {
-                    onConfirm = Runnable {
-                        JPushHelper.tryAddTag(entity.id)
-                        dialog?.dismiss()
-                    }
-                }
-        }
+//        setUserInfo()
+//
+//        layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
+//        layout_refresh.setHeaderHeight(60f)
+//
+//        layout_refresh.setOnRefreshListener {
+//            needLoading = false
+//            loadData(false)
+//        }
+//
+//        rv_content.adapter = mAdapter
+//        rv_content.layoutManager =
+//            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
+//                override fun canScrollHorizontally(): Boolean {
+//                    return false
+//                }
+//            }
+//
+//        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
+//        mAdapter.emptyView = emptyView
+//
+//        text_follow doClick {
+//            if (entity.isCollect) {
+//                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
+//                    .apply {
+//                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+//                            cancelFollow(this)
+//                        }
+//                    }
+//            } else followBoss()
+//        }
+//
+//        image_back doClick {
+//            onBackPressed()
+//        }
+//
+//        text_content doClick {
+//            BossInfoActivity.start(mActivity, entity)
+//        }
+//
+//        image_share doClick {
+//            onShare()
+//        }
+//
+//        image_setting doClick {
+//            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
+//                .apply {
+//                    onConfirm = Runnable {
+//                        JPushHelper.tryAddTag(entity.id)
+//                        dialog?.dismiss()
+//                    }
+//                }
+//        }
     }
 
     private fun onShare() {
@@ -152,14 +144,14 @@ class BossHomeActivity : BaseListActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(
-                    FollowBossEvent(
-                        id = entity.id,
-                        isFollow = false,
-                        needLoading = true,
-                        labels = entity.labels
-                    )
-                )
+//                eventBus.post(
+//                    FollowBossEvent(
+//                        id = entity.id,
+//                        isFollow = false,
+//                        needLoading = true,
+//                        labels = entity.labels
+//                    )
+//                )
                 entity.isCollect = false
 
                 text_follow.isSelected = false
@@ -210,13 +202,13 @@ class BossHomeActivity : BaseListActivity() {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
 
-                eventBus.post(
-                    FollowBossEvent(
-                        entity.id, true,
-                        needLoading = true,
-                        labels = entity.labels
-                    )
-                )
+//                eventBus.post(
+//                    FollowBossEvent(
+//                        entity.id, true,
+//                        needLoading = true,
+//                        labels = entity.labels
+//                    )
+//                )
 
                 entity.isCollect = true
                 text_follow.isSelected = true

@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_guide_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
@@ -17,10 +18,10 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 abstract class GuideInfoAdapter :
-    BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_guide_info) {
-    private val mSelect = HashSet<String>()
+    BaseQuickAdapter<BossSimpleModel, BaseViewHolder>(R.layout.item_guide_info) {
+    private val mSelect = HashSet<Long>()
 
-    override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
+    override fun convert(helper: BaseViewHolder, item: BossSimpleModel) {
         helper.V.isSelected = mSelect.contains(item.id)
 
         GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
@@ -58,11 +59,11 @@ abstract class GuideInfoAdapter :
         notifyDataSetChanged()
     }
 
-    override fun setNewData(data: MutableList<BossInfoEntity>?) {
+    override fun setNewData(data: MutableList<BossSimpleModel>?) {
         super.setNewData(data)
 
         autoSelectAll()
     }
 
-    abstract fun onAddFollow(data: MutableList<String>)
+    abstract fun onAddFollow(data: MutableList<Long>)
 }

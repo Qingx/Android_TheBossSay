@@ -3,6 +3,8 @@ package net.cd1369.tbs.android.data.entity;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import net.cd1369.tbs.android.data.model.BossSimpleModel;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -41,53 +43,7 @@ public class BossInfoEntity implements Serializable {
     private List<String> labels;
     private boolean top; //是否置顶
     private long relTime; //置顶时间
-
     private String bossType; //boss类型:新boss:newBoss,热门boss:hotBoss,没有标签:without
-
-    public boolean checkLabels(String label) {
-        if (Lists.isEmpty(labels)) return false;
-        if (TextUtils.isEmpty(label)) return false;
-
-        for (String s : labels) {
-            if (label.equals(s)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public void showImage(ImageView iv1, ImageView iv2) {
-        List<String> photoUrl = this.photoUrl;
-
-        if (Lists.isEmpty(photoUrl)) {
-            ViewHelper.setVisible(iv1, false);
-            ViewHelper.setVisible(iv2, false);
-        } else if (photoUrl.size() == 1) {
-            ViewHelper.setVisible(iv1, true);
-            ViewHelper.setVisible(iv2, false);
-
-            GlideApp.display(photoUrl.get(0), iv1);
-        } else if (photoUrl.size() > 1) {
-            ViewHelper.setVisible(iv1, true);
-            ViewHelper.setVisible(iv2, true);
-
-            GlideApp.display(photoUrl.get(0), iv1);
-            GlideApp.display(photoUrl.get(1), iv2);
-        }
-    }
-
-    public boolean checkSort(BossInfoEntity boss) {
-        if (id.equals(boss.id))
-            return false;
-
-        if (boss.top) {
-            if (!top) return true;
-        } else {
-            if (top) return false;
-        }
-        return updateTime < boss.updateTime;
-    }
 
     static BossInfoEntity empty = new BossInfoEntity();
 
@@ -282,6 +238,10 @@ public class BossInfoEntity implements Serializable {
             return "without";
         }
         return this.bossType;
+    }
+
+    public BossSimpleModel toSimple() {
+        return new BossSimpleModel(Long.valueOf(this.id), this.name, this.head, this.role, this.top, this.updateTime, this.labels, this.photoUrl);
     }
 
     @Override

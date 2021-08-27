@@ -18,7 +18,7 @@ import net.cd1369.tbs.android.util.fullUrl
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class SearchInfoAdapter :
+abstract class BossAllItemAdapter :
     BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_search_info) {
 
     val mIdSet = hashSetOf<String>()
