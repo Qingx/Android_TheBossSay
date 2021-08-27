@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_speech_tack.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.data.model.LabelModel
+import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.Tools.isLabelsEmpty
 
@@ -51,6 +54,14 @@ class SpeechTackFragment : BaseFragment() {
                 }
             }
         }
+
+        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                GlobalScrollEvent.tackLabel=mLabels[position].id.toString()
+            }
+        })
 
         rv_tab.adapter = tabAdapter
 
@@ -94,7 +105,11 @@ class SpeechTackFragment : BaseFragment() {
                     }
 
                     override fun createFragment(position: Int): Fragment {
-                        return SpeechTackOtherFragment.createFragment(mLabels[position].id)
+                        return if (position == 0) {
+                            SpeechTackAllFragment.createFragment()
+                        } else {
+                            SpeechTackOtherFragment.createFragment(mLabels[position].id)
+                        }
                     }
                 }
 

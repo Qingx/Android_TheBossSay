@@ -13,13 +13,18 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.header_boss_content.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BannerEntity
+import net.cd1369.tbs.android.event.GlobalScrollEvent
+import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.adapter.BannerViewAdapter
 import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.Tools
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Xiang on 2021/8/11 12:06
@@ -70,6 +75,8 @@ class SpeechSquareContentFragment : BaseListFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+        eventBus.register(this)
+
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
         layout_refresh.setHeaderHeight(60f)
 
@@ -139,6 +146,16 @@ class SpeechSquareContentFragment : BaseListFragment() {
                         layout_refresh.finishLoadMore()
                     }
                 )
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: PageScrollEvent) {
+        if (GlobalScrollEvent.homePage == PageItem.Talk.code &&
+            GlobalScrollEvent.talkPage == PageItem.Square.code &&
+            GlobalScrollEvent.squareLabel == mLabel.toString()
+        ) {
+            rv_content.smoothScrollToPosition(0)
         }
     }
 }

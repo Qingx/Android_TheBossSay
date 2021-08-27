@@ -13,15 +13,14 @@ import kotlinx.android.synthetic.main.footer_count.view.*
 import kotlinx.android.synthetic.main.fragment_home_boss.*
 import kotlinx.android.synthetic.main.item_boss_info.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.data.model.LabelModel
-import net.cd1369.tbs.android.event.BossBatchTackEvent
-import net.cd1369.tbs.android.event.BossTackEvent
-import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.BossTackAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
@@ -102,6 +101,8 @@ class HomeBossContentFragment : BaseFragment() {
 
                 mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
                 mAdapter.setNewData(mBossList)
+
+                GlobalScrollEvent.bossLabel = currentLabel
             }
         }
 
@@ -300,5 +301,12 @@ class HomeBossContentFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
         loginData()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: PageScrollEvent) {
+        if (GlobalScrollEvent.homePage == PageItem.Boss.code && GlobalScrollEvent.bossLabel == currentLabel) {
+            rv_content.smoothScrollToPosition(0)
+        }
     }
 }

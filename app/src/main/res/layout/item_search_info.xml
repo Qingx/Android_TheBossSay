@@ -2,23 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/draw_line_4"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="4:8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.allen.library.CircleImageView
             android:id="@+id/image_head"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="44dp"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="8dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@id/text_name"
             app:layout_constraintDimensionRatio="1:1"
@@ -38,7 +41,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/colorTextDark"
-            android:textSize="14dp"
+            android:textSize="12dp"
             app:layout_constraintBottom_toTopOf="@id/text_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +59,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
-            android:textSize="12dp"
+            android:textSize="9dp"
             app:layout_constraintBottom_toTopOf="@id/layout_follow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,8 +68,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_follow"
-            android:layout_width="56dp"
-            android:layout_height="22dp"
+            android:layout_width="44dp"
+            android:layout_height="18dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/draw_search_info"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +78,7 @@
             app:layout_constraintTop_toBottomOf="@id/text_info">
 
             <ImageView
-                android:layout_width="14dp"
+                android:layout_width="12dp"
                 android:layout_height="0dp"
                 android:src="@drawable/ic_boss_order"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -85,18 +88,27 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ImageView
+            android:id="@+id/image_type"
+            android:layout_width="20dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_boss_label_hot" />
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_info_select"
-            android:layout_width="@dimen/font_18"
-            android:layout_height="@dimen/font_18"
-            android:layout_marginTop="-4dp"
-            android:layout_marginRight="-4dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="2dp"
             android:background="@drawable/draw_head_sel"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
-            app:layout_constraintRight_toRightOf="@+id/image_head"
-            app:layout_constraintTop_toTopOf="@+id/image_head"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
             <ImageView
@@ -107,14 +119,6 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <ImageView
-            android:id="@+id/image_type"
-            android:layout_width="28dp"
-            android:layout_height="16dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_boss_label_hot" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

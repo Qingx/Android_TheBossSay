@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.header_speech_content.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.ArticleDaoManager
@@ -29,7 +30,6 @@ import net.cd1369.tbs.android.ui.adapter.ArticleTackAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
-import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -376,6 +376,17 @@ class SpeechTackAllFragment : BaseListFragment() {
 
             cardAdapter.data[index].updateTime = event.time
             cardAdapter.notifyItemChanged(index)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: PageScrollEvent) {
+
+        if (GlobalScrollEvent.homePage == PageItem.Talk.code &&
+            GlobalScrollEvent.talkPage == PageItem.Tack.code &&
+            GlobalScrollEvent.tackLabel == "-1"
+        ) {
+            rv_content.smoothScrollToPosition(0)
         }
     }
 }

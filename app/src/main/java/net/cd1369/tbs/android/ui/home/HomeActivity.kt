@@ -13,9 +13,12 @@ import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
 import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
@@ -89,6 +92,14 @@ class HomeActivity : BaseActivity() {
                 layout_boss.isSelected = position == 1
                 layout_mine.isSelected = position == index
                 layout_tools.isSelected = position == 2
+
+                if (layout_talk.isSelected) {
+                    GlobalScrollEvent.homePage = PageItem.Talk.code
+                }
+
+                if (layout_boss.isSelected) {
+                    GlobalScrollEvent.homePage = PageItem.Boss.code
+                }
             }
         })
 
@@ -96,11 +107,19 @@ class HomeActivity : BaseActivity() {
         view_pager.isUserInputEnabled = false
 
         layout_talk doClick {
-            view_pager.setCurrentItem(0, false)
+            if (view_pager.currentItem == 0) {
+                eventBus.post(PageScrollEvent())
+            } else {
+                view_pager.setCurrentItem(0, false)
+            }
         }
 
         layout_boss doClick {
-            view_pager.setCurrentItem(1, false)
+            if (view_pager.currentItem == 1) {
+                eventBus.post(PageScrollEvent())
+            } else {
+                view_pager.setCurrentItem(1, false)
+            }
         }
 
         layout_mine doClick {

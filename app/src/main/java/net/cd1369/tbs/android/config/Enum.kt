@@ -8,6 +8,26 @@ import net.cd1369.tbs.android.R
  * @description
  * @email Cymbidium@outlook.com
  */
+enum class PageItem(val code: String, val itemName: String) {
+    Tack("0", "追踪"),
+    Square("1", "广场"),
+    Boss("2", "老板"),
+    Talk("3", "老板");
+
+    companion object {
+        fun get(code: String): PageItem {
+            val values = PageItem.values()
+
+            for (value: PageItem in values) {
+                if (value.code == code) {
+                    return value
+                }
+            }
+            return PageItem.Tack
+        }
+    }
+}
+
 enum class BossLabelItem(val code: String, val itemName: String, @DrawableRes val icon: Int) {
     Hot("hotBoss", "热门", R.drawable.ic_boss_label_hot),
     New("newBoss", "最新", R.drawable.ic_boss_label_new),

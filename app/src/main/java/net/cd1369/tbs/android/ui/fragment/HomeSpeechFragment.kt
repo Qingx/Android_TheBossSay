@@ -8,6 +8,8 @@ import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_home_speech.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.PageItem
+import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.ui.home.SearchArticleActivity
 import net.cd1369.tbs.android.util.doClick
 
@@ -61,11 +63,15 @@ class HomeSpeechFragment : BaseFragment() {
                     text_follow.textSize = 24f
                     text_square.isSelected = false
                     text_square.textSize = 16f
+
+                    GlobalScrollEvent.talkPage = PageItem.Tack.code
                 } else {
                     text_square.isSelected = true
                     text_square.textSize = 24f
                     text_follow.isSelected = false
                     text_follow.textSize = 16f
+
+                    GlobalScrollEvent.talkPage = PageItem.Square.code
                 }
             }
         })

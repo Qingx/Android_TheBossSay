@@ -35,6 +35,7 @@ abstract class BossAllItemAdapter :
         helper.V.text_info.text = item.role
         helper.V.layout_follow.isSelected = !item.isCollect
 
+        helper.V.isSelected = isEdit && !item.isCollect
         helper.V.ll_info_select.isVisible = isEdit && !item.isCollect
         helper.V.ll_info_select.isSelected = item.id in mIdSet
         helper.V.ll_info_select doClick {

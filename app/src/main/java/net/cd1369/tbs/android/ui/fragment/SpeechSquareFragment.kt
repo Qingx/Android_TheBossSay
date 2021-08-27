@@ -6,19 +6,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_speech_tack.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
+import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.db.LabelDaoManager
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.LabelModel
-import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.util.Tools.isLabelsEmpty
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Xiang on 2021/8/11 12:02
@@ -62,6 +60,14 @@ class SpeechSquareFragment : BaseFragment() {
         }
 
         rv_tab.adapter = tabAdapter
+
+        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                GlobalScrollEvent.squareLabel = mLabels[position].id.toString()
+            }
+        })
 
         view_pager.isUserInputEnabled = false
     }
