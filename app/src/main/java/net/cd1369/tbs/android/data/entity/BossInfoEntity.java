@@ -278,6 +278,9 @@ public class BossInfoEntity implements Serializable {
     }
 
     public String getBossType() {
+        if (TextUtils.isEmpty(this.bossType)) {
+            return "without";
+        }
         return this.bossType;
     }
 

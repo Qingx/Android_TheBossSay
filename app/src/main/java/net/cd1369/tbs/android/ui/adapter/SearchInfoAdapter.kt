@@ -41,7 +41,8 @@ abstract class SearchInfoAdapter :
             selectItem(it, item)
         }
 
-        helper.V.image_type.isVisible = BossLabelItem.get(item.bossType) != BossLabelItem.Empty
+        helper.V.image_type.isVisible =
+            BossLabelItem.Empty != BossLabelItem.get(item.bossType)
         if (item.bossType != BossLabelItem.Empty.code) {
             GlideApp.display(BossLabelItem.get(item.bossType).icon, helper.V.image_type)
         }
