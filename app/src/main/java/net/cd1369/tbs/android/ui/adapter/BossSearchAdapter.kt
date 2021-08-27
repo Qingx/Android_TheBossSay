@@ -13,7 +13,7 @@ import net.cd1369.tbs.android.util.*
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class BossSearchInfoAdapter :
+abstract class BossSearchAdapter :
     BaseQuickAdapter<BossInfoEntity, BaseViewHolder>(R.layout.item_boss_search_info) {
     override fun convert(helper: BaseViewHolder, item: BossInfoEntity) {
 

@@ -15,7 +15,7 @@ import net.cd1369.tbs.android.util.*
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class BossInfoAdapter :
+abstract class BossTackAdapter :
     BaseQuickAdapter<BossSimpleModel, BaseViewHolder>(R.layout.item_boss_info) {
     override fun convert(helper: BaseViewHolder, item: BossSimpleModel) {
         helper.V.isSelected = item.top

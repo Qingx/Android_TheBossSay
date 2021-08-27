@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_boss_home.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
@@ -21,7 +17,6 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.SetBossTimeEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.dialog.*
@@ -149,14 +144,14 @@ class BossHomeActivity : BaseListActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(
-                    FollowBossEvent(
-                        id = entity.id,
-                        isFollow = false,
-                        needLoading = true,
-                        labels = entity.labels
-                    )
-                )
+//                eventBus.post(
+//                    FollowBossEvent(
+//                        id = entity.id,
+//                        isFollow = false,
+//                        needLoading = true,
+//                        labels = entity.labels
+//                    )
+//                )
                 entity.isCollect = false
 
                 text_follow.isSelected = false
@@ -207,13 +202,13 @@ class BossHomeActivity : BaseListActivity() {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
 
-                eventBus.post(
-                    FollowBossEvent(
-                        entity.id, true,
-                        needLoading = true,
-                        labels = entity.labels
-                    )
-                )
+//                eventBus.post(
+//                    FollowBossEvent(
+//                        entity.id, true,
+//                        needLoading = true,
+//                        labels = entity.labels
+//                    )
+//                )
 
                 entity.isCollect = true
                 text_follow.isSelected = true

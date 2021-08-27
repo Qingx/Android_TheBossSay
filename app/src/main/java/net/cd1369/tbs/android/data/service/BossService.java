@@ -18,6 +18,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 /**
  * Created by Xiang on 2021/4/25 15:20
@@ -88,13 +89,28 @@ public interface BossService {
     Observable<WLPage<ArticleEntity>> obtainAllArticle(@Body RequestBody body);
 
     /**
-     * 获取所有boss列表 分页
+     * 搜索全部boss列表
      *
-     * @param body
      * @return
      */
     @POST("/api/boss/list")
-    Observable<WLPage<BossInfoEntity>> obtainAllBossList(@Body RequestBody body);
+    Observable<WLPage<BossInfoEntity>> obtainSearchBossList(@Body RequestBody body);
+
+    /**
+     * 获取全部boss列表
+     *
+     * @return
+     */
+    @GET("/api/boss/noPageList")
+    Observable<WLList<BossInfoEntity>> obtainAllBossList();
+
+    /**
+     * 获取全部boss列表 搜索
+     *
+     * @return
+     */
+    @GET()
+    Observable<WLList<BossInfoEntity>> obtainAllBossSearchList(@Url String url);
 
     /**
      * 获取boss详情

@@ -15,6 +15,8 @@ import kotlinx.android.synthetic.main.activity_login_input_code.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
+import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.startShakeAnim
@@ -89,6 +91,8 @@ class LoginInputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinish
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.ANONYMOUS, userInfo.nickName)
+                BossDaoManager.getInstance(mActivity).deleteAll()
+                ArticleDaoManager.getInstance(mActivity).deleteAll()
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()

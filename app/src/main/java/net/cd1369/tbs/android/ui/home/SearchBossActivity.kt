@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListActivity
-import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.activity_search_boss.*
@@ -21,14 +20,13 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.HotSearchEvent
-import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
-import net.cd1369.tbs.android.ui.adapter.BossSearchInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.BossSearchAdapter
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class SearchBossActivity : BaseListActivity() {
-    private lateinit var mAdapter: BossSearchInfoAdapter
+    private lateinit var mAdapter: BossSearchAdapter
     private var needLoading = true
     private var searchText = ""
 
@@ -109,14 +107,13 @@ class SearchBossActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return mAdapter
-//        return object : BossSearchInfoAdapter() {
-//            override fun onClick(item: BossInfoEntity) {
-//                BossHomeActivity.start(mActivity, item)
-//            }
-//        }.also {
-//            mAdapter = it
-//        }
+        return object : BossSearchAdapter() {
+            override fun onClick(item: BossInfoEntity) {
+                BossHomeActivity.start(mActivity, item.id)
+            }
+        }.also {
+            mAdapter = it
+        }
     }
 
     override fun loadData(loadMore: Boolean) {

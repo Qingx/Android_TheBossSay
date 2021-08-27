@@ -16,16 +16,14 @@ import kotlinx.android.synthetic.main.empty_boss_card_view.view.*
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.header_speech_content.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
-import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.ArticleTackAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.test.TestActivity
@@ -39,7 +37,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @description
  * @email Cymbidium@outlook.com
  */
-class SpeechTackContentFragment : BaseListFragment() {
+class SpeechTackOtherFragment : BaseListFragment() {
     private var mLabel: Long = -1L
     private var cardEmptyView: View? = null
     private var mRootHeight: Int = 0
@@ -47,14 +45,14 @@ class SpeechTackContentFragment : BaseListFragment() {
     private var mEmptyView: View? = null
 
     private lateinit var cardAdapter: FollowCardAdapter
-    private lateinit var mAdapter: FollowInfoAdapter
+    private lateinit var mAdapter: ArticleTackAdapter
     private lateinit var mBossList: MutableList<BossSimpleModel>
 
     private var firstInit = true
 
     companion object {
-        fun createFragment(label: Long): SpeechTackContentFragment {
-            return SpeechTackContentFragment().apply {
+        fun createFragment(label: Long): SpeechTackOtherFragment {
+            return SpeechTackOtherFragment().apply {
                 arguments = Bundle().apply {
                     putLong("label", label)
                 }
@@ -69,7 +67,7 @@ class SpeechTackContentFragment : BaseListFragment() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : FollowInfoAdapter() {
+        return object : ArticleTackAdapter() {
             override fun onClick(item: ArticleSimpleModel) {
                 if (!item.isRead) {
                     Tools.addTodayRead()
@@ -149,40 +147,6 @@ class SpeechTackContentFragment : BaseListFragment() {
     }
 
     /**
-     * 标签-全部 进入时处理数据
-     */
-    @SuppressLint("SetTextI18n")
-    private fun initAllData() {
-        firstInit = false
-
-        mBossList = BossDaoManager.getInstance(mActivity).findLatest("-1")
-        cardAdapter.setNewData(mBossList)
-
-        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
-
-        val articleList = ArticleDaoManager.getInstance(mActivity).findAll()
-        mAdapter.setNewData(articleList)
-
-        val traceNum = UserConfig.get().userEntity.traceNum ?: 0
-
-        if (traceNum > 0) {
-            cardEmptyView?.text_notice?.text = "追踪的老板暂无言论更新"
-        } else {
-            cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
-        }
-
-        headerView?.text_title?.text = if (articleList[0].returnType == "0") {
-            "最近更新"
-        } else {
-            "为你推荐"
-        }
-
-        showContentEmpty(articleList.isNullOrEmpty())
-
-        showContent()
-    }
-
-    /**
      * 标签-其他 进入时处理数据
      */
     @SuppressLint("SetTextI18n")
@@ -194,14 +158,12 @@ class SpeechTackContentFragment : BaseListFragment() {
         mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
         cardAdapter.setNewData(mBossList)
 
-
-        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
-
         TbsApi.boss().obtainTackArticle(mLabel, pageParam)
             .onErrorReturn { Page.empty() }
             .bindPageSubscribe(
                 loadMore = false,
                 doNext = {
+                    headerView!!.text_num.text = "共${pageParam!!.total}篇"
                     mAdapter.setNewData(it)
                 },
                 doDone = {
@@ -213,11 +175,12 @@ class SpeechTackContentFragment : BaseListFragment() {
                         cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
                     }
 
-                    headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
-                        "最近更新"
-                    } else {
-                        "为你推荐"
-                    }
+                    headerView?.text_title?.text =
+                        if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                            "最近更新"
+                        } else {
+                            "为你推荐"
+                        }
 
                     showContentEmpty(mAdapter.data.isNullOrEmpty())
 
@@ -229,30 +192,22 @@ class SpeechTackContentFragment : BaseListFragment() {
     /**
      * 下拉刷新时处理数据
      */
+    @SuppressLint("SetTextI18n")
     private fun refreshData() {
         TbsApi.boss().obtainFollowBossList(-1L, false)
             .onErrorReturn { mutableListOf() }
             .flatMap {
-                mBossList = if (mLabel == -1L) {
-                    BossDaoManager.getInstance(mActivity).insertList(it)
-                    it.filter {
-                        it.isLatest
-                    }.toMutableList()
-                } else {
-                    it.filter {
-                        it.labels.contains(mLabel.toString()) && it.isLatest
-                    }.toMutableList()
-                }
+                BossDaoManager.getInstance(mActivity).insertList(it)
+                mBossList = it.filter {
+                    it.labels.contains(mLabel.toString()) && it.isLatest
+                }.toMutableList()
 
                 TbsApi.boss().obtainTackArticle(mLabel, pageParam)
             }.bindPageSubscribe(loadMore = false, doNext = {
-                if (mLabel == -1L) {
-                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                    DataConfig.get().tackTotalNum = pageParam!!.total
-                    DataConfig.get().hasData = true
-                }
                 cardAdapter.setNewData(mBossList)
                 mAdapter.setNewData(it)
+
+                headerView!!.text_num.text = "共${pageParam!!.total}篇"
 
                 layout_refresh.finishRefresh(true)
 
@@ -268,11 +223,12 @@ class SpeechTackContentFragment : BaseListFragment() {
                     cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
                 }
 
-                headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
-                    "最近更新"
-                } else {
-                    "为你推荐"
-                }
+                headerView?.text_title?.text =
+                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                        "最近更新"
+                    } else {
+                        "为你推荐"
+                    }
 
                 showContentEmpty(mAdapter.data.isNullOrEmpty())
 
@@ -304,8 +260,7 @@ class SpeechTackContentFragment : BaseListFragment() {
         }
 
         when {
-            firstInit && mLabel == -1L -> initAllData()
-            firstInit && mLabel != -1L -> initOtherData()
+            firstInit -> initOtherData()
             !firstInit && !loadMore -> refreshData()
             !firstInit && loadMore -> loadMoreData()
         }
@@ -314,20 +269,17 @@ class SpeechTackContentFragment : BaseListFragment() {
     /**
      * eventBus 关注(批量关注)/取消关注时处理数据
      */
+    @SuppressLint("SetTextI18n")
     private fun eventData() {
         mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
 
         pageParam?.resetPage()
         TbsApi.boss().obtainTackArticle(mLabel, pageParam)
             .bindPageSubscribe(loadMore = false, doNext = {
-                if (mLabel == -1L) {
-                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                    DataConfig.get().tackTotalNum = pageParam!!.total
-                    DataConfig.get().hasData = true
-                }
-
                 cardAdapter.setNewData(mBossList)
                 mAdapter.setNewData(it)
+
+                headerView!!.text_num.text = "共${pageParam!!.total}篇"
             }, doDone = {
                 val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
@@ -337,11 +289,12 @@ class SpeechTackContentFragment : BaseListFragment() {
                     cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
                 }
 
-                headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
-                    "最近更新"
-                } else {
-                    "为你推荐"
-                }
+                headerView?.text_title?.text =
+                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                        "最近更新"
+                    } else {
+                        "为你推荐"
+                    }
 
                 showContentEmpty(mAdapter.data.isNullOrEmpty())
             })
@@ -350,21 +303,26 @@ class SpeechTackContentFragment : BaseListFragment() {
     /**
      * eventBus 登录(退出登录)时处理数据
      */
+    @SuppressLint("SetTextI18n")
     private fun loginData() {
         pageParam?.resetPage()
 
-        mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
+        TbsApi.boss().obtainFollowBossList(-1L, false)
+            .onErrorReturn { mutableListOf() }
+            .flatMap {
+                BossDaoManager.getInstance(mActivity).insertList(it)
 
-        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+                mBossList = it.filter {
+                    it.labels.contains(mLabel.toString()) && it.isLatest
+                }.toMutableList()
+
+                TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+            }
             .bindPageSubscribe(loadMore = false, doNext = {
-                if (mLabel == -1L) {
-                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                    DataConfig.get().tackTotalNum = pageParam!!.total
-                    DataConfig.get().hasData = true
-                }
-
                 cardAdapter.setNewData(mBossList)
                 mAdapter.setNewData(it)
+
+                headerView!!.text_num.text = "共${pageParam!!.total}篇"
             }, doDone = {
                 val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
@@ -374,11 +332,12 @@ class SpeechTackContentFragment : BaseListFragment() {
                     cardEmptyView?.text_notice?.text = "当前还没有追踪的老板"
                 }
 
-                headerView?.text_title?.text = if (mAdapter.data[0].returnType == "0") {
-                    "最近更新"
-                } else {
-                    "为你推荐"
-                }
+                headerView?.text_title?.text =
+                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                        "最近更新"
+                    } else {
+                        "为你推荐"
+                    }
 
                 showContentEmpty(mAdapter.data.isNullOrEmpty())
             })

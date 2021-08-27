@@ -10,29 +10,30 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
-import cn.wl.android.lib.core.Page
-import cn.wl.android.lib.core.PageParam
-import cn.wl.android.lib.ui.BaseListFragment
+import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import kotlinx.android.synthetic.main.fragment_home_boss_all_add.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.OptPicEntity
-import net.cd1369.tbs.android.event.FollowBossEvent
-import net.cd1369.tbs.android.ui.adapter.SearchInfoAdapter
-import net.cd1369.tbs.android.ui.adapter.SearchTabAdapter
-import net.cd1369.tbs.android.data.db.LabelDaoManager
-import net.cd1369.tbs.android.ui.dialog.*
-import net.cd1369.tbs.android.ui.home.BossHomeActivity
+import net.cd1369.tbs.android.data.model.BossSimpleModel
+import net.cd1369.tbs.android.event.BossBatchTackEvent
+import net.cd1369.tbs.android.event.BossTackEvent
+import net.cd1369.tbs.android.ui.adapter.BossAllItemAdapter
+import net.cd1369.tbs.android.ui.adapter.BossAllTabAdapter
+import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
+import net.cd1369.tbs.android.ui.dialog.FollowAskPushDialog
+import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
 import net.cd1369.tbs.android.ui.home.BossInfoActivity
+import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -45,16 +46,17 @@ import kotlin.math.max
  * @description
  * @email Cymbidium@outlook.com
  */
-class HomeBossAllAddFragment : BaseListFragment() {
+class HomeBossAllAddFragment : BaseFragment() {
 
-    private lateinit var tabAdapter: SearchTabAdapter
-    private lateinit var mAdapter: SearchInfoAdapter
+    private lateinit var tabAdapter: BossAllTabAdapter
+    private lateinit var mAdapter: BossAllItemAdapter
 
-    private var mTempBossList: List<BossInfoEntity> = mutableListOf()
+    private var mTempBossList: MutableList<BossInfoEntity> = mutableListOf()
 
     private var mOptPic: OptPicEntity? = null
-    private var version: Long = 0L
-    private var mSelectTab = ""
+    private var mSelectTab = "-1"
+
+    private var needLoading = true
 
     companion object {
         fun createFragment(): HomeBossAllAddFragment {
@@ -73,16 +75,14 @@ class HomeBossAllAddFragment : BaseListFragment() {
         layout_refresh.setHeaderHeight(60f)
 
         layout_refresh.setOnRefreshListener {
-            loadData(false)
+            needLoading = false
+            loadData()
         }
 
-        tabAdapter = object : SearchTabAdapter() {
+        tabAdapter = object : BossAllTabAdapter() {
             override fun onClick(item: String) {
                 mSelectTab = item
-
-                var filterBossList = filterBossList(mTempBossList)
-                mAdapter.setNewData(filterBossList)
-                mAdapter.loadMoreEnd(getLoadGone())
+                mAdapter.setNewData(filterBossList())
             }
         }
 
@@ -94,6 +94,26 @@ class HomeBossAllAddFragment : BaseListFragment() {
                 }
             }
 
+        val labelList = LabelDaoManager.getInstance(mActivity).findAll()
+        tabAdapter.setNewData(labelList)
+
+        mAdapter = object : BossAllItemAdapter() {
+            override fun onItemClick(item: BossInfoEntity) {
+                TestActivity.start(mActivity)
+            }
+
+            override fun onClickFollow(item: BossInfoEntity) {
+                if (item.isCollect) {
+                    FollowAskCancelDialog.showDialog(requireFragmentManager(), "askCancel")
+                        .apply {
+                            onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+                                cancelFollow(item, this)
+                            }
+                        }
+                } else followBoss(item)
+            }
+        }
+        rv_content.adapter = mAdapter
         rv_content.layoutManager =
             object : GridLayoutManager(mActivity, 3, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -151,13 +171,15 @@ class HomeBossAllAddFragment : BaseListFragment() {
                     it.traceNum = max((it.traceNum ?: 0) + idSet.size, 0)
                 }
 
-                eventBus.post(
-                    FollowBossEvent(
-                        needLoading = true,
-                        isFollow = true,
-                        labels = mutableListOf("-1")
-                    )
-                )
+                eventBus.post(BossBatchTackEvent())
+
+                val bossList: MutableList<BossSimpleModel> = mTempBossList.filter {
+                    idSet.toMutableList().contains(it.id)
+                }.toMutableList().map {
+                    it.toSimple()
+                }.toMutableList()
+
+                BossDaoManager.getInstance(mActivity).insertList(bossList)
 
                 JPushHelper.tryAddAllTag(idSet)
             }
@@ -185,27 +207,6 @@ class HomeBossAllAddFragment : BaseListFragment() {
         mAdapter.isEdit = target
     }
 
-    override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : SearchInfoAdapter() {
-            override fun onItemClick(item: BossInfoEntity) {
-                BossHomeActivity.start(mActivity, item.id)
-            }
-
-            override fun onClickFollow(item: BossInfoEntity) {
-                if (item.isCollect) {
-                    FollowAskCancelDialog.showDialog(requireFragmentManager(), "askCancel")
-                        .apply {
-                            onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
-                                cancelFollow(item, this)
-                            }
-                        }
-                } else followBoss(item)
-            }
-        }.also {
-            mAdapter = it
-        }
-    }
-
     /**
      * 取消追踪boss
      */
@@ -224,14 +225,8 @@ class HomeBossAllAddFragment : BaseListFragment() {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
 
-                eventBus.post(
-                    FollowBossEvent(
-                        id = item.id,
-                        isFollow = false,
-                        needLoading = true,
-                        labels = item.labels
-                    )
-                )
+                BossDaoManager.getInstance(mActivity).delete(item.id.toLong())
+                eventBus.post(BossTackEvent(item.id, false, item.labels))
 
                 JPushHelper.tryDelTag(item.id)
                 tryUpdateItem(item.id, false)
@@ -282,14 +277,9 @@ class HomeBossAllAddFragment : BaseListFragment() {
                 mAdapter.doFollowChange(item.id, true)
                 tryUpdateItem(item.id, true)
 
-                eventBus.post(
-                    FollowBossEvent(
-                        id = item.id,
-                        isFollow = true,
-                        needLoading = true,
-                        labels = item.labels
-                    )
-                )
+                BossDaoManager.getInstance(mActivity).insert(item.toSimple())
+                eventBus.post(BossTackEvent(item.id, true, item.labels))
+
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doLast = {
@@ -332,60 +322,43 @@ class HomeBossAllAddFragment : BaseListFragment() {
             })
     }
 
-    override fun createPageParam(): PageParam {
-        return super.createPageParam().apply {
-            this.size = Int.MAX_VALUE
-        }
-    }
+    override fun loadData() {
+        super.loadData()
 
-    override fun loadData(loadMore: Boolean) {
-//        super.loadData(loadMore)
-        val pageParam = pageParam
-        if (!loadMore) {
-            pageParam?.resetPage()
-
-            if (mTempBossList.isNullOrEmpty()) {
-                showLoading()
-            }
+        if (needLoading) {
+            showLoading()
         }
 
-        loadOptPic()
+        TbsApi.boss().obtainOptPic().flatMap {
+            mOptPic = it
 
-        val labels = LabelDaoManager.getInstance(mActivity).findAll()
-        tabAdapter.setNewData(labels)
+            TbsApi.boss().obtainAllBossList()
+        }.bindDefaultSub(doNext = {
+            loadImage(mOptPic!!.pictureLocation)
 
-        mSelectTab = "-1"
+            mTempBossList = it
 
-        TbsApi.boss().obtainAllBossList(pageParam, "-1")
-            .onErrorReturn { Page.empty() }
-            .bindPageSubscribe(loadMore = loadMore, doNext = {
-                mTempBossList = it
-
-                val filterBossList = filterBossList(it)
-                mAdapter.setNewData(filterBossList)
-            }, doDone = {
-                showContent()
-
-                layout_refresh.finishRefresh()
-            })
+            mAdapter.setNewData(filterBossList())
+            layout_refresh.finishRefresh(true)
+        }, doFail = {
+            layout_refresh.finishRefresh(false)
+        }, doLast = {
+            needLoading = true
+            showContent()
+        })
     }
 
     /**
      * 过滤数据
-     * @param list List<BossInfoEntity>
      * @return List<BossInfoEntity>
      */
-    private fun filterBossList(list: List<BossInfoEntity>): List<BossInfoEntity> {
-        if (list.isEmpty()) return list
-
-        var selectTab = mSelectTab
-
-        if (selectTab.isNullOrEmpty()) {
-            selectTab = "-1"
-        }
-
-        return list.toMutableList().filter {
-            return@filter "-1" == selectTab || it.checkLabels(selectTab)
+    private fun filterBossList(): MutableList<BossInfoEntity> {
+        return if (mSelectTab == "-1") {
+            mTempBossList
+        } else {
+            mTempBossList.filter {
+                it.labels.contains(mSelectTab)
+            }.toMutableList()
         }
     }
 
@@ -408,17 +381,8 @@ class HomeBossAllAddFragment : BaseListFragment() {
         }
     }
 
-    override fun getLoadGone(): Boolean = true
-
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: FollowBossEvent) {
-        mAdapter.doFollowChange(event.id!!, event.isFollow)
+    fun eventBus(event: BossTackEvent) {
+        mAdapter.doFollowChange(event.id, event.isFollow)
     }
-
-    override fun onLoadMoreRequested() {
-        timerDelay(100) {
-            tryCompleteStatus(false)
-        }
-    }
-
 }

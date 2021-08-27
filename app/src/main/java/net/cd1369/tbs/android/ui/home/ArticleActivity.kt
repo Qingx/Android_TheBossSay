@@ -22,7 +22,6 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.WelActivity
@@ -323,14 +322,14 @@ class ArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(
-                    FollowBossEvent(
-                        id = bossId,
-                        isFollow = false,
-                        needLoading = true,
-                        labels = mLabels
-                    )
-                )
+//                eventBus.post(
+//                    Bos(
+//                        id = bossId,
+//                        isFollow = false,
+//                        needLoading = true,
+//                        labels = mLabels
+//                    )
+//                )
 
                 isTack = false
                 text_follow.isSelected = false
@@ -381,13 +380,13 @@ class ArticleActivity : BaseActivity() {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
 
-                eventBus.post(
-                    FollowBossEvent(
-                        bossId, true,
-                        needLoading = true,
-                        labels = mLabels
-                    )
-                )
+//                eventBus.post(
+//                    FollowBossEvent(
+//                        bossId, true,
+//                        needLoading = true,
+//                        labels = mLabels
+//                    )
+//                )
 
                 isTack = true
                 text_follow.isSelected = true

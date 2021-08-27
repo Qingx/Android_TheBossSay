@@ -26,6 +26,8 @@ import net.cd1369.tbs.android.config.Const.SERVICE_URL
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
+import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.WechatLoginCodeEvent
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
@@ -157,6 +159,8 @@ class LoginPhoneWechatActivity : BaseActivity() {
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                BossDaoManager.getInstance(mActivity).deleteAll()
+                ArticleDaoManager.getInstance(mActivity).deleteAll()
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()

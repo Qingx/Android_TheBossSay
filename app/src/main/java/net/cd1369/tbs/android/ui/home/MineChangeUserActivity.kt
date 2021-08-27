@@ -17,6 +17,8 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.ArticleDaoManager
+import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
@@ -147,6 +149,10 @@ class MineChangeUserActivity : BaseActivity() {
 
             HttpConfig.reset()
             UserConfig.get().userEntity = UserEntity.empty
+
+            BossDaoManager.getInstance(mActivity).deleteAll()
+            ArticleDaoManager.getInstance(mActivity).deleteAll()
+
             Toasts.show("退出成功")
 
             eventBus.post(LoginEvent())

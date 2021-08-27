@@ -48,6 +48,8 @@ class ArticleDaoManager(val context: Context) {
     }
 
     fun insertList(list: MutableList<ArticleSimpleModel>) {
+        val last = findAll()
+        articleDao!!.deleteInTx(last)
         articleDao!!.insertOrReplaceInTx(list)
     }
 

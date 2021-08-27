@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.data.model;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
@@ -156,7 +157,8 @@ public class BossSimpleModel implements Comparable<BossSimpleModel> {
 
     public Long getSort() {
         if (this.top) {
-            return this.updateTime + (20 * 365 * 24 * 60 * 60 * 1000);
+            Long years = 20L * 365L * 24L * 60L * 60L * 1000L;
+            return (this.updateTime + years);
         } else return this.updateTime;
     }
 

@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.tex
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_time
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.*
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.V
@@ -23,8 +24,8 @@ import net.cd1369.tbs.android.util.getArticleItemTime
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class FollowInfoAdapter :
-    BaseMultiItemQuickAdapter<ArticleSimpleModel, BaseViewHolder>(mutableListOf()) {
+abstract class ArticleSearchAdapter :
+    BaseMultiItemQuickAdapter<ArticleEntity, BaseViewHolder>(mutableListOf()) {
 
     init {
         addItemType(0, R.layout.item_article_onlytext_withcontent)
@@ -32,34 +33,34 @@ abstract class FollowInfoAdapter :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun convert(helper: BaseViewHolder, item: ArticleSimpleModel) {
+    override fun convert(helper: BaseViewHolder, item: ArticleEntity) {
         when (helper.itemViewType) {
             0 -> {
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossHead.fullUrl(),
+                    item.bossVO.head.fullUrl(),
                     helper.V.image_head
                 )
-                helper.V.text_name.text = item.bossName
-                helper.V.text_info.text = item.bossRole
+                helper.V.text_name.text = item.bossVO.name
+                helper.V.text_info.text = item.bossVO.info
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.showTime)
+                helper.V.text_time.text = getArticleItemTime(item.getTime())
             }
             1 -> {
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossHead.fullUrl(),
+                    item.bossVO.head.fullUrl(),
                     helper.V.image_head
                 )
-                helper.V.text_name.text = item.bossName
-                helper.V.text_info.text = item.bossRole
+                helper.V.text_name.text = item.bossVO.name
+                helper.V.text_info.text = item.bossVO.info
                 GlideApp.displayHead(item.files!!.getOrNull(0)!!.fullUrl(), helper.V.image_res)
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.showTime)
+                helper.V.text_time.text = getArticleItemTime(item.getTime())
             }
         }
 
@@ -68,5 +69,5 @@ abstract class FollowInfoAdapter :
         }
     }
 
-    abstract fun onClick(item: ArticleSimpleModel)
+    abstract fun onClick(item: ArticleEntity)
 }

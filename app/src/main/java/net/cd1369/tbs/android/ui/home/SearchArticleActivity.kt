@@ -17,14 +17,14 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.event.HotSearchEvent
-import net.cd1369.tbs.android.ui.adapter.FollowInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.ArticleSearchAdapter
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class SearchArticleActivity : BaseListActivity() {
-    private lateinit var mAdapter: FollowInfoAdapter
+    private lateinit var mAdapter: ArticleSearchAdapter
     private var needLoading = true
     private var searchText = ""
 
@@ -43,18 +43,17 @@ class SearchArticleActivity : BaseListActivity() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return mAdapter
-//        return object : FollowInfoAdapter() {
-//            override fun onClick(item: ArticleEntity) {
-//                if (!item.isRead) {
-//                    Tools.addTodayRead()
-//                }
-//
-//                ArticleActivity.start(mActivity, item.id)
-//            }
-//        }.also {
-//            mAdapter = it
-//        }
+        return object : ArticleSearchAdapter() {
+            override fun onClick(item: ArticleEntity) {
+                if (!item.isRead) {
+                    Tools.addTodayRead()
+                }
+
+                ArticleActivity.start(mActivity, item.id)
+            }
+        }.also {
+            mAdapter = it
+        }
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
@@ -116,22 +115,22 @@ class SearchArticleActivity : BaseListActivity() {
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
-//        if (!loadMore) {
-//            pageParam?.resetPage()
-//            if (needLoading) showLoading()
-//        }
-//
-//        TbsApi.boss().obtainSearchArticle(pageParam, searchText)
-//            .onErrorReturn {
-//                Page.empty()
-//            }.bindPageSubscribe(loadMore = loadMore, doNext = {
-//                if (loadMore) mAdapter.addData(it)
-//                else mAdapter.setNewData(it)
-//            }, doDone = {
-//                showContent()
-//                layout_refresh.finishRefresh()
-//                layout_refresh.finishLoadMore()
-//            })
+        if (!loadMore) {
+            pageParam?.resetPage()
+            if (needLoading) showLoading()
+        }
+
+        TbsApi.boss().obtainSearchArticle(pageParam, searchText)
+            .onErrorReturn {
+                Page.empty()
+            }.bindPageSubscribe(loadMore = loadMore, doNext = {
+                if (loadMore) mAdapter.addData(it)
+                else mAdapter.setNewData(it)
+            }, doDone = {
+                showContent()
+                layout_refresh.finishRefresh()
+                layout_refresh.finishLoadMore()
+            })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

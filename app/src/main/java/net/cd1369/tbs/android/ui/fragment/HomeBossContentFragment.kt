@@ -21,13 +21,11 @@ import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.event.BossBatchTackEvent
 import net.cd1369.tbs.android.event.BossTackEvent
-import net.cd1369.tbs.android.event.FollowBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
-import net.cd1369.tbs.android.ui.adapter.BossInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.BossTackAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
-import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.home.SearchBossActivity
 import net.cd1369.tbs.android.ui.test.TestActivity
@@ -49,7 +47,7 @@ class HomeBossContentFragment : BaseFragment() {
     private lateinit var mLabels: MutableList<LabelModel>
     private lateinit var mBossList: MutableList<BossSimpleModel>
 
-    private lateinit var mAdapter: BossInfoAdapter
+    private lateinit var mAdapter: BossTackAdapter
     private var currentLabel = "-1"
 
     private var footerView: View? = null
@@ -109,7 +107,7 @@ class HomeBossContentFragment : BaseFragment() {
         rv_tab.adapter = tabAdapter
         tabAdapter.setNewData(mLabels)
 
-        mAdapter = object : BossInfoAdapter() {
+        mAdapter = object : BossTackAdapter() {
             override fun onDoTop(item: BossSimpleModel, v: View, index: Int) {
                 tryChangeTopic(item, v, index)
             }
@@ -235,6 +233,7 @@ class HomeBossContentFragment : BaseFragment() {
             mAdapter.setNewData(mBossList)
         } else {
             TbsApi.boss().obtainFollowBossList(-1, false)
+                .onErrorReturn { mutableListOf() }
                 .bindDefaultSub(
                     doNext = {
                         BossDaoManager.getInstance(mActivity).insertList(it)
@@ -264,23 +263,41 @@ class HomeBossContentFragment : BaseFragment() {
         super.onDestroyView()
     }
 
+    private fun loginData() {
+        TbsApi.boss().obtainFollowBossList(-1L, false)
+            .onErrorReturn { mutableListOf() }
+            .bindDefaultSub {
+                mBossList = it
+                val list = if (currentLabel == "-1") {
+                    BossDaoManager.getInstance(mActivity).insertList(it)
+                    it.filter {
+                        it.isLatest
+                    }.toMutableList()
+                } else {
+                    it.filter {
+                        it.labels.contains(currentLabel) && it.isLatest
+                    }.toMutableList()
+                }
+                mAdapter.setNewData(list)
+            }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: BossTackEvent) {
         if (!event.fromBossContent) {
-            mBossList = BossDaoManager.getInstance(mActivity).findByLabel(mLabels.toString())
+            mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
             mAdapter.setNewData(mBossList)
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: BossBatchTackEvent) {
-        mBossList = BossDaoManager.getInstance(mActivity).findByLabel(mLabels.toString())
+        mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
         mAdapter.setNewData(mBossList)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
-        mBossList = BossDaoManager.getInstance(mActivity).findByLabel(mLabels.toString())
-        mAdapter.setNewData(mBossList)
+        loginData()
     }
 }

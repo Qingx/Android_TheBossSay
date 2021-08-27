@@ -71,7 +71,11 @@ class SpeechTackFragment : BaseFragment() {
                 }
 
                 override fun createFragment(position: Int): Fragment {
-                    return SpeechTackContentFragment.createFragment(mLabels[position].id)
+                    return if (position == 0) {
+                        SpeechTackAllFragment.createFragment()
+                    } else {
+                        SpeechTackOtherFragment.createFragment(mLabels[position].id)
+                    }
                 }
             }
 
@@ -90,7 +94,7 @@ class SpeechTackFragment : BaseFragment() {
                     }
 
                     override fun createFragment(position: Int): Fragment {
-                        return SpeechTackContentFragment.createFragment(mLabels[position].id)
+                        return SpeechTackOtherFragment.createFragment(mLabels[position].id)
                     }
                 }
 

@@ -14,7 +14,7 @@ import net.cd1369.tbs.android.util.doClick
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class SearchTabAdapter :
+abstract class BossAllTabAdapter :
     BaseQuickAdapter<LabelModel, BaseViewHolder>(R.layout.item_search_tab) {
     private var mSelectId = "-1"
     override fun convert(helper: BaseViewHolder, item: LabelModel) {
