@@ -25,6 +25,7 @@ import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.ArticleTackAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.Tools
@@ -96,7 +97,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
 
         cardAdapter = object : FollowCardAdapter() {
             override fun onClick(item: BossSimpleModel) {
-                TestActivity.start(mActivity)
+                BossHomeActivity.start(mActivity, item.id.toString())
             }
         }
 

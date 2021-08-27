@@ -89,6 +89,15 @@ public interface BossService {
     Observable<WLPage<ArticleEntity>> obtainAllArticle(@Body RequestBody body);
 
     /**
+     * Boss文章
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/article/list/type")
+    Observable<WLList<ArticleSimpleModel>> obtainBossArticle(@Body RequestBody body);
+
+    /**
      * 搜索全部boss列表
      *
      * @return

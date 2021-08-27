@@ -26,6 +26,7 @@ import net.cd1369.tbs.android.ui.adapter.BossTackAdapter
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
+import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.home.SearchBossActivity
 import net.cd1369.tbs.android.ui.test.TestActivity
@@ -122,7 +123,7 @@ class HomeBossContentFragment : BaseFragment() {
             }
 
             override fun onClick(item: BossSimpleModel) {
-                TestActivity.start(mActivity)
+                BossHomeActivity.start(mActivity, item.id.toString())
             }
         }
         mAdapter.registerAdapterDataObserver(mCall)

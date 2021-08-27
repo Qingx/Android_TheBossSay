@@ -4,19 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import cn.wl.android.lib.core.Page
-import cn.wl.android.lib.ui.BaseListActivity
+import android.view.LayoutInflater
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
-import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.activity_boss_home.*
+import kotlinx.android.synthetic.main.header_boss_home.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
+import net.cd1369.tbs.android.data.model.ArticleSimpleModel
+import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.event.SetBossTimeEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.dialog.*
@@ -24,12 +29,14 @@ import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
 import kotlin.math.max
 
-class BossHomeActivity : BaseListActivity() {
+class BossHomeActivity : BaseActivity() {
 
-    private var showDialog: FollowCancelDialog? = null
     private lateinit var mAdapter: BossArticleAdapter
-    private var needLoading = true
-    private lateinit var entity: BossInfoEntity
+    private lateinit var bossEntity: BossInfoEntity
+    private lateinit var bossId: String
+    private var headerView: View? = null
+    private var map: LinkedHashMap<String, MutableList<ArticleSimpleModel>> = LinkedHashMap()
+    private var currentType = "1"
 
     companion object {
         fun start(context: Context?, bossId: String) {
@@ -45,8 +52,8 @@ class BossHomeActivity : BaseListActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
 
-        DataConfig.get().setBossTime(entity.id)
-        eventBus.post(SetBossTimeEvent(entity.id))
+        DataConfig.get().setBossTime(bossEntity.id)
+        eventBus.post(SetBossTimeEvent(bossEntity.id))
     }
 
     override fun getLayoutResource(): Any {
@@ -56,62 +63,90 @@ class BossHomeActivity : BaseListActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
+        bossId = intent.getStringExtra("bossId") as String
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-//        setUserInfo()
-//
-//        layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
-//        layout_refresh.setHeaderHeight(60f)
-//
-//        layout_refresh.setOnRefreshListener {
-//            needLoading = false
-//            loadData(false)
-//        }
-//
-//        rv_content.adapter = mAdapter
-//        rv_content.layoutManager =
-//            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
-//                override fun canScrollHorizontally(): Boolean {
-//                    return false
-//                }
-//            }
-//
-//        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
-//        mAdapter.emptyView = emptyView
-//
-//        text_follow doClick {
-//            if (entity.isCollect) {
-//                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
-//                    .apply {
-//                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
-//                            cancelFollow(this)
-//                        }
-//                    }
-//            } else followBoss()
-//        }
-//
-//        image_back doClick {
-//            onBackPressed()
-//        }
-//
-//        text_content doClick {
-//            BossInfoActivity.start(mActivity, entity)
-//        }
-//
-//        image_share doClick {
-//            onShare()
-//        }
-//
-//        image_setting doClick {
-//            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
-//                .apply {
-//                    onConfirm = Runnable {
-//                        JPushHelper.tryAddTag(entity.id)
-//                        dialog?.dismiss()
-//                    }
-//                }
-//        }
+        collapse_view.contentScrim = resources.getDrawable(R.drawable.ic_boss_top_bg)
+
+        tab_1.isSelected = true
+
+        mAdapter = object : BossArticleAdapter() {
+            override fun onClick(item: ArticleSimpleModel) {
+                ArticleActivity.start(mActivity, item.id.toString(), true)
+            }
+        }
+
+        rv_content.adapter = mAdapter
+        rv_content.layoutManager =
+            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+            }
+
+        headerView = LayoutInflater.from(mActivity).inflate(R.layout.header_boss_home, null)
+        mAdapter.addHeaderView(headerView)
+
+        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_article, null)
+        mAdapter.emptyView = emptyView
+
+        text_follow doClick {
+            if (bossEntity.isCollect) {
+                FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
+                    .apply {
+                        onConfirmClick = FollowAskCancelDialog.OnConfirmClick {
+                            cancelFollow(this)
+                        }
+                    }
+            } else followBoss()
+        }
+
+        image_back doClick {
+            onBackPressed()
+        }
+
+        text_content doClick {
+            BossInfoActivity.start(mActivity, bossEntity)
+        }
+
+        image_share doClick {
+            onShare()
+        }
+
+        image_setting doClick {
+            BossSettingDialog.showDialog(supportFragmentManager, "bossSetting")
+                .apply {
+                    onConfirm = Runnable {
+                        JPushHelper.tryAddTag(bossEntity.id)
+                        dialog?.dismiss()
+                    }
+                }
+        }
+
+        tab_1 doClick {
+            currentType = "1"
+            tab_1.isSelected = true
+            tab_2.isSelected = false
+            tab_3.isSelected = false
+            clickTab()
+        }
+
+        tab_2 doClick {
+            currentType = "2"
+            tab_1.isSelected = false
+            tab_2.isSelected = true
+            tab_3.isSelected = false
+            clickTab()
+        }
+
+        tab_3 doClick {
+            currentType = "3"
+            tab_1.isSelected = false
+            tab_2.isSelected = false
+            tab_3.isSelected = true
+            clickTab()
+        }
     }
 
     private fun onShare() {
@@ -135,29 +170,25 @@ class BossHomeActivity : BaseListActivity() {
     private fun cancelFollow(dialog: FollowAskCancelDialog?) {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.boss().obtainCancelFollowBoss(entity.id)
+        TbsApi.boss().obtainCancelFollowBoss(bossEntity.id)
             .bindDefaultSub(doNext = {
                 dialog?.dismiss()
 
                 FollowChangedDialog.showDialog(supportFragmentManager, true, "followChange")
 
+                bossEntity.isCollect = false
+
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-//                eventBus.post(
-//                    FollowBossEvent(
-//                        id = entity.id,
-//                        isFollow = false,
-//                        needLoading = true,
-//                        labels = entity.labels
-//                    )
-//                )
-                entity.isCollect = false
 
                 text_follow.isSelected = false
-                text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+                text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
 
-                JPushHelper.tryDelTag(entity.id)
+                BossDaoManager.getInstance(mActivity).delete(bossId.toLong())
+                eventBus.post(BossTackEvent(bossId, false, bossEntity.labels))
+
+                JPushHelper.tryDelTag(bossEntity.id)
 
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
@@ -172,12 +203,12 @@ class BossHomeActivity : BaseListActivity() {
     private fun followBoss() {
         showLoadingAlert("尝试追踪...")
 
-        TbsApi.boss().obtainFollowBoss(entity.id)
+        TbsApi.boss().obtainFollowBoss(bossEntity.id)
             .bindDefaultSub(doNext = {
                 FollowAskPushDialog.showDialog(supportFragmentManager, "askPush")
                     .apply {
                         onConfirmClick = FollowAskPushDialog.OnConfirmClick {
-                            JPushHelper.tryAddTag(entity.id)
+                            JPushHelper.tryAddTag(bossEntity.id)
 
                             this.dismiss()
 
@@ -198,21 +229,17 @@ class BossHomeActivity : BaseListActivity() {
                         }
                     }
 
+                bossEntity.isCollect = true
+
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
 
-//                eventBus.post(
-//                    FollowBossEvent(
-//                        entity.id, true,
-//                        needLoading = true,
-//                        labels = entity.labels
-//                    )
-//                )
+                BossDaoManager.getInstance(mActivity).insert(bossEntity.toSimple())
+                eventBus.post(BossTackEvent(bossId, true, bossEntity.labels))
 
-                entity.isCollect = true
                 text_follow.isSelected = true
-                text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
+                text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {
@@ -220,60 +247,50 @@ class BossHomeActivity : BaseListActivity() {
             })
     }
 
-    override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : BossArticleAdapter() {
-            override fun onClick(item: ArticleEntity) {
-                if (!item.isRead) {
-                    Tools.addTodayRead()
+    private fun clickTab() {
+        if (!map[currentType].isNullOrEmpty()) {
+            mAdapter.setNewData(map[currentType])
+        } else {
+            TbsApi.boss().obtainBossArticle(bossId, currentType)
+                .onErrorReturn { mutableListOf() }
+                .bindDefaultSub {
+                    map[currentType] = it
+
+                    mAdapter.setNewData(it)
                 }
-
-                ArticleActivity.start(mActivity, item.id, true)
-                item.isRead = true
-
-                val index = data.indexOfFirst { it.id == item.id }
-
-                if (index != -1) {
-                    notifyItemChanged(index)
-                }
-            }
-        }.also {
-            mAdapter = it
         }
     }
 
-    override fun loadData(loadMore: Boolean) {
-        super.loadData(loadMore)
+    override fun loadData() {
+        super.loadData()
+        showLoading()
 
-        if (!loadMore) {
-            pageParam?.resetPage()
+        TbsApi.boss().obtainBossDetail(bossId)
+            .flatMap {
+                bossEntity = it
 
-            if (needLoading) showLoading()
-        }
+                TbsApi.boss().obtainBossArticle(bossId, "1")
+            }.bindDefaultSub {
+                map["1"] = it
 
-        TbsApi.boss().obtainBossArticleList(pageParam, entity.id)
-            .onErrorReturn {
-                Page.empty()
-            }.bindPageSubscribe(loadMore = loadMore, doNext = {
-                if (loadMore) mAdapter.addData(it)
-                else mAdapter.setNewData(it)
-            }, doDone = {
+                setBossInfo()
+
+                mAdapter.setNewData(it)
                 showContent()
-
-                layout_refresh.finishRefresh()
-                layout_refresh.finishLoadMore()
-            })
+            }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setUserInfo() {
-        GlideApp.displayHead(entity.head.fullUrl(), image_head)
-        text_name.text = entity.name
-        text_info.text = entity.role
+    private fun setBossInfo() {
+        GlideApp.displayHead(bossEntity.head.fullUrl(), image_head)
+        text_name.text = bossEntity.name
+        text_info.text = bossEntity.role
         text_label.text =
-            "${(entity.readCount ?: 0).formatCount()}阅读·${entity.totalCount}篇言论·${(entity.collect ?: 0).formatCount()}关注"
-        text_follow.text = if (entity.isCollect) "已追踪" else "追踪"
-        text_follow.isSelected = entity.isCollect
-        text_content.text = "个人简介：${entity.info}"
-        text_num.text = "共${entity.totalCount}篇"
+            "${(bossEntity.readCount ?: 0).formatCount()}阅读·${bossEntity.totalCount}篇言论·${(bossEntity.collect ?: 0).formatCount()}关注"
+        text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
+        text_follow.isSelected = bossEntity.isCollect
+        text_content.text = "个人简介：${bossEntity.info}"
+
+        headerView!!.text_num.text = "共${bossEntity.totalCount}篇"
     }
 }

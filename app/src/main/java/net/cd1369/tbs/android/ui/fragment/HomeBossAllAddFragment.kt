@@ -32,6 +32,7 @@ import net.cd1369.tbs.android.ui.adapter.BossAllTabAdapter
 import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowAskPushDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
+import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.BossInfoActivity
 import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.JPushHelper
@@ -99,7 +100,7 @@ class HomeBossAllAddFragment : BaseFragment() {
 
         mAdapter = object : BossAllItemAdapter() {
             override fun onItemClick(item: BossInfoEntity) {
-                TestActivity.start(mActivity)
+                BossHomeActivity.start(mActivity, item.id)
             }
 
             override fun onClickFollow(item: BossInfoEntity) {

@@ -133,7 +133,7 @@ class ArticleActivity : BaseActivity() {
             if (fromBoss) {
                 onBackPressed()
             } else {
-                TestActivity.start(mActivity)
+                BossHomeActivity.start(mActivity, bossId!!)
             }
         }
 

@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_article_singleimg_withcontent_boss.vi
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent_boss.view.text_title
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent_boss.view.text_update
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.ArticleEntity
+import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
 
@@ -26,7 +26,7 @@ import net.cd1369.tbs.android.util.Tools.formatCount
  * @email Cymbidium@outlook.com
  */
 abstract class BossArticleAdapter :
-    BaseMultiItemQuickAdapter<ArticleEntity, BaseViewHolder>(mutableListOf()) {
+    BaseMultiItemQuickAdapter<ArticleSimpleModel, BaseViewHolder>(mutableListOf()) {
 
     init {
         addItemType(0, R.layout.item_article_onlytext_withcontent_boss)
@@ -34,42 +34,42 @@ abstract class BossArticleAdapter :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun convert(helper: BaseViewHolder, item: ArticleEntity) {
+    override fun convert(helper: BaseViewHolder, item: ArticleSimpleModel) {
         when (helper.itemViewType) {
             0 -> {
                 helper.V.layout_content.isSelected = item.isRead
                 helper.V.text_update.isVisible =
-                    !item.isRead && Tools.showRedDots(item.bossId, item.getTime())
+                    !item.isRead && Tools.showRedDots(item.bossId, item.showTime)
 
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossVO.head.fullUrl(),
+                    item.bossHead.fullUrl(),
                     helper.V.image_head
                 )
-                helper.V.text_name.text = item.bossVO.name
-                helper.V.text_info.text = item.bossVO.role
+                helper.V.text_name.text = item.bossName
+                helper.V.text_info.text = item.bossRole
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.getTime())
+                helper.V.text_time.text = getArticleItemTime(item.showTime)
             }
             1 -> {
                 helper.V.layout_content.isSelected = item.isRead
                 helper.V.text_update.isVisible =
-                    !item.isRead && Tools.showRedDots(item.bossId, item.getTime())
+                    !item.isRead && Tools.showRedDots(item.bossId, item.showTime)
 
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(
-                    item.bossVO.head.fullUrl(),
+                    item.bossHead.fullUrl(),
                     helper.V.image_head
                 )
-                helper.V.text_name.text = item.bossVO.name
-                helper.V.text_info.text = item.bossVO.role
+                helper.V.text_name.text = item.bossName
+                helper.V.text_info.text = item.bossRole
                 GlideApp.displayHead(item.files!!.getOrNull(0)!!.fullUrl(), helper.V.image_res)
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.getTime())
+                helper.V.text_time.text = getArticleItemTime(item.showTime)
             }
         }
 
@@ -78,5 +78,5 @@ abstract class BossArticleAdapter :
         }
     }
 
-    abstract fun onClick(item: ArticleEntity)
+    abstract fun onClick(item: ArticleSimpleModel)
 }

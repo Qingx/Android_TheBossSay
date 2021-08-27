@@ -210,16 +210,16 @@ public class BossRepository extends BaseRepository<BossService> {
     /**
      * 获取boss的文章列表
      *
-     * @param pageParam
      * @param bossId
      * @return
      */
-    public Observable<Page<ArticleEntity>> obtainBossArticleList(PageParam pageParam, String bossId) {
-        RequestBody body = bodyFromCreator(pageParam, jo -> {
+    public Observable<List<ArticleSimpleModel>> obtainBossArticle(String bossId, String type) {
+        RequestBody body = bodyFromCreator(jo -> {
             jo.put("bossId", bossId);
+            jo.put("filterType", type);
         });
 
-        return getService().obtainAllArticle(body)
+        return getService().obtainBossArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }
