@@ -10,7 +10,6 @@ import net.cd1369.tbs.android.config.PageItem
 class GlobalScrollEvent {
     companion object {
         var talkPage = PageItem.Tack.code
-        var lastPage = PageItem.Tack.code
         var homePage = PageItem.Talk.code
         var tackLabel = "-1"
         var squareLabel = "-1"
