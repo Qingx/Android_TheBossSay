@@ -10,6 +10,7 @@ import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import com.youth.banner.indicator.CircleIndicator
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.header_boss_content.view.*
 import net.cd1369.tbs.android.R
@@ -17,12 +18,14 @@ import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BannerEntity
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
-import net.cd1369.tbs.android.ui.adapter.BannerViewAdapter
-import net.cd1369.tbs.android.ui.adapter.SquareInfoAdapter
+import net.cd1369.tbs.android.ui.adapter.ArticleSquareAdapter
+import net.cd1369.tbs.android.ui.adapter.BannerTitleAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.Tools
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -35,7 +38,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
     private var mLabel: Long = -1L
     private var needLoading = true
 
-    private lateinit var mAdapter: SquareInfoAdapter
+    private lateinit var mAdapterArticle: ArticleSquareAdapter
 
     private var mBanners = mutableListOf<BannerEntity>()
     private lateinit var headerView: View
@@ -57,16 +60,16 @@ class SpeechSquareContentFragment : BaseListFragment() {
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
-        return object : SquareInfoAdapter() {
+        return object : ArticleSquareAdapter() {
             override fun onClick(item: ArticleEntity) {
                 if (!item.isRead) {
                     Tools.addTodayRead()
+                    eventBus.post(ArticleReadEvent())
                 }
-
                 ArticleActivity.start(mActivity, item.id)
             }
         }.also {
-            mAdapter = it
+            mAdapterArticle = it
         }
     }
 
@@ -85,7 +88,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
             loadData(false)
         }
 
-        rv_content.adapter = mAdapter
+        rv_content.adapter = mAdapterArticle
         rv_content.layoutManager =
             object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -96,11 +99,12 @@ class SpeechSquareContentFragment : BaseListFragment() {
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.header_boss_content, null)
         headerView.layout_banner.addBannerLifecycleObserver(this)
         headerView.layout_banner.setLoopTime(4000)
+        headerView.layout_banner.indicator = CircleIndicator(mActivity)
 
-        mAdapter.addHeaderView(headerView)
+        mAdapterArticle.addHeaderView(headerView)
 
         val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_follow_article, null)
-        mAdapter.emptyView = emptyView
+        mAdapterArticle.emptyView = emptyView
     }
 
     override fun loadData(loadMore: Boolean) {
@@ -124,11 +128,11 @@ class SpeechSquareContentFragment : BaseListFragment() {
                 doNext = {
                     headerView.layout_banner.isVisible = !mBanners.isNullOrEmpty()
                     if (!mBanners.isNullOrEmpty()) {
-                        headerView.layout_banner.adapter = BannerViewAdapter(mActivity, mBanners)
+                        headerView.layout_banner.adapter = BannerTitleAdapter(mActivity, mBanners)
                         headerView.layout_banner.start()
                     }
 
-                    mAdapter.setNewData(it)
+                    mAdapterArticle.setNewData(it)
                 }, doDone = {
                     needLoading = true
                     showContent()
@@ -140,7 +144,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
                 .bindPageSubscribe(
                     loadMore = true,
                     doNext = {
-                        mAdapter.addData(it)
+                        mAdapterArticle.addData(it)
                     },
                     doDone = {
                         layout_refresh.finishLoadMore()

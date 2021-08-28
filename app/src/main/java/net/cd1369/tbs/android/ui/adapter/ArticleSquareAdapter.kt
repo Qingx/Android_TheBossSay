@@ -27,7 +27,7 @@ import net.cd1369.tbs.android.util.fullUrl
  * @description
  * @email Cymbidium@outlook.com
  */
-abstract class SquareInfoAdapter :
+abstract class ArticleSquareAdapter :
     BaseMultiItemQuickAdapter<ArticleEntity, BaseViewHolder>(mutableListOf()) {
     init {
         addItemType(0, R.layout.item_article_onlytext_nocontent)

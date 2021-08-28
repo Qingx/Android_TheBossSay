@@ -48,7 +48,8 @@
                 android:src="@drawable/ic_talk" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/text_talk"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
@@ -80,7 +81,8 @@
                 android:src="@drawable/ic_boss" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/text_boss"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"

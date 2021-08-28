@@ -196,23 +196,14 @@ class HomeBossContentFragment : BaseFragment() {
                     UserConfig.get().updateUser {
                         it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                     }
-
                     BossDaoManager.getInstance(mActivity).delete(item.id)
-
-                    eventBus.post(
-                        BossTackEvent(
-                            id = item.id.toString(),
-                            isFollow = false,
-                            labels = item.labels,
-                            fromBossContent = true
-                        )
-                    )
-                    val index = mAdapter.data.indexOfFirst {
-                        it.id == item.id
-                    }
+                    eventBus.post(BossTackEvent(item.id.toString(), false, item.labels, true))
 
                     JPushHelper.tryDelTag(item.id.toString())
 
+                    val index = mAdapter.data.indexOfFirst {
+                        it.id == item.id
+                    }
                     if (index != -1) {
                         mAdapter.remove(index)
                     }

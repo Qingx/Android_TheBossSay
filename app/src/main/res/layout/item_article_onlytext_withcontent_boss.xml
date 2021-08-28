@@ -85,6 +85,7 @@
             android:textColor="@color/colorTextGray"
             android:textSize="14dp"
             app:layout_constraintBaseline_toBaselineOf="@id/text_name"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/text_name"
             tools:text="灵魂莲华" />
 

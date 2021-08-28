@@ -115,7 +115,6 @@ class HomeBossAllSearchFragment : BaseFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-
                 BossDaoManager.getInstance(mActivity).delete(item.id.toLong())
                 eventBus.post(BossTackEvent(item.id, false, item.labels))
 
@@ -164,7 +163,6 @@ class HomeBossAllSearchFragment : BaseFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-
                 BossDaoManager.getInstance(mActivity).insert(item.toSimple())
                 eventBus.post(BossTackEvent(item.id, true, item.labels))
 

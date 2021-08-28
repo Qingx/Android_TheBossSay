@@ -10,6 +10,7 @@ import com.google.gson.JsonParser
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.event.JpushArticleEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
@@ -42,7 +43,7 @@ class PushReceiver : JPushMessageReceiver() {
                 val articleId = jsonObject["articleId"].asString
 
                 Tools.addTodayRead()
-
+                EventBus.getDefault().post(ArticleReadEvent())
                 ArticleActivity.start(getContext(), articleId)
             }
         }

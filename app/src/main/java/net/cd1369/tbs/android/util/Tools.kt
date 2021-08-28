@@ -51,7 +51,9 @@ import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.LabelModel
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -717,6 +719,7 @@ fun showSneaker(title: CharSequence, content: CharSequence, articleId: String) {
     view.text_content.text = content
 
     view.layout_card doClick {
+        EventBus.getDefault().post(ArticleReadEvent())
         ArticleActivity.start(getContext(), articleId)
     }
 

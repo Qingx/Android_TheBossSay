@@ -21,11 +21,12 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.event.ArticleCollectEvent
+import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.WelActivity
-import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.*
 import kotlin.math.max
 
@@ -223,9 +224,9 @@ class ArticleActivity : BaseActivity() {
                 this@ArticleActivity.text_collect.text = "收藏"
 
                 UserConfig.get().updateUser {
-                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                    it.collectNum = max((it.collectNum ?: 0) - 1, 0)
                 }
-                eventBus.post(RefreshUserEvent())
+                eventBus.post(ArticleCollectEvent())
 
                 Toasts.show("取消成功")
             }, doFail = {
@@ -270,7 +271,7 @@ class ArticleActivity : BaseActivity() {
                                                         it.collectNum =
                                                             max((it.collectNum ?: 0) + 1, 0)
                                                     }
-                                                    eventBus.post(RefreshUserEvent())
+                                                    eventBus.post(ArticleCollectEvent())
 
                                                     Toasts.show("收藏成功")
                                                     this@create.dismiss()
@@ -293,6 +294,12 @@ class ArticleActivity : BaseActivity() {
                                     this@ArticleActivity.text_collect.isSelected =
                                         true
                                     this@ArticleActivity.text_collect.text = "已收藏"
+
+                                    UserConfig.get().updateUser {
+                                        it.collectNum =
+                                            max((it.collectNum ?: 0) + 1, 0)
+                                    }
+                                    eventBus.post(ArticleCollectEvent())
 
                                     Toasts.show("收藏成功")
 
@@ -319,24 +326,17 @@ class ArticleActivity : BaseActivity() {
 
                 FollowChangedDialog.showDialog(supportFragmentManager, true, "followChange")
 
-                UserConfig.get().updateUser {
-                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
-                }
-//                eventBus.post(
-//                    Bos(
-//                        id = bossId,
-//                        isFollow = false,
-//                        needLoading = true,
-//                        labels = mLabels
-//                    )
-//                )
-
                 isTack = false
                 text_follow.isSelected = false
                 text_follow.text = "追踪"
 
-                JPushHelper.tryDelTag(bossId!!)
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                }
+                eventBus.post(BossTackEvent(bossId!!, false, bossEntity!!.labels))
+                BossDaoManager.getInstance(mActivity).delete(bossId!!.toLong())
 
+                JPushHelper.tryDelTag(bossId!!)
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doDone = {
@@ -375,22 +375,16 @@ class ArticleActivity : BaseActivity() {
                             )
                         }
                     }
+                isTack = true
+                text_follow.isSelected = true
+                text_follow.text = "已追踪"
 
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
+                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
+                BossDaoManager.getInstance(mActivity).insert(bossEntity!!.toSimple())
 
-//                eventBus.post(
-//                    FollowBossEvent(
-//                        bossId, true,
-//                        needLoading = true,
-//                        labels = mLabels
-//                    )
-//                )
-
-                isTack = true
-                text_follow.isSelected = true
-                text_follow.text = "已追踪"
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {
@@ -404,10 +398,7 @@ class ArticleActivity : BaseActivity() {
      */
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
-            .bindDefaultSub(doNext = {
-                eventBus.post(RefreshUserEvent())
-            }, doFail = {
-
-            })
+            .bindDefaultSub {
+            }
     }
 }

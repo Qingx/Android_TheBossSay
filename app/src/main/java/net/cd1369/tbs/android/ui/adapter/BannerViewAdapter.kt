@@ -17,6 +17,7 @@ import net.cd1369.tbs.android.util.doClick
  * @description
  * @email Cymbidium@outlook.com
  */
+@Deprecated("新增BannerTitleAdapter")
 class BannerViewAdapter(val context: Context, list: List<BannerEntity>) :
     BannerAdapter<BannerEntity?, BannerViewAdapter.BannerViewHolder?>(list) {
 

@@ -22,9 +22,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.ArticleDaoManager
 import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.data.model.LabelModel
-import net.cd1369.tbs.android.event.JumpBossEvent
-import net.cd1369.tbs.android.event.LoginEvent
-import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
@@ -68,8 +66,8 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
                     MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
-                    MineItem.Score -> testAdd()
-                    MineItem.Clear -> testGet()
+//                    MineItem.Score -> testAdd()
+//                    MineItem.Clear -> testGet()
                 }
             }
         }
@@ -95,23 +93,6 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         }
 
         setUserInfo()
-    }
-
-    private fun testAdd() {
-        val label = LabelModel(-1, "2313313")
-        LabelDaoManager.getInstance(mActivity).insert(label)
-//        val boss0 = BossSimpleModel(-1, "A", "A", "A", true, 1, listOf("1", "2"), listOf("2", "1"))
-//        val boss1 = BossSimpleModel(-2, "A", "A", "A", true, 1, listOf("1", "2"), listOf("2", "1"))
-//        val boss2 = BossSimpleModel(-11, "A", "A", "A", true, 1, listOf("1", "2"), listOf("2", "1"))
-//        val list = listOf(boss0, boss1, boss2)
-//        BossDaoManager.getInstance(mActivity).insertList(list)
-    }
-
-    private fun testGet() {
-        val list = ArticleDaoManager.getInstance(mActivity).findAll()
-//        BossDaoManager.getInstance(mActivity).deleteAll();
-//        val list = BossDaoManager.getInstance(mActivity).findAll()
-        list.logE(prefix = "daoManager")
     }
 
     /**
@@ -235,6 +216,30 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
         setUserInfo()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: BossTackEvent) {
+        val entity = UserConfig.get().userEntity
+        header?.text_follow_num?.text = entity.traceNum.toString()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: BossBatchTackEvent) {
+        val entity = UserConfig.get().userEntity
+        header?.text_follow_num?.text = entity.traceNum.toString()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: ArticleReadEvent) {
+        val entity = UserConfig.get().userEntity
+        header?.text_history_num?.text = entity.readNum.toString()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: ArticleCollectEvent) {
+        val entity = UserConfig.get().userEntity
+        header?.text_favorite_num?.text = entity.collectNum.toString()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -14,7 +14,8 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
-import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.event.ArticleCollectEvent
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.FavoriteAdapter
 import net.cd1369.tbs.android.ui.dialog.AddFolderDialog
 import net.cd1369.tbs.android.util.Tools
@@ -67,6 +68,7 @@ class MineCollectArticleActivity : BaseActivity() {
             override fun onContentItemClick(entity: ArticleEntity) {
                 if (!entity.isRead) {
                     Tools.addTodayRead()
+                    eventBus.post(ArticleReadEvent())
                 }
 
                 ArticleActivity.start(mActivity, entity.id)
@@ -147,9 +149,10 @@ class MineCollectArticleActivity : BaseActivity() {
                 mAdapter.remove(position)
 
                 UserConfig.get().updateUser {
-                    it.collectNum = max(totalNum ?: 0, 0)
+                    it.collectNum =
+                        max((it.collectNum ?: 0) - (mAdapter.data[position].list?.size ?: 0), 0)
                 }
-                eventBus.post(RefreshUserEvent())
+                eventBus.post(ArticleCollectEvent(true))
 
                 Toasts.show("删除成功")
             }, doFail = {
@@ -173,8 +176,7 @@ class MineCollectArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.collectNum = max((it.collectNum ?: 0) - 1, 0)
                 }
-
-                eventBus.post(RefreshUserEvent())
+                eventBus.post(ArticleCollectEvent(true))
 
                 Toasts.show("取消成功")
             }, doFail = {
@@ -185,7 +187,9 @@ class MineCollectArticleActivity : BaseActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: RefreshUserEvent) {
-        loadData()
+    fun eventBus(event: ArticleCollectEvent) {
+        if (event.fromCollect) {
+            loadData()
+        }
     }
 }

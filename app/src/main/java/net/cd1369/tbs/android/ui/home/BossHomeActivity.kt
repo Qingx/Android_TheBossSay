@@ -21,6 +21,7 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.event.SetBossTimeEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
@@ -73,6 +74,10 @@ class BossHomeActivity : BaseActivity() {
 
         mAdapter = object : BossArticleAdapter() {
             override fun onClick(item: ArticleSimpleModel) {
+                if (!item.isRead) {
+                    Tools.addTodayRead()
+                    eventBus.post(ArticleReadEvent())
+                }
                 ArticleActivity.start(mActivity, item.id.toString(), true)
             }
         }
@@ -178,13 +183,12 @@ class BossHomeActivity : BaseActivity() {
 
                 bossEntity.isCollect = false
 
-                UserConfig.get().updateUser {
-                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
-                }
-
                 text_follow.isSelected = false
                 text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
 
+                UserConfig.get().updateUser {
+                    it.traceNum = max((it.traceNum ?: 0) - 1, 0)
+                }
                 BossDaoManager.getInstance(mActivity).delete(bossId.toLong())
                 eventBus.post(BossTackEvent(bossId, false, bossEntity.labels))
 
@@ -230,16 +234,15 @@ class BossHomeActivity : BaseActivity() {
                     }
 
                 bossEntity.isCollect = true
+                text_follow.isSelected = true
+                text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
 
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-
                 BossDaoManager.getInstance(mActivity).insert(bossEntity.toSimple())
                 eventBus.post(BossTackEvent(bossId, true, bossEntity.labels))
 
-                text_follow.isSelected = true
-                text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {

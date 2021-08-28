@@ -140,11 +140,13 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
                 LabelDaoManager.getInstance(this).insertList(it)
 
                 TbsApi.boss().obtainGuideBoss()
-            }.onErrorReturn { mutableListOf() }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                GuideActivity.start(this, it)
             }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                GuideActivity.start(this, it)
+            }, {
+                HomeActivity.start(this)
+            })
     }
 
     @SuppressLint("CheckResult")

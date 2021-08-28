@@ -1,8 +1,8 @@
 package net.cd1369.tbs.android.event
 
 /**
- * Created by Xiang on 2021/8/26 21:55
+ * Created by Xiang on 2021/8/28 14:33
  * @description
  * @email Cymbidium@outlook.com
  */
-class BossBatchTackEvent
+class ArticleReadEvent

@@ -123,10 +123,10 @@ class HomeBossAllAddFragment : BaseFragment() {
             }
 
         iv_img doClick {
-            var optPic = mOptPic
+            val optPic = mOptPic
 
             if (optPic != null) {
-                BossInfoActivity.start(mActivity, optPic.entity)
+                BossHomeActivity.start(mActivity, optPic.entity.id)
             }
         }
 
@@ -172,8 +172,6 @@ class HomeBossAllAddFragment : BaseFragment() {
                     it.traceNum = max((it.traceNum ?: 0) + idSet.size, 0)
                 }
 
-                eventBus.post(BossBatchTackEvent())
-
                 val bossList: MutableList<BossSimpleModel> = mTempBossList.filter {
                     idSet.toMutableList().contains(it.id)
                 }.toMutableList().map {
@@ -181,6 +179,7 @@ class HomeBossAllAddFragment : BaseFragment() {
                 }.toMutableList()
 
                 BossDaoManager.getInstance(mActivity).insertList(bossList)
+                eventBus.post(BossBatchTackEvent())
 
                 JPushHelper.tryAddAllTag(idSet)
             }
@@ -225,7 +224,6 @@ class HomeBossAllAddFragment : BaseFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-
                 BossDaoManager.getInstance(mActivity).delete(item.id.toLong())
                 eventBus.post(BossTackEvent(item.id, false, item.labels))
 
@@ -276,31 +274,16 @@ class HomeBossAllAddFragment : BaseFragment() {
                 }
 
                 mAdapter.doFollowChange(item.id, true)
-                tryUpdateItem(item.id, true)
-
                 BossDaoManager.getInstance(mActivity).insert(item.toSimple())
                 eventBus.post(BossTackEvent(item.id, true, item.labels))
+
+                tryUpdateItem(item.id, true)
 
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doLast = {
                 hideLoadingAlert()
             })
-    }
-
-    private fun loadOptPic() {
-        val optPic = mOptPic
-
-        if (optPic != null) {
-            return
-        }
-
-        TbsApi.boss().obtainOptPic()
-            .bindDefaultSub {
-                mOptPic = it
-
-                loadImage(it.pictureLocation)
-            }
     }
 
     private fun loadImage(location: String?) {

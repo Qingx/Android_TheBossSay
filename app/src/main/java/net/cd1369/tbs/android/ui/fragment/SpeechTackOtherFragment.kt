@@ -72,6 +72,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
             override fun onClick(item: ArticleSimpleModel) {
                 if (!item.isRead) {
                     Tools.addTodayRead()
+                    eventBus.post(ArticleReadEvent())
                 }
 
                 ArticleActivity.start(mActivity, item.id.toString())
