@@ -2,7 +2,6 @@ package net.cd1369.tbs.android.ui.home
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView

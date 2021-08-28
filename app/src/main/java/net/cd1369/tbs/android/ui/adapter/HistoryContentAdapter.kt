@@ -6,7 +6,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_favorite_history_content.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.HistoryEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick

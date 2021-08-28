@@ -10,7 +10,6 @@ import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_speech_tack.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.db.LabelDaoManager
 import net.cd1369.tbs.android.data.model.LabelModel
@@ -59,7 +58,7 @@ class SpeechTackFragment : BaseFragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                GlobalScrollEvent.tackLabel=mLabels[position].id.toString()
+                GlobalScrollEvent.tackLabel = mLabels[position].id.toString()
             }
         })
 

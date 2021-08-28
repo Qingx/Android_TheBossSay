@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
-import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.core.PageParam
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener

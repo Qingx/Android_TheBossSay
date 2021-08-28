@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.transition.TransitionManager
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -23,6 +22,7 @@ import java.util.concurrent.TimeUnit
  * @description
  * @email Cymbidium@outlook.com
  */
+@Deprecated("")
 class SuccessFollowDialog : DialogFragment() {
 
     companion object {

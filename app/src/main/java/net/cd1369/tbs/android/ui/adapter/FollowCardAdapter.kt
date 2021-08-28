@@ -6,12 +6,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_follow_card.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.V
-import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.fullUrl
 
 /**
  * Created by Qing on 2021/6/28 3:50 下午

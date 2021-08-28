@@ -13,6 +13,7 @@ import net.cd1369.tbs.android.util.fullUrl
  * @description
  * @email Cymbidium@outlook.com
  */
+@Deprecated("")
 class GridImageAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_grid_image) {
     override fun convert(helper: BaseViewHolder, item: String) {
         GlideApp.displayHead(item.fullUrl(), helper.V.image_res)

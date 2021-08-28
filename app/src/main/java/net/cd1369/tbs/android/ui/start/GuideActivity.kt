@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
@@ -17,7 +16,6 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.ArticleDaoManager
 import net.cd1369.tbs.android.data.db.BossDaoManager
-import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.ui.adapter.GuideInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity

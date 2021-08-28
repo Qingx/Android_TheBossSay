@@ -2,24 +2,13 @@ package net.cd1369.tbs.android.ui.test
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.ImageView
-import androidx.annotation.DrawableRes
-import androidx.palette.graphics.Palette
 import cn.wl.android.lib.ui.BaseActivity
-import cn.wl.android.lib.utils.GlideApp
 import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.ImageUtils
-import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_test.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.util.Tools.logE
 import kotlin.math.absoluteValue
 
 class TestActivity : BaseActivity() {

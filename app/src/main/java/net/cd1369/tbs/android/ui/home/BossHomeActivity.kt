@@ -111,6 +111,10 @@ class BossHomeActivity : BaseActivity() {
             onBackPressed()
         }
 
+        headerView!!.layout_content doClick {
+            BossArticleActivity.start(mActivity, bossId)
+        }
+
         text_content doClick {
             BossInfoActivity.start(mActivity, bossEntity)
         }
@@ -294,6 +298,6 @@ class BossHomeActivity : BaseActivity() {
         text_follow.isSelected = bossEntity.isCollect
         text_content.text = "个人简介：${bossEntity.info}"
 
-        headerView!!.text_num.text = "共${bossEntity.totalCount}篇"
+        headerView!!.text_num.text = "查看全部共${bossEntity.totalCount}篇"
     }
 }

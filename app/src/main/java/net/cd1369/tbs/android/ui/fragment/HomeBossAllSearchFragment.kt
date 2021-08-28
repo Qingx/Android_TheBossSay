@@ -24,7 +24,6 @@ import net.cd1369.tbs.android.ui.dialog.FollowAskCancelDialog
 import net.cd1369.tbs.android.ui.dialog.FollowAskPushDialog
 import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
-import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

@@ -5,5 +5,4 @@ package net.cd1369.tbs.android.event
  * @description
  * @email Cymbidium@outlook.com
  */
-class SearchEvent(val content: String) {
-}
+class SearchEvent(val content: String)

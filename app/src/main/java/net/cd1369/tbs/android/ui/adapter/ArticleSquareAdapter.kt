@@ -19,7 +19,6 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
-import net.cd1369.tbs.android.util.fullUrl
 
 
 /**

@@ -1,6 +1,5 @@
 package net.cd1369.tbs.android.ui.adapter
 
-import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

@@ -13,12 +13,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.dialog_follow_cancel.*
-import kotlinx.android.synthetic.main.dialog_follow_cancel.group_1
-import kotlinx.android.synthetic.main.dialog_follow_cancel.group_2
-import kotlinx.android.synthetic.main.dialog_follow_cancel.text_cancel
-import kotlinx.android.synthetic.main.dialog_follow_cancel.text_confirm
-import kotlinx.android.synthetic.main.dialog_follow_cancel.text_time
-import kotlinx.android.synthetic.main.dialog_follow_success.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 import java.util.concurrent.TimeUnit

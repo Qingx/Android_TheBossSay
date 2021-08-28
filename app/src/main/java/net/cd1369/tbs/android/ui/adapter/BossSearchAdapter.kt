@@ -6,7 +6,10 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_boss_search_info.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.fullUrl
+import net.cd1369.tbs.android.util.getBossItemTime
 
 /**
  * Created by Qing on 2021/6/30 12:43 下午

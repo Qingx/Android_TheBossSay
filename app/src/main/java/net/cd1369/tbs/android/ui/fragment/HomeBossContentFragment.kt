@@ -28,7 +28,6 @@ import net.cd1369.tbs.android.ui.dialog.FollowChangedDialog
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.home.SearchBossActivity
-import net.cd1369.tbs.android.ui.test.TestActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.OnChangeCallback
 import net.cd1369.tbs.android.util.doClick

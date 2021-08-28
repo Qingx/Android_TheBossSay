@@ -1,15 +1,11 @@
 package net.cd1369.tbs.android.ui.start
 
-import android.app.Activity
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import cn.wl.android.lib.ui.BaseActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import java.util.concurrent.TimeUnit
 
 /**

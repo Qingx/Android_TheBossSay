@@ -14,7 +14,6 @@ import net.cd1369.tbs.android.data.service.BossService;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.wl.android.lib.config.BaseConfig;
 import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseRepository;
@@ -208,7 +207,7 @@ public class BossRepository extends BaseRepository<BossService> {
     }
 
     /**
-     * 获取boss的文章列表
+     * 获取boss的首页文章列表
      *
      * @param bossId
      * @return
@@ -220,6 +219,23 @@ public class BossRepository extends BaseRepository<BossService> {
         });
 
         return getService().obtainBossArticle(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取boss全部文章
+     *
+     * @param pageParam
+     * @param bossId
+     * @return
+     */
+    public Observable<Page<ArticleEntity>> obtainBossAllArticle(PageParam pageParam, String bossId) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            jo.put("bossId", bossId);
+        });
+
+        return getService().obtainAllArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }
@@ -301,6 +317,7 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param time
      * @return
      */
+    @Deprecated
     public Observable<List<BossInfoEntity>> obtainAllBoss(Long time) {
         return getService().obtainAllBoss(time)
                 .compose(combine())

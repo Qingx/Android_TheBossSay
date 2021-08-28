@@ -5,5 +5,4 @@ package net.cd1369.tbs.android.event
  * @description
  * @email Cymbidium@outlook.com
  */
-class WechatLoginCodeEvent(val code: String) {
-}
+class WechatLoginCodeEvent(val code: String)

@@ -25,7 +25,6 @@ import net.cd1369.tbs.android.ui.adapter.ArticleSquareAdapter
 import net.cd1369.tbs.android.ui.adapter.BannerTitleAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.Tools
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 

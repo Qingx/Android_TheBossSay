@@ -263,7 +263,7 @@
                     android:id="@+id/text_tab_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="新闻咨询"
+                    android:text="新闻资讯"
                     android:textColor="@color/colorTextDark"
                     android:textSize="18dp"
                     app:layout_constraintBottom_toBottomOf="parent"

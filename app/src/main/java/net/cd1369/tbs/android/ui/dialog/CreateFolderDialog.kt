@@ -9,11 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import cn.wl.android.lib.utils.Toasts
-import kotlinx.android.synthetic.main.dialog_change_name.*
 import kotlinx.android.synthetic.main.dialog_create_folder.*
-import kotlinx.android.synthetic.main.dialog_create_folder.edit_input
-import kotlinx.android.synthetic.main.dialog_create_folder.text_cancel
-import kotlinx.android.synthetic.main.dialog_create_folder.text_confirm
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 

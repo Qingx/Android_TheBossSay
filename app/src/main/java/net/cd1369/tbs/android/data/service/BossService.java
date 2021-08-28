@@ -3,7 +3,6 @@ package net.cd1369.tbs.android.data.service;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
-import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel;
 import net.cd1369.tbs.android.data.model.BossSimpleModel;
@@ -43,14 +42,6 @@ public interface BossService {
      */
     @GET("/api/boss/labels")
     Observable<WLList<LabelModel>> obtainBossLabels();
-
-    /**
-     * 获取boss标签列表
-     *
-     * @return
-     */
-    @GET("/api/boss/labels")
-    Observable<WLList<LabelModel>> obtainLabels();
 
     /**
      * 获取已追踪的boss列表 已追踪且有更新的boss列表

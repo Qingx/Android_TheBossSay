@@ -24,7 +24,10 @@ import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
-import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.DownloadHelper
+import net.cd1369.tbs.android.util.JPushHelper
+import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.fullDownloadUrl
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 

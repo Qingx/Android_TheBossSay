@@ -1,7 +1,7 @@
 package net.cd1369.tbs.android.ui.start
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import net.cd1369.tbs.android.R
 
 class TempActivity : AppCompatActivity() {

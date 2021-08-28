@@ -19,15 +19,11 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.LabelDaoManager
-import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.util.Tools
-import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.doShareSession
 import net.cd1369.tbs.android.util.doShareTimeline

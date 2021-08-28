@@ -23,8 +23,8 @@ import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.event.*
-import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.adapter.ArticleTackAdapter
+import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity

@@ -8,8 +8,8 @@ import cn.wl.android.lib.utils.GlideApp
 import kotlinx.android.synthetic.main.activity_boss_info.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.util.fullUrl
 import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.fullUrl
 
 class BossInfoActivity : BaseActivity() {
     private lateinit var entity: BossInfoEntity
