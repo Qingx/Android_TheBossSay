@@ -15,9 +15,9 @@ ext {
              * 2021-08-30 v1.0.12+3 升级数据库
              */
             versionCode      : 1012,
-            versionName      : "1.0.12+2",
+            versionName      : "1.0.12+3",
             testVersionCode  : 1012,   // 2020-06-29
-            testVersionName  : "1.0.12+2",
+            testVersionName  : "1.0.12+3",
     ]
 
 }
