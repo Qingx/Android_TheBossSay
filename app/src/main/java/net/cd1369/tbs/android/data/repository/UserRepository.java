@@ -6,6 +6,7 @@ import net.cd1369.tbs.android.config.TbsApi;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
+import net.cd1369.tbs.android.data.entity.PortEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 import net.cd1369.tbs.android.data.entity.VersionEntity;
 import net.cd1369.tbs.android.data.service.UserService;
@@ -337,4 +338,16 @@ public class UserRepository extends BaseRepository<UserService> {
                 .compose(combine())
                 .compose(rebase());
     }
+
+    /**
+     * 获取审核状态
+     *
+     * @return
+     */
+    public Observable<PortEntity> obtainPortStatus() {
+        return getService().obtainPortStatus()
+                .compose(combine())
+                .compose(rebase());
+    }
+
 }

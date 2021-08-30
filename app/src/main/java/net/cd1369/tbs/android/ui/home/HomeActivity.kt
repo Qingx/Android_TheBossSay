@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import com.blankj.utilcode.util.AppUtils
 import com.github.gzuliyujiang.oaid.DeviceID
@@ -15,6 +16,7 @@ import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.data.entity.PortEntity
 import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
@@ -38,7 +40,8 @@ import org.greenrobot.eventbus.ThreadMode
  * @desc
  */
 class HomeActivity : BaseActivity() {
-    val fragments = mutableListOf<Fragment>()
+    private val fragments = mutableListOf<Fragment>()
+    private var isPortStatus = false
 
     companion object {
         fun start(context: Context?) {
@@ -89,7 +92,7 @@ class HomeActivity : BaseActivity() {
 
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                val index = if (BuildConfig.ENV == "YYB") 3 else 2
+                val index = if (BuildConfig.ENV == "YYB" || isPortStatus) 3 else 2
 
                 layout_talk.isSelected = position == 0
                 text_talk.text = if (position == 0) "回顶部" else "言论"
@@ -128,7 +131,7 @@ class HomeActivity : BaseActivity() {
         }
 
         layout_mine doClick {
-            val index = if (BuildConfig.ENV == "YYB") 3 else 2
+            val index = if (BuildConfig.ENV == "YYB" || isPortStatus) 3 else 2
             view_pager.setCurrentItem(index, false)
         }
 
@@ -177,6 +180,37 @@ class HomeActivity : BaseActivity() {
 
                 }
             )
+    }
+
+    override fun loadData() {
+        TbsApi.user().obtainPortStatus()
+            .onErrorReturn { PortEntity() }
+//            .map {
+//                if (WLConfig.isDebug()) {
+//                    it.groundingStatus = true
+//                }
+//                return@map it
+//            }
+            .bindDefaultSub({
+
+            }) {
+                if (it.groundingStatus) {
+                    if (fragments.size <= 3) {
+                        isPortStatus = true
+                        layout_tools.isVisible = true
+                        fragments.add(2, HomeToolFragment.createFragment())
+                        view_pager.adapter?.notifyDataSetChanged()
+
+                        timerDelay(300) {
+                            view_pager.offscreenPageLimit = fragments.size
+                        }
+                    } else {
+                        view_pager.offscreenPageLimit = fragments.size
+                    }
+                } else {
+                    view_pager.offscreenPageLimit = fragments.size
+                }
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -2,6 +2,7 @@ package net.cd1369.tbs.android.data.service;
 
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
+import net.cd1369.tbs.android.data.entity.PortEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
 import net.cd1369.tbs.android.data.entity.VersionEntity;
 
@@ -181,6 +182,14 @@ public interface UserService {
      * @param version
      * @return
      */
-    @GET("/api/version/check/android/{versionNumber}/")
+    @GET("/api/version/check/android/{versionNumber}")
     Observable<WLData<VersionEntity>> obtainCheckUpdate(@Path("versionNumber") String version);
+
+    /**
+     * 检查版本
+     *
+     * @return
+     */
+    @GET("/web/port/find")
+    Observable<WLData<PortEntity>> obtainPortStatus();
 }
