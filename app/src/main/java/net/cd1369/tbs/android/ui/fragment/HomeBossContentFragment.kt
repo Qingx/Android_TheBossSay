@@ -229,8 +229,6 @@ class HomeBossContentFragment : BaseFragment() {
                 .onErrorReturn { mutableListOf() }
                 .bindDefaultSub(
                     doNext = {
-                        it.size.toString().logE()
-
                         BossDaoManager.getInstance(mActivity).insertList(it)
 
                         mBossList = if (currentLabel == "-1") {
