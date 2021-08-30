@@ -154,6 +154,7 @@ android {
     }
 
     greendao {
+        //20210830 bossDB添加字段recommendType
         schemaVersion 2
         daoPackage 'com.greendao.gen'
         targetGenDir 'src/main/java'
