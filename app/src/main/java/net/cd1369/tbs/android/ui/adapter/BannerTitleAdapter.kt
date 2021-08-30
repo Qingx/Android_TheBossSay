@@ -12,11 +12,8 @@ import cn.wl.android.lib.utils.GlideApp
 import com.youth.banner.adapter.BannerAdapter
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BannerEntity
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
-import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
-import org.greenrobot.eventbus.EventBus
 
 /**
  * Created by Xiang on 2021/8/28 13:43
@@ -47,8 +44,6 @@ class BannerTitleAdapter(val context: Context, list: List<BannerEntity>) :
         holder.titleView.text = data.content
 
         holder.imageView doClick {
-            Tools.addTodayRead()
-            EventBus.getDefault().post(ArticleReadEvent())
             ArticleActivity.start(context, data.resourceId)
         }
     }

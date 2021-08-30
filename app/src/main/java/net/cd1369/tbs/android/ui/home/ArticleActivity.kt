@@ -24,10 +24,12 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
+import org.greenrobot.eventbus.EventBus
 import kotlin.math.max
 
 class ArticleActivity : BaseActivity() {
@@ -399,6 +401,8 @@ class ArticleActivity : BaseActivity() {
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
             .bindDefaultSub {
+                Tools.addTodayRead()
+                EventBus.getDefault().post(ArticleReadEvent())
             }
     }
 }

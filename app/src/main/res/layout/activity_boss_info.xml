@@ -127,20 +127,22 @@
     <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="8dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_hand_left"
         app:layout_constraintEnd_toStartOf="@id/image_boss_head"
-        app:layout_constraintTop_toTopOf="@id/layout_boss" />
+        app:layout_constraintTop_toTopOf="@id/image_boss_head" />
 
     <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="56dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_hand_right"
         app:layout_constraintStart_toEndOf="@id/image_boss_head"
-        app:layout_constraintTop_toTopOf="@id/layout_boss" />
+        app:layout_constraintTop_toTopOf="@id/image_boss_head" />
 
     <TextView
         android:id="@+id/text_title"

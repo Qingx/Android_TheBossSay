@@ -21,6 +21,7 @@ abstract class HistoryContentAdapter(val today: Boolean) :
     override fun convert(helper: BaseViewHolder, item: HistoryEntity) {
 
         helper.V.text_title.text = item.articleTitle
+        helper.V.text_delete.text = "删除"
 
         helper.V.text_name.text = item.bossName
         helper.V.text_time.text =
@@ -34,8 +35,6 @@ abstract class HistoryContentAdapter(val today: Boolean) :
         helper.V.text_delete doClick {
             onContentDelete(item.id, ::removeItem)
         }
-
-
     }
 
     private fun removeItem(id: String) {

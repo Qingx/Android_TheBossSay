@@ -4,22 +4,16 @@ import android.content.Context
 import cn.jpush.android.api.CustomMessage
 import cn.jpush.android.api.NotificationMessage
 import cn.jpush.android.service.JPushMessageReceiver
-import cn.wl.android.lib.utils.DateFormat
-import cn.wl.android.lib.utils.Times
 import com.google.gson.JsonParser
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp.getContext
-import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.event.JpushArticleEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
-import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.runUiThread
 import net.cd1369.tbs.android.util.showSneaker
 import org.greenrobot.eventbus.EventBus
-import kotlin.math.max
 
 
 /**
@@ -42,8 +36,6 @@ class PushReceiver : JPushMessageReceiver() {
             if (jsonObject.has("articleId")) {
                 val articleId = jsonObject["articleId"].asString
 
-                Tools.addTodayRead()
-                EventBus.getDefault().post(ArticleReadEvent())
                 ArticleActivity.start(getContext(), articleId)
             }
         }

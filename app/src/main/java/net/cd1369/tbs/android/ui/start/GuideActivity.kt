@@ -48,13 +48,7 @@ class GuideActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        countdown(5) {
-            text_time.text = "${it}s"
-
-            if (it <= 0) {
-                text_time.text = "跳过"
-            }
-        }
+        text_time.text = "跳过"
 
         val adapter = object : GuideInfoAdapter() {
             override fun onAddFollow(data: MutableList<Long>) {
@@ -133,22 +127,20 @@ class GuideActivity : BaseActivity() {
         text_time doClick {
             val tempId = WelActivity.tempId
 
-            if (text_time.text == "跳过") {
-                DataConfig.get().firstUse = false
+            DataConfig.get().firstUse = false
 
-                if (tempId.isNullOrEmpty()) {
-                    HomeActivity.start(mActivity)
-                    mActivity?.finish()
-                } else {
-                    val intentHome = Intent(mActivity, HomeActivity::class.java)
-                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            if (tempId.isNullOrEmpty()) {
+                HomeActivity.start(mActivity)
+                mActivity?.finish()
+            } else {
+                val intentHome = Intent(mActivity, HomeActivity::class.java)
+                intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                    val intentArticle = Intent(mActivity, ArticleActivity::class.java)
-                    intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intentArticle.putExtra("articleId", tempId)
+                val intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                intentArticle.putExtra("articleId", tempId)
 
-                    mActivity.startActivities(arrayOf(intentHome, intentArticle))
-                }
+                mActivity.startActivities(arrayOf(intentHome, intentArticle))
             }
         }
     }

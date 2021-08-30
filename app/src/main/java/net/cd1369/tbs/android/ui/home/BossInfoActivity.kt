@@ -43,6 +43,9 @@ class BossInfoActivity : BaseActivity() {
         text_info.text = entity.role
         text_content.text = entity.info
 
+        text_name.paint.isFakeBoldText = true
+        text_title.paint.isFakeBoldText = true
+
         image_back doClick {
             onBackPressed()
         }

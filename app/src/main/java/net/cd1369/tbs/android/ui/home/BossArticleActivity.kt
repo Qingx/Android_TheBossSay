@@ -14,9 +14,7 @@ import kotlinx.android.synthetic.main.activity_boss_article.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.BossAllArticleAdapter
-import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 
 class BossArticleActivity : BaseListActivity() {
@@ -38,10 +36,6 @@ class BossArticleActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : BossAllArticleAdapter() {
             override fun onClick(item: ArticleEntity) {
-                if (!item.isRead) {
-                    Tools.addTodayRead()
-                    eventBus.post(ArticleReadEvent())
-                }
                 ArticleActivity.start(mActivity, item.id)
             }
         }.also {

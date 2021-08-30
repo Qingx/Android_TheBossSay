@@ -18,13 +18,11 @@ import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BannerEntity
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.adapter.ArticleSquareAdapter
 import net.cd1369.tbs.android.ui.adapter.BannerTitleAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
-import net.cd1369.tbs.android.util.Tools
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -61,10 +59,6 @@ class SpeechSquareContentFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : ArticleSquareAdapter() {
             override fun onClick(item: ArticleEntity) {
-                if (!item.isRead) {
-                    Tools.addTodayRead()
-                    eventBus.post(ArticleReadEvent())
-                }
                 ArticleActivity.start(mActivity, item.id)
             }
         }.also {

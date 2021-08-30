@@ -21,7 +21,6 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.event.SetBossTimeEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
@@ -74,10 +73,6 @@ class BossHomeActivity : BaseActivity() {
 
         mAdapter = object : BossArticleAdapter() {
             override fun onClick(item: ArticleSimpleModel) {
-                if (!item.isRead) {
-                    Tools.addTodayRead()
-                    eventBus.post(ArticleReadEvent())
-                }
                 ArticleActivity.start(mActivity, item.id.toString(), true)
             }
         }
@@ -128,6 +123,7 @@ class BossHomeActivity : BaseActivity() {
                 .apply {
                     onConfirm = Runnable {
                         JPushHelper.tryAddTag(bossEntity.id)
+                        Toasts.show("开启成功")
                         dialog?.dismiss()
                     }
                 }

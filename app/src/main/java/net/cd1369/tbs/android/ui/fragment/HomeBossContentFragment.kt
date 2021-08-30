@@ -259,9 +259,9 @@ class HomeBossContentFragment : BaseFragment() {
         TbsApi.boss().obtainFollowBossList(-1L, false)
             .onErrorReturn { mutableListOf() }
             .bindDefaultSub {
+                BossDaoManager.getInstance(mActivity).insertList(it)
                 mBossList = it
                 val list = if (currentLabel == "-1") {
-                    BossDaoManager.getInstance(mActivity).insertList(it)
                     it.filter {
                         it.isLatest
                     }.toMutableList()

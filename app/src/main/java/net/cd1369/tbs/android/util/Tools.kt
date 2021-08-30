@@ -1,7 +1,6 @@
 package net.cd1369.tbs.android.util
 
 import android.animation.ValueAnimator
-import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -49,11 +48,8 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.BossLabelEntity
 import net.cd1369.tbs.android.data.model.LabelModel
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.home.ArticleActivity
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -69,16 +65,16 @@ import kotlin.math.max
  */
 object Tools {
     fun addTodayRead() {
-        val lastTime = UserConfig.get().lastReadTime
-        val nowTime = Times.current()
-        UserConfig.get().lastReadTime = lastTime
-
-        val todayZero: Long = DateFormat.getTodayZero(nowTime)
+//        val lastTime = UserConfig.get().lastReadTime
+//        val nowTime = Times.current()
+//        UserConfig.get().lastReadTime = lastTime
+//
+//        val todayZero: Long = DateFormat.getTodayZero(nowTime)
 
         UserConfig.get().updateUser {
-            if (todayZero >= lastTime) {
-                it.readNum = 0
-            }
+//            if (todayZero >= lastTime) {
+//                it.readNum = 0
+//            }
 
             it.readNum = max((it.readNum ?: 0) + 1, 0)
         }
@@ -719,7 +715,6 @@ fun showSneaker(title: CharSequence, content: CharSequence, articleId: String) {
     view.text_content.text = content
 
     view.layout_card doClick {
-        EventBus.getDefault().post(ArticleReadEvent())
         ArticleActivity.start(getContext(), articleId)
     }
 
