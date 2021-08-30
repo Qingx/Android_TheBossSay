@@ -260,6 +260,7 @@ class HomeBossContentFragment : BaseFragment() {
         TbsApi.boss().obtainFollowBossList(-1L, false)
             .onErrorReturn { mutableListOf() }
             .bindDefaultSub {
+                it.size.logE(prefix = "size")
                 BossDaoManager.getInstance(mActivity).insertList(it)
                 mBossList = it
                 if (currentLabel != "-1") {
