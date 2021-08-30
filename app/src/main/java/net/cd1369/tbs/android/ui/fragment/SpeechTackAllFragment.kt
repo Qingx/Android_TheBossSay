@@ -154,7 +154,6 @@ class SpeechTackAllFragment : BaseListFragment() {
         mBossList = BossDaoManager.getInstance(mActivity).findLatest("-1")
         cardAdapter.setNewData(mBossList)
 
-        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
 
         val articleList = ArticleDaoManager.getInstance(mActivity).findAll()
         mAdapter.setNewData(articleList)
@@ -173,8 +172,7 @@ class SpeechTackAllFragment : BaseListFragment() {
             } else {
                 "为你推荐"
             }
-        headerView!!.text_num.text = "共${articleList.size}篇"
-
+        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
 
         showContentEmpty(articleList.isNullOrEmpty())
 
