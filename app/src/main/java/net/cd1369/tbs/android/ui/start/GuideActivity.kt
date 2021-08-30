@@ -75,7 +75,7 @@ class GuideActivity : BaseActivity() {
                         hideLoadingAlert()
 
                         UserConfig.get().updateUser {
-                            it.collectNum = data.size
+                            it.traceNum = data.size
                         }
 
                         DataConfig.get().firstUse = false
