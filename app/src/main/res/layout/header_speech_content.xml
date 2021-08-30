@@ -47,7 +47,6 @@
             android:gravity="start"
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/text_title"
             app:layout_constraintStart_toEndOf="@id/text_title"
             tools:text="共25篇" />

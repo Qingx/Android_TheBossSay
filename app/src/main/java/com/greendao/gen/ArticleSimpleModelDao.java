@@ -41,7 +41,7 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
         public final static Property BossName = new Property(11, String.class, "bossName", false, "NAME");
         public final static Property BossHead = new Property(12, String.class, "bossHead", false, "BOSSHEAD");
         public final static Property BossRole = new Property(13, String.class, "bossRole", false, "BOSSROLE");
-        public final static Property ReturnType = new Property(14, String.class, "returnType", false, "RETURNTYPE");
+        public final static Property RecommendType = new Property(14, String.class, "recommendType", false, "RECOMMENDTYPE");
     }
 
     private final StringConvert filesConverter = new StringConvert();
@@ -72,7 +72,7 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
                 "\"NAME\" TEXT," + // 11: bossName
                 "\"BOSSHEAD\" TEXT," + // 12: bossHead
                 "\"BOSSROLE\" TEXT," + // 13: bossRole
-                "\"RETURNTYPE\" TEXT);"); // 14: returnType
+                "\"RECOMMENDTYPE\" TEXT);"); // 14: recommendType
     }
 
     /** Drops the underlying database table. */
@@ -139,9 +139,9 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
             stmt.bindString(14, bossRole);
         }
  
-        String returnType = entity.getReturnType();
-        if (returnType != null) {
-            stmt.bindString(15, returnType);
+        String recommendType = entity.getRecommendType();
+        if (recommendType != null) {
+            stmt.bindString(15, recommendType);
         }
     }
 
@@ -203,9 +203,9 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
             stmt.bindString(14, bossRole);
         }
  
-        String returnType = entity.getReturnType();
-        if (returnType != null) {
-            stmt.bindString(15, returnType);
+        String recommendType = entity.getRecommendType();
+        if (recommendType != null) {
+            stmt.bindString(15, recommendType);
         }
     }
 
@@ -231,7 +231,7 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // bossName
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // bossHead
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // bossRole
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // returnType
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // recommendType
         );
         return entity;
     }
@@ -252,7 +252,7 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
         entity.setBossName(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setBossHead(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setBossRole(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setReturnType(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setRecommendType(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
      }
     
     @Override

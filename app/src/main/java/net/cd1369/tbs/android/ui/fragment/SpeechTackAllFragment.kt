@@ -168,11 +168,13 @@ class SpeechTackAllFragment : BaseListFragment() {
         }
 
         headerView?.text_title?.text =
-            if (articleList?.getOrNull(0)?.returnType ?: "0" == "0") {
+            if (articleList?.getOrNull(0)?.recommendType ?: "0" == "0") {
                 "最近更新"
             } else {
                 "为你推荐"
             }
+        headerView!!.text_num.text = "共${articleList.size}篇"
+
 
         showContentEmpty(articleList.isNullOrEmpty())
 
@@ -216,7 +218,7 @@ class SpeechTackAllFragment : BaseListFragment() {
                 }
 
                 headerView?.text_title?.text =
-                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                    if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                         "最近更新"
                     } else {
                         "为你推荐"
@@ -285,7 +287,7 @@ class SpeechTackAllFragment : BaseListFragment() {
                 }
 
                 headerView?.text_title?.text =
-                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                    if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                         "最近更新"
                     } else {
                         "为你推荐"
@@ -331,7 +333,7 @@ class SpeechTackAllFragment : BaseListFragment() {
                 }
 
                 headerView?.text_title?.text =
-                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                    if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                         "最近更新"
                     } else {
                         "为你推荐"

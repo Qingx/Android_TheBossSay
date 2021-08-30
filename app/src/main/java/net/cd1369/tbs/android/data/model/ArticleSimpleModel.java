@@ -50,14 +50,15 @@ public class ArticleSimpleModel implements MultiItemEntity {
     private String bossHead; //boss头像
     @Property(nameInDb = "BOSSROLE")
     private String bossRole; //boss角色, 职务
-    @Property(nameInDb = "RETURNTYPE")
-    private String returnType; //0:最近更新 1:为你推荐
+    @Property(nameInDb = "RECOMMENDTYPE")
+    private String recommendType; //0:最近更新 1:为你推荐
 
-    @Generated(hash = 509286767)
+    @Generated(hash = 487171374)
     public ArticleSimpleModel(Long id, String title, String descContent,
-                              boolean isCollect, boolean isRead, int readCount, int collect,
-                              Long releaseTime, Long articleTime, List<String> files, String bossId,
-                              String bossName, String bossHead, String bossRole, String returnType) {
+            boolean isCollect, boolean isRead, int readCount, int collect,
+            Long releaseTime, Long articleTime, List<String> files, String bossId,
+            String bossName, String bossHead, String bossRole,
+            String recommendType) {
         this.id = id;
         this.title = title;
         this.descContent = descContent;
@@ -72,13 +73,31 @@ public class ArticleSimpleModel implements MultiItemEntity {
         this.bossName = bossName;
         this.bossHead = bossHead;
         this.bossRole = bossRole;
-        this.returnType = returnType;
+        this.recommendType = recommendType;
     }
 
     @Generated(hash = 601260873)
     public ArticleSimpleModel() {
     }
 
+    public Long getShowTime() {
+        if (this.articleTime == null) {
+            return this.releaseTime;
+        } else {
+            return this.articleTime;
+        }
+    }
+
+    @Override
+    public int getItemType() {
+        if (this.files == null || this.files.size() <= 0) {
+            return 0;
+        } else if (this.files.size() <= 1) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
 
     public Long getId() {
         return this.id;
@@ -192,30 +211,11 @@ public class ArticleSimpleModel implements MultiItemEntity {
         this.bossRole = bossRole;
     }
 
-    public String getReturnType() {
-        return this.returnType;
+    public String getRecommendType() {
+        return this.recommendType;
     }
 
-    public void setReturnType(String returnType) {
-        this.returnType = returnType;
-    }
-
-    public Long getShowTime() {
-        if (this.articleTime == null) {
-            return this.releaseTime;
-        } else {
-            return this.articleTime;
-        }
-    }
-
-    @Override
-    public int getItemType() {
-        if (this.files == null || this.files.size() <= 0) {
-            return 0;
-        } else if (this.files.size() <= 1) {
-            return 1;
-        } else {
-            return 2;
-        }
+    public void setRecommendType(String recommendType) {
+        this.recommendType = recommendType;
     }
 }

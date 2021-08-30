@@ -178,7 +178,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
                     }
 
                     headerView?.text_title?.text =
-                        if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                        if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                             "最近更新"
                         } else {
                             "为你推荐"
@@ -226,7 +226,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
                 }
 
                 headerView?.text_title?.text =
-                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                    if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                         "最近更新"
                     } else {
                         "为你推荐"
@@ -292,7 +292,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
                 }
 
                 headerView?.text_title?.text =
-                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                    if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                         "最近更新"
                     } else {
                         "为你推荐"
@@ -335,7 +335,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
                 }
 
                 headerView?.text_title?.text =
-                    if (mAdapter?.data?.getOrNull(0)?.returnType ?: "0" == "0") {
+                    if (mAdapter?.data?.getOrNull(0)?.recommendType ?: "0" == "0") {
                         "最近更新"
                     } else {
                         "为你推荐"
