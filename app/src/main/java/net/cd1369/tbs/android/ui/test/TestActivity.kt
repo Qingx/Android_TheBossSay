@@ -50,4 +50,5 @@ class TestActivity : BaseActivity() {
             mBgDraw?.alpha = ((1F - fl) * 255).toInt()
         })
     }
+
 }
