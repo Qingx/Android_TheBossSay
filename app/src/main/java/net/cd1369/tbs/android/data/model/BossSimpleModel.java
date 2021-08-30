@@ -1,21 +1,17 @@
 package net.cd1369.tbs.android.data.model;
 
-import android.util.Log;
 import android.widget.ImageView;
 
-import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.util.StringConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-
-import org.greenrobot.greendao.annotation.Generated;
 
 import cn.wl.android.lib.utils.GlideApp;
 import cn.wl.android.lib.utils.Lists;

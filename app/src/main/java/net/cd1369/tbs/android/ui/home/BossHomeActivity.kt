@@ -273,7 +273,7 @@ class BossHomeActivity : BaseActivity() {
                 bossEntity = it
 
                 TbsApi.boss().obtainBossArticle(bossId, "1")
-            }.bindDefaultSub {
+            }.onErrorReturn { mutableListOf() }.bindDefaultSub {
                 map["1"] = it
 
                 setBossInfo()

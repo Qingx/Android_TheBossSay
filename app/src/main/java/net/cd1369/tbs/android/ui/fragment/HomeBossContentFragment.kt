@@ -30,6 +30,7 @@ import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.home.SearchBossActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.OnChangeCallback
+import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -228,6 +229,8 @@ class HomeBossContentFragment : BaseFragment() {
                 .onErrorReturn { mutableListOf() }
                 .bindDefaultSub(
                     doNext = {
+                        it.size.toString().logE()
+
                         BossDaoManager.getInstance(mActivity).insertList(it)
 
                         mBossList = if (currentLabel == "-1") {
@@ -261,16 +264,12 @@ class HomeBossContentFragment : BaseFragment() {
             .bindDefaultSub {
                 BossDaoManager.getInstance(mActivity).insertList(it)
                 mBossList = it
-                val list = if (currentLabel == "-1") {
-                    it.filter {
-                        it.isLatest
-                    }.toMutableList()
-                } else {
-                    it.filter {
-                        it.labels.contains(currentLabel) && it.isLatest
+                if (currentLabel != "-1") {
+                    mBossList = it.filter {
+                        it.labels.contains(currentLabel)
                     }.toMutableList()
                 }
-                mAdapter.setNewData(list)
+                mAdapter.setNewData(mBossList)
             }
     }
 
