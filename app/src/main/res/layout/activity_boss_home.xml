@@ -11,6 +11,7 @@
         android:background="@color/colorPageBg">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -152,6 +153,17 @@
                                 tools:text="个人简介：府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有见易西世济社外断入府人都少物白类活从第有…" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+                        <View
+                            android:id="@+id/view_mask"
+                            android:layout_width="@dimen/size_none"
+                            android:layout_height="@dimen/size_none"
+                            android:background="@color/colorBlack"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:alpha="0.3"/>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </net.cd1369.tbs.android.widget.WlCardView>
@@ -208,6 +220,7 @@
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout

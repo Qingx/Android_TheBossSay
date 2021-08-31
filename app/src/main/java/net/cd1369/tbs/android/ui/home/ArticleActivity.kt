@@ -106,7 +106,7 @@ class ArticleActivity : BaseActivity() {
 
         layout_collect doClick {
             if (UserConfig.get().loginStatus) {
-                if (isCollect!!) {
+                if (isCollect) {
                     cancelCollect()
                 } else doCollect()
             } else {
@@ -402,7 +402,7 @@ class ArticleActivity : BaseActivity() {
         TbsApi.user().obtainReadArticle(articleId)
             .bindDefaultSub {
                 Tools.addTodayRead()
-                EventBus.getDefault().post(ArticleReadEvent())
+                EventBus.getDefault().post(ArticleReadEvent(articleId))
             }
     }
 }

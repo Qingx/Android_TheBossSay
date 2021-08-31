@@ -3,6 +3,7 @@ package net.cd1369.tbs.android.ui.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,21 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
+import com.blankj.utilcode.util.ConvertUtils
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_boss_home.*
+import kotlinx.android.synthetic.main.activity_boss_home.app_root
+import kotlinx.android.synthetic.main.activity_boss_home.image_back
+import kotlinx.android.synthetic.main.activity_boss_home.image_head
+import kotlinx.android.synthetic.main.activity_boss_home.image_setting
+import kotlinx.android.synthetic.main.activity_boss_home.image_share
+import kotlinx.android.synthetic.main.activity_boss_home.text_content
+import kotlinx.android.synthetic.main.activity_boss_home.text_follow
+import kotlinx.android.synthetic.main.activity_boss_home.text_info
+import kotlinx.android.synthetic.main.activity_boss_home.text_label
+import kotlinx.android.synthetic.main.activity_boss_home.text_name
+import kotlinx.android.synthetic.main.activity_boss_home.view_mask
+import kotlinx.android.synthetic.main.activity_test.*
 import kotlinx.android.synthetic.main.header_boss_home.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
@@ -27,10 +42,13 @@ import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
+import kotlin.math.absoluteValue
 import kotlin.math.max
 
 class BossHomeActivity : BaseActivity() {
 
+    private var mLayoutH: Int = 0
+    private var mBgDraw: Drawable? = null
     private lateinit var mAdapter: BossArticleAdapter
     private lateinit var bossEntity: BossInfoEntity
     private lateinit var bossId: String
@@ -67,7 +85,18 @@ class BossHomeActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        collapse_view.contentScrim = resources.getDrawable(R.drawable.ic_boss_top_bg)
+//        collapse_view.contentScrim = resources.getDrawable(R.drawable.ic_boss_top_bg)
+        app_root.post {
+            mBgDraw = view_mask.background
+            mBgDraw?.alpha = 0
+
+            mLayoutH = app_root.height - ConvertUtils.dp2px(36F)
+        }
+
+        app_root.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            var fl = (mLayoutH - verticalOffset.absoluteValue).toFloat() / mLayoutH
+            mBgDraw?.alpha = ((1F - fl) * 255).toInt()
+        })
 
         tab_1.isSelected = true
 

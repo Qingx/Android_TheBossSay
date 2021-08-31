@@ -76,7 +76,7 @@ abstract class BossAllItemAdapter :
     }
 
     override fun setNewData(data: List<BossInfoEntity>?) {
-        mIdSet.clear()
+//        mIdSet.clear()
 
         super.setNewData(data)
     }

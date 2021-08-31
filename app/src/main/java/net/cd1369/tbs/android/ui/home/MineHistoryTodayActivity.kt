@@ -120,7 +120,7 @@ class MineHistoryTodayActivity : BaseListActivity() {
                 UserConfig.get().updateUser {
                     it.readNum = max((it.readNum ?: 0) - 1, 0)
                 }
-                eventBus.post(ArticleReadEvent())
+                eventBus.post(ArticleReadEvent(""))
 
                 Toasts.show("删除成功")
             }, doDone = {

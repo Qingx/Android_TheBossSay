@@ -149,7 +149,7 @@ class HomeBossAllAddFragment : BaseFragment() {
      * 尝试关注所有选中的boss
      */
     private fun tryFollowAllSelect() {
-        val idSet = mAdapter.mIdSet
+        val idSet = mAdapter.mIdSet.toHashSet()
 
         if (idSet.isNullOrEmpty()) {
             Toasts.show("请选择关注的boss")
