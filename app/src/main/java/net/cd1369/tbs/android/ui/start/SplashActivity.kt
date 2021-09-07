@@ -39,9 +39,9 @@ import java.util.concurrent.TimeUnit
  */
 class SplashActivity : FragmentActivity(), AdvanceSplashListener {
 
-    private val rxPermission: RxPermissions by lazy {
-        RxPermissions(this)
-    }
+//    private val rxPermission: RxPermissions by lazy {
+//        RxPermissions(this)
+//    }
     private var sdkId: String = ""
 
     private var hasAdShow = false
@@ -64,11 +64,11 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         /**
          * 预申请动态权限
          */
-        private val mPer = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-        )
+//        private val mPer = arrayOf(
+//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//            Manifest.permission.READ_EXTERNAL_STORAGE,
+//            Manifest.permission.CAMERA
+//        )
 
         /**
          * 启动界面
@@ -101,16 +101,18 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
                 DataConfig.get().isNeedService = false
                 TbsApp.tryInitThree(applicationContext)
 
-                rxPermission.request(*mPer)
-                    .subscribe({
-                        hasService = true
+                hasService = true
 
-                        doAgreeService()
-                    }) {
-                        hasService = true
+                doAgreeService()
 
-                        HomeActivity.start(this)
-                    }
+//                rxPermission.request(*mPer)
+//                    .subscribe({
+//
+//                    }) {
+//                        hasService = true
+//
+//                        HomeActivity.start(this)
+//                    }
             }
         } else {
             TbsApp.tryInitThree(applicationContext)
