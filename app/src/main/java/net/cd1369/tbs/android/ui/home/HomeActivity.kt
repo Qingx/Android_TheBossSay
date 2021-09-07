@@ -75,7 +75,7 @@ class HomeActivity : BaseActivity() {
         checkUpdate()
         tryRegisterJPush()
 
-        layout_tools.isVisible = BuildConfig.ENV == "YYB"
+        layout_tools.isVisible = isPortStatus && BuildConfig.ENV == "YYB"
 
         view_pager.adapter = object : FragmentStateAdapter(mActivity) {
             override fun getItemCount(): Int {
@@ -174,7 +174,6 @@ class HomeActivity : BaseActivity() {
                         }
                 },
                 doFail = {
-
                 }
             )
     }
