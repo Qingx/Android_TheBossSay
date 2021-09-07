@@ -135,6 +135,15 @@ class HomeActivity : BaseActivity() {
         layout_tools doClick {
             view_pager.setCurrentItem(2, false)
         }
+
+        checkNoticeEnable()
+    }
+
+    /**
+     * 检查是否有通知权限
+     */
+    private fun checkNoticeEnable() {
+
     }
 
     /**

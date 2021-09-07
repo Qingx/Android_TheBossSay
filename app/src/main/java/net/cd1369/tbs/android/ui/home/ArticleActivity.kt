@@ -30,6 +30,7 @@ import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
 import org.greenrobot.eventbus.EventBus
+import java.lang.ref.WeakReference
 import kotlin.math.max
 
 class ArticleActivity : BaseActivity() {
@@ -92,6 +93,13 @@ class ArticleActivity : BaseActivity() {
         webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
         webSettings.domStorageEnabled = true
         webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        webSettings.defaultTextEncodingName = "UTF-8";
+
+        val androidCallback = AndroidCallback()
+        androidCallback.formBoss = fromBoss
+        androidCallback.mAct = WeakReference(this)
+
+        web_view.addJavascriptInterface(androidCallback, "RecommendArticle")
 
         web_view.webViewClient = (object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, uri: String?): Boolean {
@@ -407,4 +415,5 @@ class ArticleActivity : BaseActivity() {
 
             })
     }
+
 }
