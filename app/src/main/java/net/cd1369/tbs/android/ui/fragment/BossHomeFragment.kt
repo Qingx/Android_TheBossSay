@@ -130,6 +130,21 @@ class BossHomeFragment : BaseListFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: ArticleReadEvent) {
-        mAdapter.doOnRead(event.articleId)
+        val index = mAdapter.data.indexOfFirst {
+            it.id.toString() == event.articleId
+        }
+
+        if (index != -1) {
+            mAdapter.data[index].isRead = true
+
+            val layoutManager = rv_content.layoutManager as LinearLayoutManager
+
+            val firstIndex = layoutManager.findFirstVisibleItemPosition()
+            val lastIndex = layoutManager.findLastVisibleItemPosition()
+
+            if (index in firstIndex + 1..lastIndex) {
+                mAdapter.notifyItemChanged(index)
+            }
+        }
     }
 }
