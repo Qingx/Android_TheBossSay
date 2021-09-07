@@ -82,15 +82,4 @@ abstract class BossArticleAdapter :
     }
 
     abstract fun onClick(item: ArticleSimpleModel)
-
-    fun doOnRead(id: String) {
-        val index = data.indexOfFirst {
-            it.id.toString() == id
-        }
-
-        if (index != -1) {
-            data[index].isRead = true
-            notifyItemChanged(index)
-        }
-    }
 }
