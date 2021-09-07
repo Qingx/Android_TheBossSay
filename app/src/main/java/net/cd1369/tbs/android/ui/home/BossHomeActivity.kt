@@ -31,12 +31,8 @@ import kotlin.math.max
 
 class BossHomeActivity : BaseActivity() {
 
-    private lateinit var mAdapter: BossArticleAdapter
     private lateinit var bossEntity: BossInfoEntity
     private lateinit var bossId: String
-    private var headerView: View? = null
-    private var map: LinkedHashMap<String, MutableList<ArticleSimpleModel>> = LinkedHashMap()
-    private var currentType = "1"
 
     companion object {
         fun start(context: Context?, bossId: String) {
@@ -71,26 +67,6 @@ class BossHomeActivity : BaseActivity() {
 
         tab_1.isSelected = true
 
-        mAdapter = object : BossArticleAdapter() {
-            override fun onClick(item: ArticleSimpleModel) {
-                ArticleActivity.start(mActivity, item.id.toString(), true)
-            }
-        }
-
-        rv_content.adapter = mAdapter
-        rv_content.layoutManager =
-            object : LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false) {
-                override fun canScrollHorizontally(): Boolean {
-                    return false
-                }
-            }
-
-        headerView = LayoutInflater.from(mActivity).inflate(R.layout.header_boss_home, null)
-        mAdapter.addHeaderView(headerView)
-
-        val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_article, null)
-        mAdapter.emptyView = emptyView
-
         text_follow doClick {
             if (bossEntity.isCollect) {
                 FollowAskCancelDialog.showDialog(supportFragmentManager, "askCancel")
@@ -104,10 +80,6 @@ class BossHomeActivity : BaseActivity() {
 
         image_back doClick {
             onBackPressed()
-        }
-
-        headerView!!.layout_content doClick {
-            BossArticleActivity.start(mActivity, bossId)
         }
 
         text_content doClick {
@@ -130,7 +102,6 @@ class BossHomeActivity : BaseActivity() {
         }
 
         tab_1 doClick {
-            currentType = "1"
             tab_1.isSelected = true
             tab_2.isSelected = false
             tab_3.isSelected = false
@@ -138,7 +109,6 @@ class BossHomeActivity : BaseActivity() {
         }
 
         tab_2 doClick {
-            currentType = "2"
             tab_1.isSelected = false
             tab_2.isSelected = true
             tab_3.isSelected = false
@@ -146,7 +116,6 @@ class BossHomeActivity : BaseActivity() {
         }
 
         tab_3 doClick {
-            currentType = "3"
             tab_1.isSelected = false
             tab_2.isSelected = false
             tab_3.isSelected = true
@@ -251,17 +220,7 @@ class BossHomeActivity : BaseActivity() {
     }
 
     private fun clickTab() {
-        if (!map[currentType].isNullOrEmpty()) {
-            mAdapter.setNewData(map[currentType])
-        } else {
-            TbsApi.boss().obtainBossArticle(bossId, currentType)
-                .onErrorReturn { mutableListOf() }
-                .bindDefaultSub {
-                    map[currentType] = it
 
-                    mAdapter.setNewData(it)
-                }
-        }
     }
 
     override fun loadData() {
@@ -269,16 +228,9 @@ class BossHomeActivity : BaseActivity() {
         showLoading()
 
         TbsApi.boss().obtainBossDetail(bossId)
-            .flatMap {
+            .bindDefaultSub {
                 bossEntity = it
-
-                TbsApi.boss().obtainBossArticle(bossId, "1")
-            }.onErrorReturn { mutableListOf() }.bindDefaultSub {
-                map["1"] = it
-
                 setBossInfo()
-
-                mAdapter.setNewData(it)
                 showContent()
             }
     }
@@ -293,7 +245,5 @@ class BossHomeActivity : BaseActivity() {
         text_follow.text = if (bossEntity.isCollect) "已追踪" else "追踪"
         text_follow.isSelected = bossEntity.isCollect
         text_content.text = "个人简介：${bossEntity.info}"
-
-        headerView!!.text_num.text = "查看全部共${bossEntity.totalCount}篇"
     }
 }

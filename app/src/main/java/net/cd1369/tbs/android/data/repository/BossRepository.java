@@ -16,6 +16,7 @@ import java.util.List;
 
 import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
+import cn.wl.android.lib.core.WLPage;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -212,8 +213,8 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param bossId
      * @return
      */
-    public Observable<List<ArticleSimpleModel>> obtainBossArticle(String bossId, String type) {
-        RequestBody body = bodyFromCreator(jo -> {
+    public Observable<Page<ArticleSimpleModel>> obtainBossArticle(PageParam pageParam, String bossId, String type) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
             jo.put("bossId", bossId);
             jo.put("filterType", type);
         });
