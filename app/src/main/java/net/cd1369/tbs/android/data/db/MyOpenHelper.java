@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.greendao.gen.ArticleSimpleModelDao;
+import com.greendao.gen.BossSimpleModelDao;
 import com.greendao.gen.DaoMaster;
 
 /**
@@ -26,5 +27,6 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
         super.onUpgrade(db, oldVersion, newVersion);
         // 迁移数据库(如果修改了多个实体类，则需要把对应的Dao都传进来)
         MigrationHelper.migrate(db, ArticleSimpleModelDao.class);
+        MigrationHelper.migrate(db, BossSimpleModelDao.class);
     }
 }

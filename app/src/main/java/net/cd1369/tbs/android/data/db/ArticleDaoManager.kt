@@ -13,7 +13,7 @@ import net.cd1369.tbs.android.data.model.ArticleSimpleModel
  * @email Cymbidium@outlook.com
  */
 class ArticleDaoManager(val context: Context) {
-    private var helper: DaoMaster.DevOpenHelper? = null
+    private var helper: MyOpenHelper? = null
     private var daoMaster: DaoMaster? = null
     private var daoSession: DaoSession? = null
     private var articleDao: ArticleSimpleModelDao? = null
@@ -34,7 +34,7 @@ class ArticleDaoManager(val context: Context) {
     }
 
     init {
-        helper = DaoMaster.DevOpenHelper(context, "article_db", null)
+        helper = MyOpenHelper(context, "article_db", null)
         daoMaster = DaoMaster(getWritableDatabase())
         daoSession = daoMaster!!.newSession()
         articleDao = daoSession!!.articleSimpleModelDao
@@ -42,7 +42,7 @@ class ArticleDaoManager(val context: Context) {
 
     private fun getWritableDatabase(): SQLiteDatabase? {
         if (helper == null) {
-            helper = DaoMaster.DevOpenHelper(context, "article_db", null)
+            helper = MyOpenHelper(context, "article_db", null)
         }
         return helper!!.writableDatabase
     }

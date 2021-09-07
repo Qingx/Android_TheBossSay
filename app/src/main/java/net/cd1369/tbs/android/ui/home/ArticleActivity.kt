@@ -400,9 +400,11 @@ class ArticleActivity : BaseActivity() {
      */
     private fun tryReadArticle(articleId: String) {
         TbsApi.user().obtainReadArticle(articleId)
-            .bindDefaultSub {
+            .bindDefaultSub(doNext = {
                 Tools.addTodayRead()
                 EventBus.getDefault().post(ArticleReadEvent(articleId))
-            }
+            }, doFail = {
+
+            })
     }
 }

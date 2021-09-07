@@ -32,10 +32,14 @@ public class ArticleSimpleModel implements MultiItemEntity {
     private boolean isCollect; //是否收藏
     @Property(nameInDb = "ISREAD")
     private boolean isRead; //是否已读
+    @Property(nameInDb = "ISPOINT")
+    private boolean isPoint; //是否点赞
     @Property(nameInDb = "READCOUNT")
     private int readCount; //阅读数
     @Property(nameInDb = "COLLECT")
     private int collect; //收藏数
+    @Property(nameInDb = "POINT")
+    private int point; //点赞数
     @Property(nameInDb = "RELEASETIME")
     private Long releaseTime; //发布时间
     @Property(nameInDb = "ARTICLETIME")
@@ -53,19 +57,20 @@ public class ArticleSimpleModel implements MultiItemEntity {
     @Property(nameInDb = "RECOMMENDTYPE")
     private String recommendType; //0:最近更新 1:为你推荐
 
-    @Generated(hash = 487171374)
-    public ArticleSimpleModel(Long id, String title, String descContent,
-            boolean isCollect, boolean isRead, int readCount, int collect,
-            Long releaseTime, Long articleTime, List<String> files, String bossId,
-            String bossName, String bossHead, String bossRole,
-            String recommendType) {
+    @Generated(hash = 2094079354)
+    public ArticleSimpleModel(Long id, String title, String descContent, boolean isCollect,
+            boolean isRead, boolean isPoint, int readCount, int collect, int point, Long releaseTime,
+            Long articleTime, List<String> files, String bossId, String bossName, String bossHead,
+            String bossRole, String recommendType) {
         this.id = id;
         this.title = title;
         this.descContent = descContent;
         this.isCollect = isCollect;
         this.isRead = isRead;
+        this.isPoint = isPoint;
         this.readCount = readCount;
         this.collect = collect;
+        this.point = point;
         this.releaseTime = releaseTime;
         this.articleTime = articleTime;
         this.files = files;
@@ -217,5 +222,21 @@ public class ArticleSimpleModel implements MultiItemEntity {
 
     public void setRecommendType(String recommendType) {
         this.recommendType = recommendType;
+    }
+
+    public boolean getIsPoint() {
+        return this.isPoint;
+    }
+
+    public void setIsPoint(boolean isPoint) {
+        this.isPoint = isPoint;
+    }
+
+    public int getPoint() {
+        return this.point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
     }
 }

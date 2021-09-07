@@ -14,11 +14,12 @@ ext {
              * 2021-08-30 v1.0.12+2
              * 2021-08-30 v1.0.12+3 升级数据库
              * 2021-08-30 v1.0.12+4
+             * 2021-09-07 v1.1.0+1 升级数据库
              */
-            versionCode      : 1012,
-            versionName      : "1.0.12+4",
-            testVersionCode  : 1012,   // 2020-06-29
-            testVersionName  : "1.0.12+4",
+            versionCode      : 1101,
+            versionName      : "1.1.0+1",
+            testVersionCode  : 1101,
+            testVersionName  : "1.1.0+1",
     ]
 
 }

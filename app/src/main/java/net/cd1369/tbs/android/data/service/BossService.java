@@ -85,7 +85,7 @@ public interface BossService {
      * @param body
      * @return
      */
-    @POST("/api/article/page/type")
+    @POST("/api/article/list/page")
     Observable<WLPage<ArticleSimpleModel>> obtainBossArticle(@Body RequestBody body);
 
     /**

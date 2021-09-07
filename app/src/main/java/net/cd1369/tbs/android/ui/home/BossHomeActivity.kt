@@ -3,16 +3,17 @@ package net.cd1369.tbs.android.ui.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
+import com.blankj.utilcode.util.ConvertUtils
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_boss_home.*
-import kotlinx.android.synthetic.main.header_boss_home.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
@@ -20,19 +21,21 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.event.SetBossTimeEvent
-import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.dialog.*
+import net.cd1369.tbs.android.ui.fragment.BossHomeFragment
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.formatCount
+import kotlin.math.absoluteValue
 import kotlin.math.max
 
 class BossHomeActivity : BaseActivity() {
-
     private lateinit var bossEntity: BossInfoEntity
     private lateinit var bossId: String
+
+    private var mLayoutH: Int = 0
+    private var mBgDraw: Drawable? = null
 
     companion object {
         fun start(context: Context?, bossId: String) {
@@ -63,7 +66,6 @@ class BossHomeActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-//        collapse_view.contentScrim = resources.getDrawable(R.drawable.ic_boss_top_bg)
         app_root.post {
             mBgDraw = view_mask.background
             mBgDraw?.alpha = 0
@@ -72,11 +74,23 @@ class BossHomeActivity : BaseActivity() {
         }
 
         app_root.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            var fl = (mLayoutH - verticalOffset.absoluteValue).toFloat() / mLayoutH
+            val fl = (mLayoutH - verticalOffset.absoluteValue).toFloat() / mLayoutH
             mBgDraw?.alpha = ((1F - fl) * 255).toInt()
         })
 
         tab_1.isSelected = true
+
+        view_pager.offscreenPageLimit = 3
+        view_pager.isUserInputEnabled = true
+
+        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                tab_1.isSelected = position == 0
+                tab_2.isSelected = position == 1
+                tab_3.isSelected = position == 2
+            }
+        })
 
         text_follow doClick {
             if (bossEntity.isCollect) {
@@ -116,21 +130,24 @@ class BossHomeActivity : BaseActivity() {
             tab_1.isSelected = true
             tab_2.isSelected = false
             tab_3.isSelected = false
-            clickTab()
+
+            view_pager.currentItem = 0
         }
 
         tab_2 doClick {
             tab_1.isSelected = false
             tab_2.isSelected = true
             tab_3.isSelected = false
-            clickTab()
+
+            view_pager.currentItem = 1
         }
 
         tab_3 doClick {
             tab_1.isSelected = false
             tab_2.isSelected = false
             tab_3.isSelected = true
-            clickTab()
+
+            view_pager.currentItem = 2
         }
     }
 
@@ -230,10 +247,6 @@ class BossHomeActivity : BaseActivity() {
             })
     }
 
-    private fun clickTab() {
-
-    }
-
     override fun loadData() {
         super.loadData()
         showLoading()
@@ -243,6 +256,20 @@ class BossHomeActivity : BaseActivity() {
                 bossEntity = it
                 setBossInfo()
                 showContent()
+
+                view_pager.adapter = object : FragmentStateAdapter(mActivity) {
+                    override fun getItemCount(): Int {
+                        return 3
+                    }
+
+                    override fun createFragment(position: Int): Fragment {
+                        return BossHomeFragment.createFragment(
+                            bossId,
+                            (position + 1).toString(),
+                            it.totalCount
+                        )
+                    }
+                }
             }
     }
 

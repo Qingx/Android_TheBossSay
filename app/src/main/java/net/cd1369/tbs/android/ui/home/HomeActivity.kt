@@ -62,9 +62,6 @@ class HomeActivity : BaseActivity() {
 
         fragments.add(HomeSpeechFragment.createFragment())
         fragments.add(HomeBossContentFragment.createFragment())
-        if (BuildConfig.ENV == "YYB") {
-            fragments.add(HomeToolFragment.createFragment())
-        }
         fragments.add(HomeMineFragment.createFragment())
 
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
@@ -185,29 +182,17 @@ class HomeActivity : BaseActivity() {
     override fun loadData() {
         TbsApi.user().obtainPortStatus()
             .onErrorReturn { PortEntity() }
-//            .map {
-//                if (WLConfig.isDebug()) {
-//                    it.groundingStatus = true
-//                }
-//                return@map it
-//            }
             .bindDefaultSub({
 
             }) {
-                if (it.groundingStatus) {
-                    if (fragments.size <= 3) {
-                        isPortStatus = true
-                        layout_tools.isVisible = true
-                        fragments.add(2, HomeToolFragment.createFragment())
-                        view_pager.adapter?.notifyDataSetChanged()
+                if (it.groundingStatus && BuildConfig.ENV == "YYB") {
+                    isPortStatus = true
+                    layout_tools.isVisible = true
+                    fragments.add(2, HomeToolFragment.createFragment())
+                    view_pager.adapter?.notifyDataSetChanged()
+                }
 
-                        timerDelay(300) {
-                            view_pager.offscreenPageLimit = fragments.size
-                        }
-                    } else {
-                        view_pager.offscreenPageLimit = fragments.size
-                    }
-                } else {
+                timerDelay(300) {
                     view_pager.offscreenPageLimit = fragments.size
                 }
             }

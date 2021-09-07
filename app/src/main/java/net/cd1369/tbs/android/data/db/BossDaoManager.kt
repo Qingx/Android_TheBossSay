@@ -18,7 +18,7 @@ import java.util.*
  * @email Cymbidium@outlook.com
  */
 class BossDaoManager(val context: Context) {
-    private var helper: DevOpenHelper? = null
+    private var helper: MyOpenHelper? = null
     private var daoMaster: DaoMaster? = null
     private var daoSession: DaoSession? = null
     private var bossDao: BossSimpleModelDao? = null
@@ -39,7 +39,7 @@ class BossDaoManager(val context: Context) {
     }
 
     init {
-        helper = DevOpenHelper(context, "boss_db", null)
+        helper = MyOpenHelper(context, "boss_db", null)
         daoMaster = DaoMaster(getWritableDatabase())
         daoSession = daoMaster!!.newSession()
         bossDao = daoSession!!.bossSimpleModelDao
@@ -47,7 +47,7 @@ class BossDaoManager(val context: Context) {
 
     private fun getWritableDatabase(): SQLiteDatabase? {
         if (helper == null) {
-            helper = DevOpenHelper(context, "boss_db", null)
+            helper = MyOpenHelper(context, "boss_db", null)
         }
         return helper!!.writableDatabase
     }

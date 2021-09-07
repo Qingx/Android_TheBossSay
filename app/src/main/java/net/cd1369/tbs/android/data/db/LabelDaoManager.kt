@@ -14,7 +14,7 @@ import net.cd1369.tbs.android.data.model.LabelModel
  * @email Cymbidium@outlook.com
  */
 class LabelDaoManager(val context: Context) {
-    private var helper: DevOpenHelper? = null
+    private var helper: MyOpenHelper? = null
     private var daoMaster: DaoMaster? = null
     private var daoSession: DaoSession? = null
     private var labelDao: LabelModelDao? = null
@@ -35,7 +35,7 @@ class LabelDaoManager(val context: Context) {
     }
 
     init {
-        helper = DevOpenHelper(context, "label_db", null)
+        helper = MyOpenHelper(context, "label_db", null)
         daoMaster = DaoMaster(getWritableDatabase())
         daoSession = daoMaster!!.newSession()
         labelDao = daoSession!!.labelModelDao
@@ -43,7 +43,7 @@ class LabelDaoManager(val context: Context) {
 
     private fun getWritableDatabase(): SQLiteDatabase? {
         if (helper == null) {
-            helper = DevOpenHelper(context, "label_db", null)
+            helper = MyOpenHelper(context, "label_db", null)
         }
         return helper!!.writableDatabase
     }

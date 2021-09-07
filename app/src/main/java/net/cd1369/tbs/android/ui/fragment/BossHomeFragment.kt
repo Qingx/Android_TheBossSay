@@ -1,15 +1,12 @@
 package net.cd1369.tbs.android.ui.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.wl.android.lib.core.Page
-import cn.wl.android.lib.ui.BaseListActivity
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
@@ -18,8 +15,11 @@ import kotlinx.android.synthetic.main.header_boss_home.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Xiang on 2021/9/7 12:00
@@ -52,7 +52,7 @@ class BossHomeFragment : BaseListFragment() {
         super.beforeCreateView(savedInstanceState)
         bossId = arguments!!.getString("bossId") as String
         type = arguments!!.getString("type") as String
-        totalNum = arguments!!.getInt("type")
+        totalNum = arguments!!.getInt("totalNum")
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -122,8 +122,14 @@ class BossHomeFragment : BaseListFragment() {
                     }
                 },
                 doDone = {
+                    needLoading = true
                     showContent()
                 }
             )
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: ArticleReadEvent) {
+        mAdapter.doOnRead(event.articleId)
     }
 }
