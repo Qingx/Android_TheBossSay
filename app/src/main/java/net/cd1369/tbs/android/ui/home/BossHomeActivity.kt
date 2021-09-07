@@ -63,7 +63,18 @@ class BossHomeActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
-        collapse_view.contentScrim = resources.getDrawable(R.drawable.ic_boss_top_bg)
+//        collapse_view.contentScrim = resources.getDrawable(R.drawable.ic_boss_top_bg)
+        app_root.post {
+            mBgDraw = view_mask.background
+            mBgDraw?.alpha = 0
+
+            mLayoutH = app_root.height - ConvertUtils.dp2px(36F)
+        }
+
+        app_root.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            var fl = (mLayoutH - verticalOffset.absoluteValue).toFloat() / mLayoutH
+            mBgDraw?.alpha = ((1F - fl) * 255).toInt()
+        })
 
         tab_1.isSelected = true
 

@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.ui.adapter
 
 import android.annotation.SuppressLint
+import android.view.View
 import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
@@ -74,6 +75,8 @@ abstract class BossArticleAdapter :
         }
 
         helper.V doClick {
+            helper.getView<View>(R.id.layout_content)?.isSelected = true
+
             onClick(item)
         }
     }
