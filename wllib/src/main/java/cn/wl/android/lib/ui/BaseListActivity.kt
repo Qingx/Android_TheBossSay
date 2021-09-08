@@ -331,7 +331,7 @@ abstract class BaseListActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshLi
      *
      * @param hasData
      */
-    protected fun tryCompleteStatus(hasData: Boolean, hideEnd: Boolean = false) {
+    protected open fun tryCompleteStatus(hasData: Boolean, hideEnd: Boolean = false) {
         tryFinishRefresh()
 
         mAdapter!!.loadMoreComplete()
@@ -345,12 +345,13 @@ abstract class BaseListActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshLi
      */
     protected fun tryFailureStatus() {
         tryFinishRefresh()
+
         if (mAdapter!!.isLoading) {
             mAdapter!!.loadMoreFail()
         }
     }
 
-    protected fun tryFinishRefresh() {
+    protected open fun tryFinishRefresh() {
         if (refLayout != null && refLayout!!.isRefreshing) {
             refLayout!!.isRefreshing = false
         }

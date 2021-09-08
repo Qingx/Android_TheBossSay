@@ -4,6 +4,7 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
+import net.cd1369.tbs.android.data.entity.PointEntity;
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel;
 import net.cd1369.tbs.android.data.model.BossSimpleModel;
 import net.cd1369.tbs.android.data.model.LabelModel;
@@ -179,4 +180,14 @@ public interface BossService {
      */
     @GET("/api/operationPicture/get/banner")
     Observable<WLList<BannerEntity>> obtainBanner();
+
+    /**
+     * 获取点位列表
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/article/point-history")
+    Observable<WLPage<PointEntity>> obtainPointList(@Body RequestBody body);
+
 }

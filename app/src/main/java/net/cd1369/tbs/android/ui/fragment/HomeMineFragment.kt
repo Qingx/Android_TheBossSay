@@ -140,7 +140,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         }
 
         header?.layout_point doClick {
-
+            PointHistoryActivity.start(mActivity)
         }
     }
 
@@ -279,4 +279,5 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
 
     override fun onAdLoaded() {
     }
+
 }

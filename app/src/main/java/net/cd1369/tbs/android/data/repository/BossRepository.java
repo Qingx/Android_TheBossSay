@@ -6,6 +6,7 @@ import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
+import net.cd1369.tbs.android.data.entity.PointEntity;
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel;
 import net.cd1369.tbs.android.data.model.BossSimpleModel;
 import net.cd1369.tbs.android.data.model.LabelModel;
@@ -381,4 +382,20 @@ public class BossRepository extends BaseRepository<BossService> {
                 .compose(combine())
                 .compose(rebase());
     }
+
+    /**
+     * 获取点赞记录
+     *
+     * @param param
+     * @return
+     */
+    public Observable<Page<PointEntity>> obtainPoints(PageParam param) {
+        RequestBody body = bodyFromCreator(param, stringObjectMap -> {
+        });
+
+        return getService().obtainPointList(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
 }
