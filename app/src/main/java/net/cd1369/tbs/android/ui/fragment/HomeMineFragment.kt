@@ -247,7 +247,9 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: ArticleReadEvent) {
         val entity = UserConfig.get().userEntity
-        header?.text_history_num?.text = entity.readNum.toString()
+//        header?.text_history_num?.text = entity.readNum.toString()
+
+        showNumInfo(entity)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -33,14 +33,15 @@ abstract class PointHistoryAdapter() :
         }
 
         helper.V.text_delete doClick {
-            onContentDelete(item.id, ::removeItem)
+            onContentDelete(item.articleId, ::removeItem)
         }
     }
 
     private fun removeItem(id: String) {
-        val entity = mData.first {
-            it.id == id
-        }
+        val entity = mData.firstOrNull() {
+            it.articleId == id
+        } ?: return
+
         mData.remove(entity)
         notifyDataSetChanged()
     }

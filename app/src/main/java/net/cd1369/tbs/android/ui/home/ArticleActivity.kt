@@ -3,9 +3,7 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.core.view.isVisible
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
@@ -108,6 +106,15 @@ class ArticleActivity : BaseActivity() {
         web_view.addJavascriptInterface(androidCallback, "RecommendArticle")
 
         web_view.webViewClient = (object : WebViewClient() {
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                super.onReceivedError(view, request, error)
+            }
+
             override fun shouldOverrideUrlLoading(view: WebView?, uri: String?): Boolean {
                 view?.loadUrl(uri!!)
                 return true
@@ -191,7 +198,7 @@ class ArticleActivity : BaseActivity() {
                 showPointStatus(!target)
             }) {
                 UserConfig.get().updateUser {
-                    it.pointNum = max((it.pointNum ?: 0) + 1, 0)
+                    it.pointNum = max((it.pointNum ?: 0) + target.elif(1, -1), 0)
                 }
                 eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
             }

@@ -2,7 +2,6 @@ package net.cd1369.tbs.android.ui.home
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,9 +14,11 @@ import kotlinx.android.synthetic.main.activity_mine_history_all.*
 import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.ui.adapter.HistoryContentAdapter
+import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.PointHistoryAdapter
 import net.cd1369.tbs.android.util.doClick
+import kotlin.math.max
 
 /**
  * @Email 15025496981@163.com
@@ -47,8 +48,8 @@ class PointHistoryActivity : BaseListActivity() {
             ArticleActivity.start(mActivity, articleId)
         }
 
-        override fun onContentDelete(historyId: String, doRemove: (id: String) -> Unit) {
-
+        override fun onContentDelete(articleId: String, doRemove: (id: String) -> Unit) {
+            cancelPointStatus(articleId, doRemove)
         }
     }.also {
         mAdapter = it
@@ -85,6 +86,24 @@ class PointHistoryActivity : BaseListActivity() {
 
     override fun showEmptyData(bean: ErrorBean) {
 //        super.showEmptyData(bean)
+    }
+
+    /**
+     * 切换点赞状态
+     * @param article ArticleEntity
+     */
+    private fun cancelPointStatus(articleId: String, doRemove: (id: String) -> Unit) {
+        showLoadingAlert("正在取消点赞...")
+
+        TbsApi.boss().switchPointStatus(articleId, false)
+            .bindToastSub("取消成功") {
+                doRemove.invoke(articleId)
+
+                UserConfig.get().updateUser {
+                    it.pointNum = max((it.pointNum ?: 0) - 1, 0)
+                }
+                eventBus.post(ArticleReadEvent(articleId))
+            }
     }
 
     override fun tryFinishRefresh() {
