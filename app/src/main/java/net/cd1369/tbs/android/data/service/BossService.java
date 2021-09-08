@@ -36,6 +36,15 @@ public interface BossService {
     Observable<WLData<Object>> obtainGuideFollow(@Body RequestBody body);
 
     /**
+     * 引导页追踪多个boss
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/article/options")
+    Observable<WLData<Object>> requestArticleOptions(@Body RequestBody body);
+
+    /**
      * 获取boss标签列表
      *
      * @return

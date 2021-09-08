@@ -9,6 +9,7 @@ data class UserEntity(
     var nickName: String, //账号昵称
     var phone: String, //手机号
     var collectNum: Int? = 0, //收藏数
+    var pointNum: Int? = 0, //收藏数
     var readNum: Int? = 0, //今日阅读
     var traceNum: Int? = 0, //追踪数
     val type: String, //0->游客 1->正式
@@ -22,7 +23,7 @@ data class UserEntity(
         val empty: UserEntity = UserEntity(
             "",
             "", "", "", "",
-            0, 0, 0, "0",
+            0, 0, 0, 0, "0",
             "", "", null, ""
         )
     }

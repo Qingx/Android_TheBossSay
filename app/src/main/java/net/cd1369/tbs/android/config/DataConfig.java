@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.wl.android.lib.config.BaseConfig;
+import cn.wl.android.lib.utils.DateFormat;
 import cn.wl.android.lib.utils.Gsons;
 import cn.wl.android.lib.utils.Times;
 
@@ -147,4 +148,21 @@ public class DataConfig extends BaseConfig {
 
         return time;
     }
+
+    public void setNoticeTime(long time) {
+        putLong("notice_time", time);
+    }
+
+    /**
+     * 检查通知时间, 不要短时间重复提示用户开启通知权限
+     *
+     * @param time
+     * @return
+     */
+    public boolean checkNoticeTime(long time) {
+        long noticeTime = getLong("notice_time", 0L);
+
+        return Math.abs(noticeTime - time) > DateFormat.DAY_1;
+    }
+
 }

@@ -290,6 +290,24 @@ public class BossRepository extends BaseRepository<BossService> {
     }
 
     /**
+     * 取消追踪boss
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> switchPointStatus(String id, boolean target) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("type", 0);
+            jo.put("target", target);
+        });
+
+        return getService().requestArticleOptions(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
      * 获取文章详情
      *
      * @param id

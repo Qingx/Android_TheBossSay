@@ -19,6 +19,7 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
@@ -137,6 +138,10 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         header!!.image_info doClick {
             onClickInfo()
         }
+
+        header?.layout_point doClick {
+
+        }
     }
 
     private fun onShare() {
@@ -202,11 +207,22 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
             header?.text_id?.text = "游客：${tempId.substring(0, 12)}..."
         }
 
+        showNumInfo(entity)
+
+        mAdapter.onRefreshLogin()
+    }
+
+    /**
+     * 更新显示数字信息
+     * @param entity UserEntity?
+     */
+    private fun showNumInfo(entity: UserEntity?) {
+        entity ?: return
+
+        header?.text_point_num?.text = (entity.pointNum ?: 0).toString()
         header?.text_follow_num?.text = entity.traceNum.toString()
         header?.text_history_num?.text = entity.readNum.toString()
         header?.text_favorite_num?.text = entity.collectNum.toString()
-
-        mAdapter.onRefreshLogin()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -217,7 +233,9 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: BossTackEvent) {
         val entity = UserConfig.get().userEntity
-        header?.text_follow_num?.text = entity.traceNum.toString()
+//        header?.text_follow_num?.text = entity.traceNum.toString()
+
+        showNumInfo(entity)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

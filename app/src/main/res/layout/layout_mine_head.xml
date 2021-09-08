@@ -110,7 +110,7 @@
                 app:layout_constraintTop_toBottomOf="@id/text_follow_num" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
+        <View
             android:id="@+id/line_follow"
             android:layout_width="1dp"
             android:layout_height="0dp"
@@ -126,7 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/line_favorite"
+            app:layout_constraintEnd_toStartOf="@id/line_point"
             app:layout_constraintStart_toEndOf="@id/line_follow"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -162,14 +162,65 @@
                 app:layout_constraintTop_toBottomOf="@id/text_favorite_num" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
+        <View
+            android:id="@+id/line_point"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/colorMainLine"
+            app:layout_constraintBottom_toBottomOf="@id/line_follow"
+            app:layout_constraintEnd_toStartOf="@id/layout_point"
+            app:layout_constraintStart_toEndOf="@id/layout_favorite"
+            app:layout_constraintTop_toTopOf="@id/line_follow" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_point"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/line_favorite"
+            app:layout_constraintStart_toEndOf="@id/line_point"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_point_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/text_point"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="4" />
+
+            <TextView
+                android:id="@+id/text_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="今日阅读量"
+                android:textColor="@color/colorTextDarkLight"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_point_num" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
             android:id="@+id/line_favorite"
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@color/colorMainLine"
             app:layout_constraintBottom_toBottomOf="@id/line_follow"
             app:layout_constraintEnd_toStartOf="@id/layout_history"
-            app:layout_constraintStart_toEndOf="@id/layout_favorite"
+            app:layout_constraintStart_toEndOf="@id/layout_point"
             app:layout_constraintTop_toTopOf="@id/line_follow" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

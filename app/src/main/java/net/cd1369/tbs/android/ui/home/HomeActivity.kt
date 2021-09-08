@@ -3,17 +3,21 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
+import cn.wl.android.lib.utils.Times
+import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.AppUtils
 import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.entity.PortEntity
@@ -22,6 +26,8 @@ import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
+import net.cd1369.tbs.android.ui.dialog.ConfirmPhoneDialog
+import net.cd1369.tbs.android.ui.dialog.OpenNoticeDialog
 import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
@@ -143,7 +149,14 @@ class HomeActivity : BaseActivity() {
      * 检查是否有通知权限
      */
     private fun checkNoticeEnable() {
+        val current = Times.current()
+        val areNotificationsEnabled = NotificationManagerCompat
+            .from(mActivity).areNotificationsEnabled()
 
+        if (!areNotificationsEnabled && DataConfig.get().checkNoticeTime(current)) {
+            DataConfig.get().setNoticeTime(current)
+            OpenNoticeDialog.showDialog(supportFragmentManager)
+        }
     }
 
     /**

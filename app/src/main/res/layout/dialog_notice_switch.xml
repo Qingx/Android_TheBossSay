@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ic_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="@dimen/padding_24"
+        android:src="@mipmap/ic_notice"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_12"
+        android:gravity="center"
+        android:text="已关闭boss说的通知权限\n请先到手机设置中开启"
+        android:textColor="@color/md_grey_400"
+        android:textSize="@dimen/font_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_icon" />
+
+    <TextView
+        android:id="@+id/text_cancel"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/padding_24"
+        android:background="@drawable/draw_loadbg_4"
+        android:gravity="center"
+        android:text="稍后再说"
+        android:textColor="@color/colorTextDark"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/text_confirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_hint" />
+
+    <TextView
+        android:id="@+id/text_confirm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/draw_load_blue_4"
+        android:gravity="center"
+        android:text="开启推送"
+        android:textColor="@color/colorWhite"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_cancel"
+        app:layout_constraintTop_toTopOf="@id/text_cancel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

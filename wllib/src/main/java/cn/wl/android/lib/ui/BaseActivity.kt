@@ -208,21 +208,25 @@ abstract class BaseActivity : BaseCommonActivity() {
         doFail: ((fail: ErrorBean) -> Unit)? = null,
         doLast: ((last: Boolean) -> Unit)? = null,
         doSuccess: ((data: Boolean) -> Unit)
-    ) {
+    ): Disposable {
+        var disposable = object : DefResult<Boolean>() {
+            override fun doNext(data: Boolean) {
+                Toasts.show(alertMsg)
+                doSuccess.invoke(data)
+            }
+
+            override fun doError(bean: ErrorBean) =
+                doFail?.invoke(bean) ?: super.doError(bean)
+
+            override fun doFinally(fromMiss: Boolean) =
+                doLast?.invoke(fromMiss) ?: hideLoadingAlert()
+        }
+
         this.compose(bindDestroy())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DefResult<Boolean>() {
-                override fun doNext(data: Boolean) {
-                    Toasts.show(alertMsg)
-                    doSuccess.invoke(data)
-                }
+            .subscribe(disposable)
 
-                override fun doError(bean: ErrorBean) =
-                    doFail?.invoke(bean) ?: super.doError(bean)
-
-                override fun doFinally(fromMiss: Boolean) =
-                    doLast?.invoke(fromMiss) ?: hideLoadingAlert()
-            })
+        return disposable
     }
 
     /**

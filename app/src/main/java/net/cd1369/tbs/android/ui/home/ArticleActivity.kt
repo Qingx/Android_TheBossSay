@@ -11,6 +11,7 @@ import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.activity_article.image_back
 import kotlinx.android.synthetic.main.activity_article.image_head
@@ -21,7 +22,9 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.config.elif
 import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
 import net.cd1369.tbs.android.event.ArticleReadEvent
@@ -34,6 +37,7 @@ import java.lang.ref.WeakReference
 import kotlin.math.max
 
 class ArticleActivity : BaseActivity() {
+    private var mPointDis: Disposable? = null
     private var articleId: String? = null
     private var articleUrl: String? = null
     private var isCollect = false
@@ -43,6 +47,8 @@ class ArticleActivity : BaseActivity() {
 
     private var bossId: String? = null
     private var bossEntity: BossInfoEntity? = null
+    private var mArticleEntity: ArticleEntity? = null
+
     private var isTack = false
     private var mLabels: MutableList<String>? = null
 
@@ -123,6 +129,15 @@ class ArticleActivity : BaseActivity() {
             }
         }
 
+        layout_point doClick {
+            val article = mArticleEntity
+            if (article != null) {
+                switchPointStatus(article)
+            } else {
+                Toasts.show("数据正在加载中...")
+            }
+        }
+
         layout_share doClick {
             onShare()
         }
@@ -151,6 +166,35 @@ class ArticleActivity : BaseActivity() {
         image_back doClick {
             onBackPressed()
         }
+    }
+
+    /**
+     * 切换点赞状态
+     * @param article ArticleEntity
+     */
+    private fun switchPointStatus(article: ArticleEntity) {
+        var target = !(article.isPoint ?: false)
+
+//        showLoadingAlert(target.elif("正在点赞...", "正在取消点赞..."))
+
+        article.isPoint = target
+        showPointStatus(target)
+
+        var alertMsg = target.elif("点赞成功", "取消成功")
+
+        mPointDis?.dispose() // 快速操作取消上一次的操作
+        mPointDis = TbsApi.boss().switchPointStatus(article.id, target)
+            .bindToastSub(alertMsg, doFail = {
+                Toasts.show(it.msg)
+
+                article.isPoint = !target
+                showPointStatus(!target)
+            }) {
+                UserConfig.get().updateUser {
+                    it.pointNum = max((it.pointNum ?: 0) + 1, 0)
+                }
+                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
+            }
     }
 
     override fun onDestroy() {
@@ -190,12 +234,23 @@ class ArticleActivity : BaseActivity() {
             }
     }
 
+    /**
+     * 修改点赞显示状态
+     * @param isPoint Boolean
+     */
+    private fun showPointStatus(isPoint: Boolean) {
+        image_point.isSelected = isPoint
+        text_point.text = isPoint
+            .elif("已点赞", "点赞")
+    }
+
     override fun loadData() {
         super.loadData()
         showContent()
 
         TbsApi.boss().obtainDetailArticle(articleId)
             .bindDefaultSub {
+                mArticleEntity = it
                 isCollect = it.isCollect!!
                 articleTitle = it?.title ?: ""
                 articleDes = it?.descContent ?: ""
@@ -208,6 +263,8 @@ class ArticleActivity : BaseActivity() {
                 text_collect.text = if (isCollect) "已收藏" else "收藏"
 
                 layout_boss.isVisible = true
+
+                showPointStatus(it.isPoint ?: false)
 
                 bossEntity = it.bossVO
                 isTack = it.bossVO.isCollect
