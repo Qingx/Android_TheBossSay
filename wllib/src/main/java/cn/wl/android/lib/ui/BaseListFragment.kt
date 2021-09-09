@@ -18,6 +18,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseQuickAdapter.RequestLoadMoreListener
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
 /**
@@ -136,7 +137,7 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
         doFail: ((error: ErrorBean) -> Unit)? = null,
         doDone: ((fromMiss: Boolean) -> Unit)? = null,
         doNext: (data: List<T>) -> Unit,
-    ) = bindListSub(this, doNext, doFail, doDone)
+    ): Disposable = bindListSub(this, doNext, doFail, doDone)
 
     /**
      * 绑定集合数据
@@ -152,34 +153,37 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
         doNext: Consumer<List<T>>,
         doFail: Consumer<ErrorBean>? = null,
         doDone: Consumer<Boolean>? = null
-    ) {
+    ): Disposable {
+        var value = object : DefResult<List<T>?>() {
+            override fun doError(bean: ErrorBean) {
+                bean.isLoadMore = false
+                bean.mode = ErrorBean.MODE_LIST
+                if (doFail != null) {
+                    doFail.accept(bean)
+                } else {
+                    dispatchDataMiss(bean)
+                }
+            }
+
+            override fun doFinally(fromMiss: Boolean) {
+                if (doDone != null) {
+                    doDone.accept(fromMiss)
+                } else {
+                    hideLoadingAlert()
+                }
+            }
+
+            override fun doNext(data: List<T>?) {
+                showContent()
+                doNext.accept(data)
+                tryCompleteStatus(false)
+            }
+        }
         source.compose(bindDestroy())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DefResult<List<T>?>() {
-                override fun doError(bean: ErrorBean) {
-                    bean.isLoadMore = false
-                    bean.mode = ErrorBean.MODE_LIST
-                    if (doFail != null) {
-                        doFail.accept(bean)
-                    } else {
-                        dispatchDataMiss(bean)
-                    }
-                }
+            .subscribe(value)
 
-                override fun doFinally(fromMiss: Boolean) {
-                    if (doDone != null) {
-                        doDone.accept(fromMiss)
-                    } else {
-                        hideLoadingAlert()
-                    }
-                }
-
-                override fun doNext(data: List<T>?) {
-                    showContent()
-                    doNext.accept(data)
-                    tryCompleteStatus(false)
-                }
-            })
+        return value
     }
 
     protected fun <T> Observable<Page<T>>.bindPageSubscribe(
@@ -205,44 +209,46 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
         doNext: Consumer<List<T>>,
         doFail: Consumer<ErrorBean>? = null,
         doDone: Consumer<Boolean>? = null
-    ) {
+    ): Disposable {
+        var value = object : DefResult<Page<T>>() {
+            override fun doError(bean: ErrorBean) {
+                bean.isLoadMore = loadMore
+                bean.mode = ErrorBean.MODE_MORE
+                if (doFail != null) {
+                    doFail.accept(bean)
+                } else {
+                    if (isEmptyAdapter || !loadMore) {
+                        tryFinishRefresh()
+                        dispatchDataMiss(bean)
+                    } else {
+                        tryFailureStatus()
+                    }
+                }
+            }
+
+            override fun doFinally(fromMiss: Boolean) {
+                if (doDone != null) {
+                    doDone.accept(fromMiss)
+                } else {
+                    hideLoadingAlert()
+                }
+            }
+
+            override fun doNext(data: Page<T>) {
+                showContent()
+
+                // 驱动下一页数据
+                tryNextPageParam(data)
+
+                // 回传处理数据绑定
+                doNext.accept(data.records)
+                tryCompleteStatus(data.hasData())
+            }
+        }
         pageSource.compose(bindDestroy())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DefResult<Page<T>>() {
-                override fun doError(bean: ErrorBean) {
-                    bean.isLoadMore = loadMore
-                    bean.mode = ErrorBean.MODE_MORE
-                    if (doFail != null) {
-                        doFail.accept(bean)
-                    } else {
-                        if (isEmptyAdapter || !loadMore) {
-                            tryFinishRefresh()
-                            dispatchDataMiss(bean)
-                        } else {
-                            tryFailureStatus()
-                        }
-                    }
-                }
-
-                override fun doFinally(fromMiss: Boolean) {
-                    if (doDone != null) {
-                        doDone.accept(fromMiss)
-                    } else {
-                        hideLoadingAlert()
-                    }
-                }
-
-                override fun doNext(data: Page<T>) {
-                    showContent()
-
-                    // 驱动下一页数据
-                    tryNextPageParam(data)
-
-                    // 回传处理数据绑定
-                    doNext.accept(data.records)
-                    tryCompleteStatus(data.hasData())
-                }
-            })
+            .subscribe(value)
+        return value
     }
 
     /**

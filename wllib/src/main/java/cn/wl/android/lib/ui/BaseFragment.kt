@@ -16,6 +16,7 @@ import cn.wl.android.lib.utils.Toasts
 import cn.wl.android.lib.view.holder.BaseHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 
 /**
  * Created by JustBlue on 2019-08-26.
@@ -130,23 +131,26 @@ abstract class BaseFragment : BaseCommonFragment() {
         doFail: ((fail: ErrorBean) -> Unit)? = null,
         doLast: ((last: Boolean) -> Unit)? = null,
         doNext: ((data: T) -> Unit)
-    ) {
+    ): Disposable {
+        var disposable = object : DefResult<T>() {
+            override fun doNext(data: T) {
+                if (tryShowContent) {
+                    showContent()
+                }
+                doNext.invoke(data)
+            }
+
+            override fun doError(bean: ErrorBean) =
+                doFail?.invoke(bean) ?: dispatchDataMiss(bean)
+
+            override fun doFinally(fromMiss: Boolean) =
+                doLast?.invoke(fromMiss) ?: hideLoadingAlert()
+        }
         this.compose(bindDestroy())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DefResult<T>() {
-                override fun doNext(data: T) {
-                    if (tryShowContent) {
-                        showContent()
-                    }
-                    doNext.invoke(data)
-                }
+            .subscribe(disposable)
 
-                override fun doError(bean: ErrorBean) =
-                    doFail?.invoke(bean) ?: dispatchDataMiss(bean)
-
-                override fun doFinally(fromMiss: Boolean) =
-                    doLast?.invoke(fromMiss) ?: hideLoadingAlert()
-            })
+        return disposable;
     }
 
     /**
@@ -166,21 +170,25 @@ abstract class BaseFragment : BaseCommonFragment() {
         doFail: ((fail: ErrorBean) -> Unit)? = null,
         doLast: ((last: Boolean) -> Unit)? = null,
         doSuccess: ((data: Boolean) -> Unit)
-    ) {
+    ): Disposable {
+        var disposable = object : DefResult<Boolean>() {
+            override fun doNext(data: Boolean) {
+                Toasts.show(alertMsg)
+                doSuccess.invoke(data)
+            }
+
+            override fun doError(bean: ErrorBean) =
+                doFail?.invoke(bean) ?: super.doError(bean)
+
+            override fun doFinally(fromMiss: Boolean) =
+                doLast?.invoke(fromMiss) ?: hideLoadingAlert()
+        }
+
         this.compose(bindDestroy())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DefResult<Boolean>() {
-                override fun doNext(data: Boolean) {
-                    Toasts.show(alertMsg)
-                    doSuccess.invoke(data)
-                }
+            .subscribe(disposable)
 
-                override fun doError(bean: ErrorBean) =
-                    doFail?.invoke(bean) ?: super.doError(bean)
-
-                override fun doFinally(fromMiss: Boolean) =
-                    doLast?.invoke(fromMiss) ?: hideLoadingAlert()
-            })
+        return disposable
     }
 
     /**
@@ -198,16 +206,20 @@ abstract class BaseFragment : BaseCommonFragment() {
         doFail: ((fail: ErrorBean) -> Unit)? = null,
         doLast: ((last: Boolean) -> Unit)? = null,
         doNext: ((data: T) -> Unit)
-    ) {
+    ): Disposable {
+        var disposable = object : DefResult<T>() {
+            override fun doNext(data: T) = doNext.invoke(data)
+            override fun doError(bean: ErrorBean) =
+                doFail?.invoke(bean) ?: Toasts.show(bean.msg)
+
+            override fun doFinally(fromMiss: Boolean) =
+                doLast?.invoke(fromMiss) ?: hideLoadingAlert()
+        }
+
         this.compose(bindDestroy())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DefResult<T>() {
-                override fun doNext(data: T) = doNext.invoke(data)
-                override fun doError(bean: ErrorBean) =
-                    doFail?.invoke(bean) ?: Toasts.show(bean.msg)
+            .subscribe(disposable)
 
-                override fun doFinally(fromMiss: Boolean) =
-                    doLast?.invoke(fromMiss) ?: hideLoadingAlert()
-            })
+        return disposable
     }
 }
