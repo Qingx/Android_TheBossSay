@@ -207,22 +207,12 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
             header?.text_id?.text = "游客：${tempId.substring(0, 12)}..."
         }
 
-        showNumInfo(entity)
-
-        mAdapter.onRefreshLogin()
-    }
-
-    /**
-     * 更新显示数字信息
-     * @param entity UserEntity?
-     */
-    private fun showNumInfo(entity: UserEntity?) {
-        entity ?: return
-
-        header?.text_point_num?.text = (entity.pointNum ?: 0).toString()
+        header?.text_point_num?.text = entity.pointNum.toString()
         header?.text_follow_num?.text = entity.traceNum.toString()
         header?.text_history_num?.text = entity.readNum.toString()
         header?.text_favorite_num?.text = entity.collectNum.toString()
+
+        mAdapter.onRefreshLogin()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -233,9 +223,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: BossTackEvent) {
         val entity = UserConfig.get().userEntity
-//        header?.text_follow_num?.text = entity.traceNum.toString()
-
-        showNumInfo(entity)
+        header?.text_follow_num?.text = entity.traceNum.toString()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -247,15 +235,19 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: ArticleReadEvent) {
         val entity = UserConfig.get().userEntity
-//        header?.text_history_num?.text = entity.readNum.toString()
-
-        showNumInfo(entity)
+        header?.text_history_num?.text = entity.readNum.toString()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: ArticleCollectEvent) {
         val entity = UserConfig.get().userEntity
         header?.text_favorite_num?.text = entity.collectNum.toString()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: ArticlePointEvent) {
+        val entity = UserConfig.get().userEntity
+        header?.text_point_num?.text = entity.pointNum.toString()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

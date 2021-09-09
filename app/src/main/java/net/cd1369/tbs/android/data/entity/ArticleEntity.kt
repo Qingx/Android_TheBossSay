@@ -16,7 +16,7 @@ data class ArticleEntity(
     val id: String,
     var isCollect: Boolean? = false,
     var isPoint: Boolean? = false,
-    val point: Int? = 0,
+    var point: Int? = 0,
     val status: Int,
     val title: String,
     val originLink: String = "暂无",

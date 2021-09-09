@@ -25,6 +25,7 @@ import net.cd1369.tbs.android.data.db.BossDaoManager
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
+import net.cd1369.tbs.android.event.ArticlePointEvent
 import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.ui.dialog.*
@@ -39,6 +40,7 @@ class ArticleActivity : BaseActivity() {
     private var articleId: String? = null
     private var articleUrl: String? = null
     private var isCollect = false
+    private var isPoint = false
     private var articleTitle: String? = null
     private var articleDes: String? = null
     private var articleCover: String = ""
@@ -137,12 +139,7 @@ class ArticleActivity : BaseActivity() {
         }
 
         layout_point doClick {
-            val article = mArticleEntity
-            if (article != null) {
-                switchPointStatus(article)
-            } else {
-                Toasts.show("数据正在加载中...")
-            }
+            switchPointStatus()
         }
 
         layout_share doClick {
@@ -177,31 +174,27 @@ class ArticleActivity : BaseActivity() {
 
     /**
      * 切换点赞状态
-     * @param article ArticleEntity
      */
-    private fun switchPointStatus(article: ArticleEntity) {
-        var target = !(article.isPoint ?: false)
-
-//        showLoadingAlert(target.elif("正在点赞...", "正在取消点赞..."))
-
-        article.isPoint = target
-        showPointStatus(target)
-
-        var alertMsg = target.elif("点赞成功", "取消成功")
+    private fun switchPointStatus() {
+        isPoint = !isPoint
+        image_point.isSelected = isPoint
+        if (isPoint) {
+            mArticleEntity!!.point = mArticleEntity!!.point!! + 1
+        } else {
+            mArticleEntity!!.point = mArticleEntity!!.point!! - 1
+        }
+        text_point.text = mArticleEntity!!.point!!.toString()
 
         mPointDis?.dispose() // 快速操作取消上一次的操作
-        mPointDis = TbsApi.boss().switchPointStatus(article.id, target)
-            .bindToastSub(alertMsg, doFail = {
-                Toasts.show(it.msg)
+        mPointDis = TbsApi.boss().switchPointStatus(mArticleEntity?.id, isPoint)
+            .bindDefaultSub({
 
-                article.isPoint = !target
-                showPointStatus(!target)
-            }) {
+            }, {
                 UserConfig.get().updateUser {
-                    it.pointNum = max((it.pointNum ?: 0) + target.elif(1, -1), 0)
+                    it.pointNum = max((it.pointNum ?: 0) + isPoint.elif(1, -1), 0)
                 }
-                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
-            }
+                eventBus.post(ArticlePointEvent(articleId!!, isPoint))
+            }, {})
     }
 
     override fun onDestroy() {
@@ -241,16 +234,6 @@ class ArticleActivity : BaseActivity() {
             }
     }
 
-    /**
-     * 修改点赞显示状态
-     * @param isPoint Boolean
-     */
-    private fun showPointStatus(isPoint: Boolean) {
-        image_point.isSelected = isPoint
-        text_point.text = isPoint
-            .elif("已点赞", "点赞")
-    }
-
     override fun loadData() {
         super.loadData()
         showContent()
@@ -259,6 +242,7 @@ class ArticleActivity : BaseActivity() {
             .bindDefaultSub {
                 mArticleEntity = it
                 isCollect = it.isCollect!!
+                isPoint = it.isPoint!!
                 articleTitle = it?.title ?: ""
                 articleDes = it?.descContent ?: ""
                 if (!it.files.isNullOrEmpty()) {
@@ -267,11 +251,11 @@ class ArticleActivity : BaseActivity() {
 
                 image_collect.isSelected = isCollect
                 text_collect.isSelected = isCollect
-                text_collect.text = if (isCollect) "已收藏" else "收藏"
+                image_point.isSelected = isPoint
+                text_collect.text = it.collect.toString()
+                text_point.text = it.point.toString()
 
                 layout_boss.isVisible = true
-
-                showPointStatus(it.isPoint ?: false)
 
                 bossEntity = it.bossVO
                 isTack = it.bossVO.isCollect
@@ -295,7 +279,8 @@ class ArticleActivity : BaseActivity() {
                 this@ArticleActivity.image_collect.isSelected = false
                 this@ArticleActivity.text_collect.isSelected =
                     false
-                this@ArticleActivity.text_collect.text = "收藏"
+                this@ArticleActivity.text_collect.text =
+                    (mArticleEntity!!.collect!! - 1).toString()
 
                 UserConfig.get().updateUser {
                     it.collectNum = max((it.collectNum ?: 0) - 1, 0)
@@ -339,7 +324,8 @@ class ArticleActivity : BaseActivity() {
                                                         true
                                                     this@ArticleActivity.text_collect.isSelected =
                                                         true
-                                                    this@ArticleActivity.text_collect.text = "已收藏"
+                                                    this@ArticleActivity.text_collect.text =
+                                                        (mArticleEntity!!.collect!! + 1).toString()
 
                                                     UserConfig.get().updateUser {
                                                         it.collectNum =
@@ -367,7 +353,8 @@ class ArticleActivity : BaseActivity() {
                                     this@ArticleActivity.image_collect.isSelected = true
                                     this@ArticleActivity.text_collect.isSelected =
                                         true
-                                    this@ArticleActivity.text_collect.text = "已收藏"
+                                    this@ArticleActivity.text_collect.text =
+                                        (mArticleEntity!!.collect!! + 1).toString()
 
                                     UserConfig.get().updateUser {
                                         it.collectNum =

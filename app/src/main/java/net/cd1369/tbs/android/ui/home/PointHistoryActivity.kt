@@ -15,9 +15,12 @@ import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.event.ArticlePointEvent
 import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.PointHistoryAdapter
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.max
 
 /**
@@ -56,6 +59,8 @@ class PointHistoryActivity : BaseListActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        eventBus.register(this)
+
         text_title.text = "点赞记录"
 
         layout_refresh.setRefreshHeader(ClassicsHeader(mActivity))
@@ -93,7 +98,7 @@ class PointHistoryActivity : BaseListActivity() {
      * @param article ArticleEntity
      */
     private fun cancelPointStatus(articleId: String, doRemove: (id: String) -> Unit) {
-        showLoadingAlert("正在取消点赞...")
+        showLoadingAlert("正在取消...")
 
         TbsApi.boss().switchPointStatus(articleId, false)
             .bindToastSub("取消成功") {
@@ -102,7 +107,13 @@ class PointHistoryActivity : BaseListActivity() {
                 UserConfig.get().updateUser {
                     it.pointNum = max((it.pointNum ?: 0) - 1, 0)
                 }
-                eventBus.post(ArticleReadEvent(articleId))
+                val index = mAdapter.data.indexOfFirst {
+                    it.articleId == articleId
+                }
+                mAdapter.remove(index)
+                mAdapter.notifyDataSetChanged()
+
+                eventBus.post(ArticlePointEvent(articleId, doPoint = false, fromHistory = true))
             }
     }
 
@@ -123,6 +134,24 @@ class PointHistoryActivity : BaseListActivity() {
                     mAdapter.setNewData(it)
                 }
             }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: ArticlePointEvent) {
+        if (!event.fromHistory) {
+            if (event.doPoint) {
+                layout_refresh.autoRefresh()
+            } else {
+                val index = mAdapter.data.indexOfFirst {
+                    it.articleId == event.id
+                }
+
+                if (index != -1) {
+                    mAdapter.remove(index)
+                    mAdapter.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
 }
