@@ -32,18 +32,16 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
         public final static Property DescContent = new Property(2, String.class, "descContent", false, "DESCONTENT");
         public final static Property IsCollect = new Property(3, boolean.class, "isCollect", false, "ISCOLLECT");
         public final static Property IsRead = new Property(4, boolean.class, "isRead", false, "ISREAD");
-        public final static Property IsPoint = new Property(5, boolean.class, "isPoint", false, "ISPOINT");
-        public final static Property ReadCount = new Property(6, int.class, "readCount", false, "READCOUNT");
-        public final static Property Collect = new Property(7, int.class, "collect", false, "COLLECT");
-        public final static Property Point = new Property(8, int.class, "point", false, "POINT");
-        public final static Property ReleaseTime = new Property(9, Long.class, "releaseTime", false, "RELEASETIME");
-        public final static Property ArticleTime = new Property(10, Long.class, "articleTime", false, "ARTICLETIME");
-        public final static Property Files = new Property(11, String.class, "files", false, "FILES");
-        public final static Property BossId = new Property(12, String.class, "bossId", false, "BOSSID");
-        public final static Property BossName = new Property(13, String.class, "bossName", false, "NAME");
-        public final static Property BossHead = new Property(14, String.class, "bossHead", false, "BOSSHEAD");
-        public final static Property BossRole = new Property(15, String.class, "bossRole", false, "BOSSROLE");
-        public final static Property RecommendType = new Property(16, String.class, "recommendType", false, "RECOMMENDTYPE");
+        public final static Property ReadCount = new Property(5, int.class, "readCount", false, "READCOUNT");
+        public final static Property Collect = new Property(6, int.class, "collect", false, "COLLECT");
+        public final static Property ReleaseTime = new Property(7, Long.class, "releaseTime", false, "RELEASETIME");
+        public final static Property ArticleTime = new Property(8, Long.class, "articleTime", false, "ARTICLETIME");
+        public final static Property Files = new Property(9, String.class, "files", false, "FILES");
+        public final static Property BossId = new Property(10, String.class, "bossId", false, "BOSSID");
+        public final static Property BossName = new Property(11, String.class, "bossName", false, "NAME");
+        public final static Property BossHead = new Property(12, String.class, "bossHead", false, "BOSSHEAD");
+        public final static Property BossRole = new Property(13, String.class, "bossRole", false, "BOSSROLE");
+        public final static Property RecommendType = new Property(14, String.class, "recommendType", false, "RECOMMENDTYPE");
     }
 
     private final StringConvert filesConverter = new StringConvert();
@@ -65,18 +63,16 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
                 "\"DESCONTENT\" TEXT," + // 2: descContent
                 "\"ISCOLLECT\" INTEGER NOT NULL ," + // 3: isCollect
                 "\"ISREAD\" INTEGER NOT NULL ," + // 4: isRead
-                "\"ISPOINT\" INTEGER NOT NULL ," + // 5: isPoint
-                "\"READCOUNT\" INTEGER NOT NULL ," + // 6: readCount
-                "\"COLLECT\" INTEGER NOT NULL ," + // 7: collect
-                "\"POINT\" INTEGER NOT NULL ," + // 8: point
-                "\"RELEASETIME\" INTEGER," + // 9: releaseTime
-                "\"ARTICLETIME\" INTEGER," + // 10: articleTime
-                "\"FILES\" TEXT," + // 11: files
-                "\"BOSSID\" TEXT," + // 12: bossId
-                "\"NAME\" TEXT," + // 13: bossName
-                "\"BOSSHEAD\" TEXT," + // 14: bossHead
-                "\"BOSSROLE\" TEXT," + // 15: bossRole
-                "\"RECOMMENDTYPE\" TEXT);"); // 16: recommendType
+                "\"READCOUNT\" INTEGER NOT NULL ," + // 5: readCount
+                "\"COLLECT\" INTEGER NOT NULL ," + // 6: collect
+                "\"RELEASETIME\" INTEGER," + // 7: releaseTime
+                "\"ARTICLETIME\" INTEGER," + // 8: articleTime
+                "\"FILES\" TEXT," + // 9: files
+                "\"BOSSID\" TEXT," + // 10: bossId
+                "\"NAME\" TEXT," + // 11: bossName
+                "\"BOSSHEAD\" TEXT," + // 12: bossHead
+                "\"BOSSROLE\" TEXT," + // 13: bossRole
+                "\"RECOMMENDTYPE\" TEXT);"); // 14: recommendType
     }
 
     /** Drops the underlying database table. */
@@ -105,49 +101,47 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
         }
         stmt.bindLong(4, entity.getIsCollect() ? 1L: 0L);
         stmt.bindLong(5, entity.getIsRead() ? 1L: 0L);
-        stmt.bindLong(6, entity.getIsPoint() ? 1L: 0L);
-        stmt.bindLong(7, entity.getReadCount());
-        stmt.bindLong(8, entity.getCollect());
-        stmt.bindLong(9, entity.getPoint());
+        stmt.bindLong(6, entity.getReadCount());
+        stmt.bindLong(7, entity.getCollect());
  
         Long releaseTime = entity.getReleaseTime();
         if (releaseTime != null) {
-            stmt.bindLong(10, releaseTime);
+            stmt.bindLong(8, releaseTime);
         }
  
         Long articleTime = entity.getArticleTime();
         if (articleTime != null) {
-            stmt.bindLong(11, articleTime);
+            stmt.bindLong(9, articleTime);
         }
  
         List files = entity.getFiles();
         if (files != null) {
-            stmt.bindString(12, filesConverter.convertToDatabaseValue(files));
+            stmt.bindString(10, filesConverter.convertToDatabaseValue(files));
         }
  
         String bossId = entity.getBossId();
         if (bossId != null) {
-            stmt.bindString(13, bossId);
+            stmt.bindString(11, bossId);
         }
  
         String bossName = entity.getBossName();
         if (bossName != null) {
-            stmt.bindString(14, bossName);
+            stmt.bindString(12, bossName);
         }
  
         String bossHead = entity.getBossHead();
         if (bossHead != null) {
-            stmt.bindString(15, bossHead);
+            stmt.bindString(13, bossHead);
         }
  
         String bossRole = entity.getBossRole();
         if (bossRole != null) {
-            stmt.bindString(16, bossRole);
+            stmt.bindString(14, bossRole);
         }
  
         String recommendType = entity.getRecommendType();
         if (recommendType != null) {
-            stmt.bindString(17, recommendType);
+            stmt.bindString(15, recommendType);
         }
     }
 
@@ -171,49 +165,47 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
         }
         stmt.bindLong(4, entity.getIsCollect() ? 1L: 0L);
         stmt.bindLong(5, entity.getIsRead() ? 1L: 0L);
-        stmt.bindLong(6, entity.getIsPoint() ? 1L: 0L);
-        stmt.bindLong(7, entity.getReadCount());
-        stmt.bindLong(8, entity.getCollect());
-        stmt.bindLong(9, entity.getPoint());
+        stmt.bindLong(6, entity.getReadCount());
+        stmt.bindLong(7, entity.getCollect());
  
         Long releaseTime = entity.getReleaseTime();
         if (releaseTime != null) {
-            stmt.bindLong(10, releaseTime);
+            stmt.bindLong(8, releaseTime);
         }
  
         Long articleTime = entity.getArticleTime();
         if (articleTime != null) {
-            stmt.bindLong(11, articleTime);
+            stmt.bindLong(9, articleTime);
         }
  
         List files = entity.getFiles();
         if (files != null) {
-            stmt.bindString(12, filesConverter.convertToDatabaseValue(files));
+            stmt.bindString(10, filesConverter.convertToDatabaseValue(files));
         }
  
         String bossId = entity.getBossId();
         if (bossId != null) {
-            stmt.bindString(13, bossId);
+            stmt.bindString(11, bossId);
         }
  
         String bossName = entity.getBossName();
         if (bossName != null) {
-            stmt.bindString(14, bossName);
+            stmt.bindString(12, bossName);
         }
  
         String bossHead = entity.getBossHead();
         if (bossHead != null) {
-            stmt.bindString(15, bossHead);
+            stmt.bindString(13, bossHead);
         }
  
         String bossRole = entity.getBossRole();
         if (bossRole != null) {
-            stmt.bindString(16, bossRole);
+            stmt.bindString(14, bossRole);
         }
  
         String recommendType = entity.getRecommendType();
         if (recommendType != null) {
-            stmt.bindString(17, recommendType);
+            stmt.bindString(15, recommendType);
         }
     }
 
@@ -230,18 +222,16 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // descContent
             cursor.getShort(offset + 3) != 0, // isCollect
             cursor.getShort(offset + 4) != 0, // isRead
-            cursor.getShort(offset + 5) != 0, // isPoint
-            cursor.getInt(offset + 6), // readCount
-            cursor.getInt(offset + 7), // collect
-            cursor.getInt(offset + 8), // point
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // releaseTime
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // articleTime
-            cursor.isNull(offset + 11) ? null : filesConverter.convertToEntityProperty(cursor.getString(offset + 11)), // files
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // bossId
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // bossName
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // bossHead
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // bossRole
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16) // recommendType
+            cursor.getInt(offset + 5), // readCount
+            cursor.getInt(offset + 6), // collect
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // releaseTime
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // articleTime
+            cursor.isNull(offset + 9) ? null : filesConverter.convertToEntityProperty(cursor.getString(offset + 9)), // files
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // bossId
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // bossName
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // bossHead
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // bossRole
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // recommendType
         );
         return entity;
     }
@@ -253,18 +243,16 @@ public class ArticleSimpleModelDao extends AbstractDao<ArticleSimpleModel, Long>
         entity.setDescContent(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setIsCollect(cursor.getShort(offset + 3) != 0);
         entity.setIsRead(cursor.getShort(offset + 4) != 0);
-        entity.setIsPoint(cursor.getShort(offset + 5) != 0);
-        entity.setReadCount(cursor.getInt(offset + 6));
-        entity.setCollect(cursor.getInt(offset + 7));
-        entity.setPoint(cursor.getInt(offset + 8));
-        entity.setReleaseTime(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
-        entity.setArticleTime(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setFiles(cursor.isNull(offset + 11) ? null : filesConverter.convertToEntityProperty(cursor.getString(offset + 11)));
-        entity.setBossId(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setBossName(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setBossHead(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setBossRole(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setRecommendType(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setReadCount(cursor.getInt(offset + 5));
+        entity.setCollect(cursor.getInt(offset + 6));
+        entity.setReleaseTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setArticleTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setFiles(cursor.isNull(offset + 9) ? null : filesConverter.convertToEntityProperty(cursor.getString(offset + 9)));
+        entity.setBossId(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setBossName(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setBossHead(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setBossRole(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setRecommendType(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
      }
     
     @Override
