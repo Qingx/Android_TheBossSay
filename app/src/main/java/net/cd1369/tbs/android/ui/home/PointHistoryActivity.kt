@@ -95,7 +95,6 @@ class PointHistoryActivity : BaseListActivity() {
 
     /**
      * 切换点赞状态
-     * @param article ArticleEntity
      */
     private fun cancelPointStatus(articleId: String, doRemove: (id: String) -> Unit) {
         showLoadingAlert("正在取消...")
