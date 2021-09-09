@@ -31,14 +31,15 @@
 
         <TextView
             android:id="@+id/text_square"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:gravity="start"
-            android:singleLine="true"
+            android:gravity="start|center_vertical"
             android:text="广场"
             android:textColor="@color/color_black_gray"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/image_search"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/text_follow"
             tools:textSize="20dp" />
 

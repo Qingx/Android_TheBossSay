@@ -39,6 +39,8 @@ class HomeSpeechFragment : BaseFragment() {
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
+        text_follow.text = "追踪"
+        text_square.text = "广场"
         text_follow.isSelected = true
         text_follow.textSize = 24f
         text_follow.paint.isFakeBoldText = true

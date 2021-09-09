@@ -91,6 +91,7 @@ class PointHistoryActivity : BaseListActivity() {
 
     override fun showEmptyData(bean: ErrorBean) {
 //        super.showEmptyData(bean)
+        showContent()
     }
 
     /**
@@ -106,12 +107,6 @@ class PointHistoryActivity : BaseListActivity() {
                 UserConfig.get().updateUser {
                     it.pointNum = max((it.pointNum ?: 0) - 1, 0)
                 }
-                val index = mAdapter.data.indexOfFirst {
-                    it.articleId == articleId
-                }
-                mAdapter.remove(index)
-                mAdapter.notifyDataSetChanged()
-
                 eventBus.post(ArticlePointEvent(articleId, doPoint = false, fromHistory = true))
             }
     }

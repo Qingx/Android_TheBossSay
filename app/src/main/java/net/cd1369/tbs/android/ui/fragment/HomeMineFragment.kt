@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.wl.android.lib.ui.BaseFragment
+import cn.wl.android.lib.utils.OnClick
 import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
 import com.advance.AdvanceBannerListener
@@ -140,7 +141,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         }
 
         header?.layout_point doClick {
-            PointHistoryActivity.start(mActivity)
+            onClickPoint()
         }
     }
 
@@ -183,6 +184,16 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     private fun onClickHistory() {
         if (UserConfig.get().loginStatus) {
             MineHistoryAllActivity.start(mActivity)
+        } else {
+            Toasts.show("请先登录！")
+            LoginPhoneWechatActivity.start(mActivity)
+        }
+    }
+
+    //点击历史记录
+    private fun onClickPoint() {
+        if (UserConfig.get().loginStatus) {
+            PointHistoryActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
             LoginPhoneWechatActivity.start(mActivity)
