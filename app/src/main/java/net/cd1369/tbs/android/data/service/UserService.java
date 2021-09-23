@@ -42,6 +42,14 @@ public interface UserService {
     Observable<WLData<TokenEntity>> obtainRefresh();
 
     /**
+     * 刷新用户信息
+     *
+     * @return
+     */
+    @GET("/api/account/tokenRefresh/{id}")
+    Observable<WLData<TokenEntity>> obtainRefresh(@Path("id") String id);
+
+    /**
      * 发送验证码
      *
      * @param body

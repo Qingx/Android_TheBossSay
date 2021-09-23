@@ -88,7 +88,17 @@ public class TbsApp extends MultiDexApplication {
         GlideApp.DRAW_FAILURE = R.mipmap.ic_default_img;
         GlideApp.DRAW_DEFAULT = R.mipmap.ic_default_img;
 
-        BaseApi.mProvider = () -> RetryHolder.mTempRetry;
+        BaseApi.mProvider = new BaseApi.RetryProvider() {
+            @Override
+            public Observable<String> retryToken() {
+                return RetryHolder.mTempRetry;
+            }
+
+            @Override
+            public Observable<String> refreshToken() {
+                return RetryHolder.mRefreshRetry;
+            }
+        };
 
         BaseCommonActivity.mCall = new OnActivityCallback() {
             @Override
@@ -147,9 +157,8 @@ public class TbsApp extends MultiDexApplication {
 
     /**
      * @param entity
-     * @param tempId
      */
-    public static void doUserRefresh(TokenEntity entity, String tempId) {
+    public static void doUserRefresh(TokenEntity entity) {
         HttpConfig.saveToken(entity.getToken());
         UserConfig.get().setUserEntity(entity.getUserInfo());
     }
@@ -164,9 +173,18 @@ public class TbsApp extends MultiDexApplication {
                         tempId = Tools.INSTANCE.createTempId();
                     }
 
-                    String finalTempId = tempId;
                     return TbsApi.INSTANCE.user().obtainTempLogin(tempId)
-                            .doOnNext(t -> doUserRefresh(t, finalTempId))
+                            .doOnNext(t -> doUserRefresh(t))
+                            .map(t -> t.getToken());
+                })
+                .retry(3)
+                .replay(1)
+                .refCount(16, TimeUnit.SECONDS);
+
+        public static final Observable<String> mRefreshRetry = Observable
+                .defer(() -> {
+                    return TbsApi.INSTANCE.user().refreshToken()
+                            .doOnNext(t -> doUserRefresh(t))
                             .map(t -> t.getToken());
                 })
                 .retry(3)

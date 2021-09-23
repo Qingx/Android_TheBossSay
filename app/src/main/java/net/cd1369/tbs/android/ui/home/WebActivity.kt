@@ -41,7 +41,6 @@ class WebActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         text_title.text = title
 
-
         web_view.loadUrl(url)
 
         val webSettings = web_view.settings

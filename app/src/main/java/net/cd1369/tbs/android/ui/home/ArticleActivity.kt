@@ -105,7 +105,12 @@ class ArticleActivity : BaseActivity() {
         androidCallback.formBoss = fromBoss
         androidCallback.mAct = WeakReference(this)
 
+        val jumpCallback = JumpCallback()
+//        androidCallback.formBoss = fromBoss
+        jumpCallback.mAct = WeakReference(this)
+
         web_view.addJavascriptInterface(androidCallback, "RecommendArticle")
+        web_view.addJavascriptInterface(jumpCallback, "JumpArticle")
 
         web_view.webViewClient = (object : WebViewClient() {
 
