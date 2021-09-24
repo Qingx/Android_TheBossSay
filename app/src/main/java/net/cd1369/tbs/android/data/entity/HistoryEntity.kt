@@ -11,5 +11,6 @@ data class HistoryEntity(
     val bossHead: String,
     val bossName: String,
     val id: String,
-    val updateTime: Long
+    val updateTime: Long,
+    val hidden: Boolean
 )

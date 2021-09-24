@@ -20,7 +20,8 @@ data class ArticleEntity(
     val status: Int,
     val title: String,
     val originLink: String = "暂无",
-    var isRead: Boolean = false
+    var isRead: Boolean = false,
+    val hidden: Boolean
 ) : MultiItemEntity, Serializable {
 
     fun getTime(): Long = articleTime ?: createTime ?: 0L
@@ -72,7 +73,8 @@ data class ArticleEntity(
             status = 0,
             title = "",
             originLink = "",
-            isRead = false
+            isRead = false,
+            hidden = false
         )
 
         const val AD_TYPE = 100
@@ -95,7 +97,8 @@ data class ArticleEntity(
             status = 0,
             title = "",
             originLink = "",
-            isRead = false
+            isRead = false,
+            hidden = false
         )
     }
 

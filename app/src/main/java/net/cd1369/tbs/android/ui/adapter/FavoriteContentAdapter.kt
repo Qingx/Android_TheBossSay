@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -19,11 +20,18 @@ abstract class FavoriteContentAdapter :
     BaseQuickAdapter<ArticleEntity, BaseViewHolder>(R.layout.item_favorite_history_content) {
 
     override fun convert(helper: BaseViewHolder, item: ArticleEntity) {
-
-        helper.V.text_title.text = item.title
+        if (item.hidden) {
+            helper.V.isSelected = false
+            helper.V.text_time.isVisible = false
+            helper.V.text_title.text = "Boss已下架，内容不予显示"
+        } else {
+            helper.V.isSelected = true
+            helper.V.text_time.isVisible = true
+            helper.V.text_title.text = item.title
+            helper.V.text_time.text = getArticleItemTime(item.getTime())
+        }
 
         helper.V.text_name.text = item.bossVO.name
-        helper.V.text_time.text = getArticleItemTime(item.getTime())
         GlideApp.display(item.bossVO.head, helper.V.image_head)
 
         helper.V.text_delete doClick {
@@ -31,7 +39,9 @@ abstract class FavoriteContentAdapter :
         }
 
         helper.V.layout_content doClick {
-            onContentClick(item)
+            if (!item.hidden) {
+                onContentClick(item)
+            }
         }
     }
 

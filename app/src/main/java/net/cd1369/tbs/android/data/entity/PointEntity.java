@@ -16,6 +16,7 @@ public class PointEntity {
     private long createTime;
     private long updateTime;
     private String articleContent;
+    private boolean hidden;
 
     public String getId() {
         return id;
@@ -97,6 +98,14 @@ public class PointEntity {
         this.articleContent = articleContent;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,7 +132,7 @@ public class PointEntity {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", articleContent='" + articleContent + '\'' +
+                ", hidden=" + hidden +
                 '}';
     }
-
 }
