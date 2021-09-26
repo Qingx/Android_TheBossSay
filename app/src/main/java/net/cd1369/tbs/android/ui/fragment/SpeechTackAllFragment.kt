@@ -187,9 +187,12 @@ class SpeechTackAllFragment : BaseListFragment() {
 
                 TbsApi.boss().obtainTackArticle(mLabel, pageParam)
             }.bindPageSubscribe(loadMore = false, doNext = {
-                ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                DataConfig.get().tackTotalNum = pageParam!!.total
-                DataConfig.get().hasData = true
+                try {
+                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
+                    DataConfig.get().tackTotalNum = pageParam!!.total
+                    DataConfig.get().hasData = true
+                } catch (e: Exception) {
+                }
 
                 headerView!!.text_num.text = "共${pageParam!!.total}篇"
 

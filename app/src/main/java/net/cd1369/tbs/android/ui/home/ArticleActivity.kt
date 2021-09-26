@@ -78,9 +78,16 @@ class ArticleActivity : BaseActivity() {
         val userEntity = UserConfig.get().userEntity
 
         articleId = intent.getStringExtra("articleId") as String
-        articleUrl = "${WLConfig.getBaseUrl()}#/article?" +
-                "id=$articleId" +
-                "&version=${userEntity?.version ?: "1000"}"
+
+        if (WLConfig.isDebug()) {
+            articleUrl = "http://192.168.1.85:9531/#/article?" +
+                    "id=$articleId" +
+                    "&version=${userEntity?.version ?: "1000"}"
+        } else {
+            articleUrl = "${WLConfig.getBaseUrl()}#/article?" +
+                    "id=$articleId" +
+                    "&version=${userEntity?.version ?: "1000"}"
+        }
 
         fromBoss = intent.getBooleanExtra("fromBoss", false)
     }
