@@ -1,5 +1,6 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -21,15 +22,26 @@ abstract class PointHistoryAdapter() :
     BaseQuickAdapter<PointEntity, BaseViewHolder>(R.layout.item_point_history) {
 
     override fun convert(helper: BaseViewHolder, item: PointEntity) {
-        helper.V.text_title.text = item.articleTitle
+        if (item.isHidden) {
+            helper.V.isSelected = false
+            helper.V.text_time.isVisible = false
+            helper.V.text_title.text = "Boss已下架，内容不予显示"
+        } else {
+            helper.V.isSelected = true
+            helper.V.text_time.isVisible = true
+            helper.V.text_title.text = item.articleTitle
+            helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
+        }
+
         helper.V.text_delete.text = "删除"
 
         helper.V.text_name.text = item.bossName
-        helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
         GlideApp.display(item.bossHead, helper.V.image_head)
 
         helper.V.layout_content doClick {
-            onContentClick(item.articleId)
+            if (!item.isHidden) {
+                onContentClick(item.articleId)
+            }
         }
 
         helper.V.text_delete doClick {

@@ -78,7 +78,7 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.PointHistoryActivity"></activity>
+        <activity android:name=".ui.home.PointHistoryActivity" />
         <activity android:name=".ui.start.TempActivity" />
         <activity android:name=".ui.test.TestActivity" />
 

@@ -30,7 +30,6 @@ import kotlin.math.max
  * @desc 点赞历史界面
  */
 class PointHistoryActivity : BaseListActivity() {
-
     private lateinit var mAdapter: PointHistoryAdapter
     private var needLoading = true
 
