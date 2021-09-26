@@ -1,13 +1,17 @@
 package net.cd1369.tbs.android.data.repository;
 
 
+import android.text.TextUtils;
+
 import net.cd1369.tbs.android.config.DataConfig;
 import net.cd1369.tbs.android.config.TbsApi;
+import net.cd1369.tbs.android.config.UserConfig;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.PortEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
+import net.cd1369.tbs.android.data.entity.UserEntity;
 import net.cd1369.tbs.android.data.entity.VersionEntity;
 import net.cd1369.tbs.android.data.service.UserService;
 
@@ -17,6 +21,7 @@ import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseApi;
 import cn.wl.android.lib.data.repository.BaseRepository;
+import cn.wl.android.lib.miss.LoginMiss;
 import cn.wl.android.lib.utils.Lists;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -55,6 +60,24 @@ public class UserRepository extends BaseRepository<UserService> {
      */
     public Observable<TokenEntity> obtainRefreshUser() {
         return getService().obtainRefresh()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 刷新用户信息
+     *
+     * @return
+     */
+    public Observable<TokenEntity> refreshToken() {
+        UserEntity entity = UserConfig.get().getUserEntity();
+        String id = entity.getId();
+
+        if (TextUtils.isEmpty(id)) {
+            return Observable.error(new LoginMiss());
+        }
+
+        return getService().obtainRefresh(id)
                 .compose(combine())
                 .compose(rebase());
     }

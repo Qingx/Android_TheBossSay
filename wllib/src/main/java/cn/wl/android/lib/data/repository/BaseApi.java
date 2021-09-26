@@ -3,6 +3,7 @@ package cn.wl.android.lib.data.repository;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.wl.android.lib.data.core.HttpConfig;
+import cn.wl.android.lib.miss.LoginMiss;
 import cn.wl.android.lib.miss.TempLoginMiss;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
@@ -16,11 +17,18 @@ public final class BaseApi {
             AtomicInteger retryCount = new AtomicInteger(0);
 
             return throwableObservable.flatMap(throwable -> {
-                if (retryCount.incrementAndGet() <= 2 && throwable instanceof TempLoginMiss) {
-                    return mProvider.retryToken()
-                            .doOnNext(token -> {
-                                HttpConfig.saveToken(token);
-                            });
+                if (retryCount.incrementAndGet() <= 2) {
+                    if (throwable instanceof TempLoginMiss) {
+                        return mProvider.retryToken()
+                                .doOnNext(token -> {
+                                    HttpConfig.saveToken(token);
+                                });
+                    } else if (throwable instanceof LoginMiss) {
+                        return mProvider.refreshToken()
+                                .doOnNext(token -> {
+                                    HttpConfig.saveToken(token);
+                                });
+                    }
                 }
 
                 return Observable.error(throwable);
@@ -31,6 +39,9 @@ public final class BaseApi {
     public interface RetryProvider {
 
         Observable<String> retryToken();
+
+        Observable<String> refreshToken();
+
     }
 
 }

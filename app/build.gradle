@@ -78,8 +78,10 @@ android {
             versionName "${rootAndroid.testVersionName}.${releaseTime()}"
 
             buildConfigField("String", "FILE_URL", "\"http://file-tr.hii-m.net/\"")
+            buildConfigField("String", "FILE_URL", "\"http://192.168.1.142:8087/\"")
             buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
+//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.142:8087/\"") //阿里云
             buildConfigField("String", "ENV", "\"DEV\"")
 
             manifestPlaceholders = [
