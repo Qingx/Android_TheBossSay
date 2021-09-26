@@ -275,6 +275,7 @@ class BossHomeActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setBossInfo() {
+        GlideApp.display(bossEntity.background.fullUrl(), image_bg, R.drawable.ic_boss_top_bg)
         GlideApp.displayHead(bossEntity.head.fullUrl(), image_head)
         text_name.text = bossEntity.name
         text_info.text = bossEntity.role
