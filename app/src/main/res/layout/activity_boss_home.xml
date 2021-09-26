@@ -162,7 +162,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:alpha="0.3"/>
+                            tools:alpha="0.3" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -290,7 +290,8 @@
                 android:id="@+id/tab_3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:visibility="gone">
 
                 <FrameLayout
                     android:layout_width="0dp"

@@ -80,7 +80,7 @@ class BossHomeActivity : BaseActivity() {
 
         tab_1.isSelected = true
 
-        view_pager.offscreenPageLimit = 3
+        view_pager.offscreenPageLimit = 2
         view_pager.isUserInputEnabled = true
 
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -88,7 +88,7 @@ class BossHomeActivity : BaseActivity() {
                 super.onPageSelected(position)
                 tab_1.isSelected = position == 0
                 tab_2.isSelected = position == 1
-                tab_3.isSelected = position == 2
+//                tab_3.isSelected = position == 2
             }
         })
 
@@ -129,7 +129,7 @@ class BossHomeActivity : BaseActivity() {
         tab_1 doClick {
             tab_1.isSelected = true
             tab_2.isSelected = false
-            tab_3.isSelected = false
+//            tab_3.isSelected = false
 
             view_pager.currentItem = 0
         }
@@ -137,18 +137,18 @@ class BossHomeActivity : BaseActivity() {
         tab_2 doClick {
             tab_1.isSelected = false
             tab_2.isSelected = true
-            tab_3.isSelected = false
+//            tab_3.isSelected = false
 
             view_pager.currentItem = 1
         }
 
-        tab_3 doClick {
-            tab_1.isSelected = false
-            tab_2.isSelected = false
-            tab_3.isSelected = true
-
-            view_pager.currentItem = 2
-        }
+//        tab_3 doClick {
+//            tab_1.isSelected = false
+//            tab_2.isSelected = false
+//            tab_3.isSelected = true
+//
+//            view_pager.currentItem = 2
+//        }
     }
 
     private fun onShare() {
@@ -259,7 +259,7 @@ class BossHomeActivity : BaseActivity() {
 
                 view_pager.adapter = object : FragmentStateAdapter(mActivity) {
                     override fun getItemCount(): Int {
-                        return 3
+                        return 2
                     }
 
                     override fun createFragment(position: Int): Fragment {
