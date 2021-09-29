@@ -20,6 +20,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.PortEntity
 import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
@@ -34,6 +35,7 @@ import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
 import net.cd1369.tbs.android.util.DownloadHelper
 import net.cd1369.tbs.android.util.JPushHelper
+import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.fullDownloadUrl
 import org.greenrobot.eventbus.Subscribe
@@ -163,6 +165,8 @@ class HomeActivity : BaseActivity() {
      * 开启极光推送
      */
     private fun tryRegisterJPush() {
+        var user = UserConfig.get().userEntity
+        user.id.logE(prefix = "addadad")
         JPushHelper.tryStartPush()
     }
 

@@ -38,7 +38,7 @@ public class BossInfoEntity implements Serializable {
     private int readCount; //阅读数
     private Long updateTime; //上次更新时间
     private Long createTime; //创建时间
-
+    private String background; //背景图
     private List<String> photoUrl;
     private List<String> labels;
     private boolean top; //是否置顶
@@ -49,7 +49,7 @@ public class BossInfoEntity implements Serializable {
 
     public BossInfoEntity(String id, String name, String head, String role, String info, long date,
                           boolean isCollect, boolean isPoint, boolean deleted, boolean guide, int point, int collect,
-                          int updateCount, int totalCount, int readCount, Long updateTime, Long createTime, String bossType) {
+                          int updateCount, int totalCount, int readCount, Long updateTime, Long createTime, String bossType, String background) {
         this.id = id;
         this.name = name;
         this.head = head;
@@ -68,6 +68,7 @@ public class BossInfoEntity implements Serializable {
         this.updateTime = updateTime;
         this.createTime = createTime;
         this.bossType = bossType;
+        this.background = background;
     }
 
     public BossInfoEntity() {
@@ -231,6 +232,14 @@ public class BossInfoEntity implements Serializable {
 
     public void setBossType(String bossType) {
         this.bossType = bossType;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public String getBossType() {

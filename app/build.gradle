@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'org.greenrobot.greendao'
+    id 'com.huawei.agconnect'
 
 }
 
@@ -57,7 +58,6 @@ android {
             minifyEnabled false
             debuggable true
             zipAlignEnabled true
-//            applicationIdSuffix ".debug"
             signingConfig signingConfigs.release
         }
     }
@@ -85,10 +85,17 @@ android {
             buildConfigField("String", "ENV", "\"DEV\"")
 
             manifestPlaceholders = [
-                    APP_Channel  : "DEV",
-                    JPUSH_PKGNAME: "net.cd1369.tbs.android",
-                    JPUSH_APPKEY : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+                    APP_Channel   : "DEV",
+                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
+                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
+                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
+                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
+                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
+                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
+                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
             ]
         }
         UAT {
@@ -100,10 +107,17 @@ android {
             buildConfigField("String", "ENV", "\"UAT\"")
 
             manifestPlaceholders = [
-                    APP_Channel  : "UAT",
-                    JPUSH_PKGNAME: "net.cd1369.tbs.android",
-                    JPUSH_APPKEY : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+                    APP_Channel   : "UAT",
+                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
+                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
+                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
+                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
+                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
+                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
+                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
             ]
         }
 
@@ -115,12 +129,18 @@ android {
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
             buildConfigField("String", "ENV", "\"MI\"")
 
-
             manifestPlaceholders = [
-                    APP_Channel  : "UAT",
-                    JPUSH_PKGNAME: "net.cd1369.tbs.android",
-                    JPUSH_APPKEY : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+                    APP_Channel   : "UAT",
+                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
+                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
+                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
+                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
+                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
+                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
+                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
             ]
         }
 
@@ -134,10 +154,17 @@ android {
 
 
             manifestPlaceholders = [
-                    APP_Channel  : "UAT",
-                    JPUSH_PKGNAME: "net.cd1369.tbs.android",
-                    JPUSH_APPKEY : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+                    APP_Channel   : "UAT",
+                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
+                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
+                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
+                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
+                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
+                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
+                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
             ]
         }
     }
@@ -195,8 +222,8 @@ dependencies {
     implementation 'com.irozon.sneaker:sneaker:2.0.0'
     implementation 'com.google.zxing:core:3.3.0'
 
-    implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0
-    implementation 'cn.jiguang.sdk:jcore:2.4.2'  // 此处以JCore 2.4.2
+    implementation 'cn.jiguang.sdk:jpush:4.3.0'  // 此处以JPush 3.7.0
+    implementation 'cn.jiguang.sdk:jcore:2.9.0'  // 此处以JCore 2.4.2
 
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
@@ -218,4 +245,13 @@ dependencies {
 
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'org.greenrobot:greendao-generator:3.3.0'
+
+    //华为推送
+    implementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
+    implementation 'cn.jiguang.sdk.plugin:huawei:4.1.5'
+    implementation 'com.huawei.hms:push:5.3.0.301'
+
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.3.0'//小米推送
+    implementation 'cn.jiguang.sdk.plugin:vivo:4.3.0' //VIVO推送
+    implementation 'cn.jiguang.sdk.plugin:oppo:4.3.0' //OPPO推送
 }
