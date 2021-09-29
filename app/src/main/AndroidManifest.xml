@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="net.cd1369.tbs.android"> <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加 -->
+    package="net.cd1369.tbs.android">
+    <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加 -->
     <uses-sdk tools:overrideLibrary="com.bun.miitmdid,com.advance.supplier.ks,com.kwad.sdk" />
 
     <permission
@@ -231,6 +232,38 @@
                 <category android:name="${applicationId}" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!--华为推送 start-->
+        <service
+            android:name="cn.jpush.android.service.PluginHuaweiPlatformsService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!--华为推送 end-->
+
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            tools:node="replace"
+            android:enabled="true">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
+                <!--Required  显示通知栏 -->
+                <category android:name="${applicationId}" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <!-- Optional -->
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+    </application>
 </manifest>
