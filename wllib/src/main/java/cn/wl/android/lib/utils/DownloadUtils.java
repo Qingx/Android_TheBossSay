@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import androidx.core.content.FileProvider;
 
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 
@@ -82,7 +83,7 @@ public class DownloadUtils {
 
             // 检测是否下载成功
             if (!TextUtils.isEmpty(savePath)) {
-                if (new File(savePath).exists()) {
+                if (FileUtils.isFileExists(savePath)) {
                     installAPK(savePath);
                     EventBus.getDefault().post(new DownloadStatusEvent(true));
                     return;
