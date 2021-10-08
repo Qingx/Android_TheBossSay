@@ -95,6 +95,7 @@ public class DownloadUtils {
 
         try {
             currentDownloadName = name;
+
             downloadAPK(path, name);
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,6 +291,7 @@ public class DownloadUtils {
     private static void setPermission(String absolutePath) {
         String command = "chmod " + "777" + " " + absolutePath;
         Runtime runtime = Runtime.getRuntime();
+
         try {
             runtime.exec(command);
         } catch (IOException e) {
