@@ -95,7 +95,9 @@ android {
                     VIVO_APPID    : "105499023", // VIVO平台注册的appid
                     OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
                     OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
+                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
+                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
             ]
         }
         UAT {
@@ -117,7 +119,9 @@ android {
                     VIVO_APPID    : "105499023", // VIVO平台注册的appid
                     OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
                     OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
+                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
+                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
             ]
         }
 
@@ -140,7 +144,9 @@ android {
                     VIVO_APPID    : "105499023", // VIVO平台注册的appid
                     OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
                     OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
+                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
+                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
             ]
         }
 
@@ -164,7 +170,9 @@ android {
                     VIVO_APPID    : "105499023", // VIVO平台注册的appid
                     OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
                     OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b"//OPPO平台注册的appsecret
+                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
+                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
+                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
             ]
         }
     }
@@ -254,4 +262,5 @@ dependencies {
     implementation 'cn.jiguang.sdk.plugin:xiaomi:4.3.0'//小米推送
     implementation 'cn.jiguang.sdk.plugin:vivo:4.3.0' //VIVO推送
     implementation 'cn.jiguang.sdk.plugin:oppo:4.3.0' //OPPO推送
+    implementation 'cn.jiguang.sdk.plugin:meizu:4.3.0' //魅族推送
 }

@@ -55,7 +55,11 @@ class MineChangeUserActivity : BaseActivity() {
             override fun onItemClick(item: Int) {
                 when (item) {
                     0 -> Toasts.show("账号昵称：${UserConfig.get().userEntity.nickName}")
-                    1 -> Toasts.show("账号ID：${UserConfig.get().userEntity.id}")
+                    1 -> Tools.copyText(
+                        mActivity,
+                        "${UserConfig.get().userEntity.id}",
+                        "账号ID：${UserConfig.get().userEntity.id}"
+                    )
                 }
             }
 

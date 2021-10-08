@@ -8,10 +8,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Times
-import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.AppUtils
 import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
@@ -27,7 +25,6 @@ import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
-import net.cd1369.tbs.android.ui.dialog.ConfirmPhoneDialog
 import net.cd1369.tbs.android.ui.dialog.OpenNoticeDialog
 import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
@@ -166,7 +163,7 @@ class HomeActivity : BaseActivity() {
      */
     private fun tryRegisterJPush() {
         var user = UserConfig.get().userEntity
-        user.id.logE(prefix = "addadad")
+        user.id.logE(prefix = "jiguang->设备别名")
         JPushHelper.tryStartPush()
     }
 
