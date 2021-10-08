@@ -130,8 +130,16 @@ class GuideActivity : BaseActivity() {
             DataConfig.get().firstUse = false
 
             if (tempId.isNullOrEmpty()) {
-                HomeActivity.start(mActivity)
-                mActivity?.finish()
+                showLoadingAlert("加载数据...")
+                TbsApi.boss().obtainTackArticle(-1L, PageParam.create(1, 10)).bindDefaultSub {
+                    DataConfig.get().tackTotalNum = it.total
+                    DataConfig.get().hasData = it.hasData()
+                    ArticleDaoManager.getInstance(mActivity).insertList(it.records)
+                    BossDaoManager.getInstance(mActivity).insertList(mutableListOf())
+                    HomeActivity.start(mActivity)
+                    mActivity?.finish()
+                }
+
             } else {
                 val intentHome = Intent(mActivity, HomeActivity::class.java)
                 intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
