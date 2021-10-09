@@ -17,6 +17,7 @@ import net.cd1369.tbs.android.data.service.UserService;
 
 import java.util.List;
 
+import cn.wl.android.lib.config.WLConfig;
 import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseApi;
@@ -357,6 +358,9 @@ public class UserRepository extends BaseRepository<UserService> {
      * @return
      */
     public Observable<VersionEntity> obtainCheckUpdate(String version) {
+        if (WLConfig.isDebug()) {
+            version = "v1.0.0";
+        }
         return getService().obtainCheckUpdate(version)
                 .compose(combine())
                 .compose(rebase());

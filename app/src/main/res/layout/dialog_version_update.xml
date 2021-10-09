@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="20dp">
@@ -75,5 +76,42 @@
         app:layout_constraintStart_toEndOf="@id/text_cancel"
         app:layout_constraintTop_toBottomOf="@id/text_notice"
         app:layout_goneMarginStart="24dp" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="text_confirm,text_cancel,text_notice,text_title"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:singleLine="true"
+        android:textColor="@color/text_worst"
+        android:textSize="@dimen/font_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_icon"
+        tools:text="正在下载V1.0.0..." />
+
+    <ProgressBar
+        android:id="@+id/pb_progress"
+        android:layout_width="@dimen/font_18"
+        android:layout_height="@dimen/font_18"
+        android:layout_marginTop="@dimen/padding_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_progress" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="text_progress,pb_progress"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

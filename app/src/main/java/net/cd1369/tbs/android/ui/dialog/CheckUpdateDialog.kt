@@ -9,9 +9,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import cn.wl.android.lib.utils.DownloadStatusEvent
 import kotlinx.android.synthetic.main.dialog_version_update.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Created by Xiang on 2021/8/11 14:07
@@ -45,6 +49,8 @@ class CheckUpdateDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        EventBus.getDefault().register(this)
+
         text_confirm.isSelected = true
 
         text_cancel.isVisible = mCanClose
@@ -54,6 +60,7 @@ class CheckUpdateDialog : DialogFragment() {
         }
 
         text_confirm doClick {
+
             onConfirmClick?.onConfirm()
         }
     }
@@ -87,5 +94,25 @@ class CheckUpdateDialog : DialogFragment() {
 
     fun interface OnCancelClick {
         fun onCancel()
+    }
+
+    /**
+     * 下载状态
+     */
+    fun downStartStatus() {
+        group_update?.isVisible = true
+        group_action?.isVisible = false
+    }
+
+    /**
+     *
+     * @param event DownloadStatusEvent
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun down(event: DownloadStatusEvent) {
+        if (!event.isSuccess) {
+            group_update?.isVisible = false
+            group_action?.isVisible = true
+        }
     }
 }

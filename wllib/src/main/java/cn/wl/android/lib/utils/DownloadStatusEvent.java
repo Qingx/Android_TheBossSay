@@ -17,4 +17,5 @@ public class DownloadStatusEvent {
     public boolean isSuccess() {
         return success;
     }
+
 }

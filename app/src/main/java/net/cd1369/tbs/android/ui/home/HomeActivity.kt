@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Times
 import com.blankj.utilcode.util.AppUtils
@@ -174,6 +175,7 @@ class HomeActivity : BaseActivity() {
         TbsApi.user().obtainCheckUpdate(AppUtils.getAppVersionName())
             .bindDefaultSub(
                 doNext = {
+                    it.forcedUpdating = it.forcedUpdating || WLConfig.isDebug()
                     CheckUpdateDialog.showDialog(
                         supportFragmentManager,
                         "checkUpdate",
@@ -189,6 +191,8 @@ class HomeActivity : BaseActivity() {
                                     it.fileUrl.fullDownloadUrl(),
                                     "v${it.versions}"
                                 )
+
+                                downStartStatus()
 
                                 if (!it.forcedUpdating) {
                                     dismiss()
