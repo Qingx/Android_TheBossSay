@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.util
 
 import cn.jpush.android.api.JPushInterface
+import cn.jpush.android.api.TagAliasCallback
 import cn.wl.android.lib.config.WLConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 object JPushHelper {
 
     private var mRetryTimer: Disposable? = null
+    private var mTagsTimer: Disposable? = null
     private val mVersion = AtomicInteger(0)
     private val mContext get() = WLConfig.getContext()
 
@@ -36,11 +38,11 @@ object JPushHelper {
     fun tryStartPush() {
         var user = UserConfig.get().userEntity
 
-        if (UserEntity.empty == user) return
 
-        if (JPushInterface.isPushStopped(mContext)) {
-            JPushInterface.resumePush(mContext)
-        }
+//        if (JPushInterface.isPushStopped(mContext)) {
+        JPushInterface.resumePush(mContext)
+//        JPushInterface.
+//        }
 
         val userId = user.id
         val alias = UserConfig.get().alias
@@ -62,11 +64,29 @@ object JPushHelper {
     private fun tryRegisterTags(tags: List<String>?) {
         if (tags.isNullOrEmpty()) return
 
+        mTagsTimer?.dispose()
+
         JPushInterface.setTags(
-            mContext,
-            mVersion.getAndIncrement(),
-            tags.toSet()
-        )
+            mContext, tags.toSet()
+        ) { p0, p1, p2 ->
+            "设置tag: ${p0} ${p1 ?: "null"} $p2".logE()
+
+            if (p0 == 6002) {
+                mTagsTimer = Observable.timer(1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        tryRegisterTags(tags)
+                    }) {
+
+                    }
+            }
+        }
+//
+//        JPushInterface.setTags(
+//            mContext,
+//            mVersion.getAndIncrement(),
+//            tags.toSet()
+//        )
     }
 
     /**

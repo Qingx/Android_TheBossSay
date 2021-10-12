@@ -7,7 +7,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter(){url 'https://maven.aliyun.com/repository/jcenter'}
+        mavenCentral() { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'https://developer.huawei.com/repo/' }
     }
@@ -24,12 +24,16 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
         //advance相关引用的maven依赖根目录地址，放在阿里云依赖前面
         maven { url 'https://s01.oss.sonatype.org/content/groups/public' }
-        jcenter(){url 'https://maven.aliyun.com/repository/jcenter'}
-        mavenCentral()
+        mavenCentral() { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url "https://jitpack.io" }
-        maven {url 'https://developer.huawei.com/repo/'}
+        maven { url 'https://developer.huawei.com/repo/' }
+
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
