@@ -28,4 +28,9 @@ public class DownloadEvent {
         return (float) (current * 1.0 / total);
     }
 
+    public String getProgressDesc() {
+        int i = (int) (current * 1.0 / total * 100);
+        return i + "%";
+    }
+
 }
