@@ -18,7 +18,7 @@ import net.cd1369.tbs.android.util.fullUrl
  */
 abstract class GuideInfoAdapter :
     BaseQuickAdapter<BossSimpleModel, BaseViewHolder>(R.layout.item_guide_info) {
-    private val mSelect = HashSet<Long>()
+    private val mSelect = HashSet<String>()
 
     override fun convert(helper: BaseViewHolder, item: BossSimpleModel) {
         helper.V.isSelected = mSelect.contains(item.id)
@@ -64,5 +64,5 @@ abstract class GuideInfoAdapter :
         autoSelectAll()
     }
 
-    abstract fun onAddFollow(data: MutableList<Long>)
+    abstract fun onAddFollow(data: MutableList<String>)
 }

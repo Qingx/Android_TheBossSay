@@ -12,11 +12,15 @@ import androidx.core.view.isVisible
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import com.jyn.vcview.VerificationCodeView
+import com.tendcloud.tenddata.TCAgent
+import com.tendcloud.tenddata.TDProfile
 import kotlinx.android.synthetic.main.activity_user_change_phone.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.event.RefreshUserEvent
+import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 

@@ -16,8 +16,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.BossDaoManager
-import net.cd1369.tbs.android.data.db.LabelDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.event.*
@@ -30,7 +29,6 @@ import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.ui.home.SearchBossActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.OnChangeCallback
-import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -75,7 +73,7 @@ class HomeBossContentFragment : BaseFragment() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        mLabels = LabelDaoManager.getInstance(mActivity).findAll()
+        mLabels = CacheConfig.getAllLabel()
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -99,7 +97,7 @@ class HomeBossContentFragment : BaseFragment() {
             override fun onSelect(select: String) {
                 currentLabel = select
 
-                mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+                mBossList = CacheConfig.getBossByLabel(currentLabel)
                 mAdapter.setNewData(mBossList)
 
                 GlobalScrollEvent.bossLabel = currentLabel
@@ -153,17 +151,17 @@ class HomeBossContentFragment : BaseFragment() {
     }
 
     private fun tryChangeTopic(item: BossSimpleModel, v: View, index: Int) {
-        val topic: Boolean = !item.top
+        val topic: Boolean = !item.isTop
         showLoadingAlert("正在保存...")
 
         TbsApi.boss().obtainTopicBoss(item.id.toString(), topic)
             .delay(600, TimeUnit.MILLISECONDS)
             .bindToastSub("") {
                 v.isSelected = topic
-                item.top = topic
-                v.text_top.text = "取消置顶".takeIf { item.top } ?: "置顶"
+                item.isTop = topic
+                v.text_top.text = "取消置顶".takeIf { item.isTop } ?: "置顶"
 
-                BossDaoManager.getInstance(mActivity).update(item)
+                CacheConfig.updateBoss(item)
 
                 val layoutManager = rv_content.layoutManager as LinearLayoutManager
                 val fp = layoutManager.findFirstVisibleItemPosition()
@@ -186,7 +184,7 @@ class HomeBossContentFragment : BaseFragment() {
     private fun doCancelFollow(item: BossSimpleModel, dialog: FollowAskCancelDialog?) {
         showLoadingAlert("尝试取消...")
 
-        TbsApi.boss().obtainCancelFollowBoss(item.id.toString())
+        TbsApi.boss().obtainCancelFollowBoss(item.id)
             .bindDefaultSub(
                 doNext = {
                     dialog?.dismiss()
@@ -196,17 +194,19 @@ class HomeBossContentFragment : BaseFragment() {
                     UserConfig.get().updateUser {
                         it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                     }
-                    BossDaoManager.getInstance(mActivity).delete(item.id)
-                    eventBus.post(BossTackEvent(item.id.toString(), false, item.labels, true))
-
-                    JPushHelper.tryDelTag(item.id.toString())
 
                     val index = mAdapter.data.indexOfFirst {
                         it.id == item.id
                     }
+
                     if (index != -1) {
                         mAdapter.remove(index)
                     }
+
+                    CacheConfig.deleteBoss(item.id)
+                    JPushHelper.tryDelTag(item.id.toString())
+
+                    eventBus.post(BossTackEvent(item.id.toString(), false, item.labels, true))
                 },
                 doFail = {
                     Toasts.show("取消失败，${it.msg}")
@@ -222,31 +222,27 @@ class HomeBossContentFragment : BaseFragment() {
 
         if (firstInit) {
             firstInit = false
-            mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+            mBossList = CacheConfig.getBossByLabel(currentLabel)
             mAdapter.setNewData(mBossList)
         } else {
-            TbsApi.boss().obtainFollowBossList(-1, false)
+            TbsApi.boss().obtainFollowBossList("-1", false)
                 .onErrorReturn { mutableListOf() }
-                .bindDefaultSub(
-                    doNext = {
-                        BossDaoManager.getInstance(mActivity).insertList(it)
+                .bindDefaultSub {
+                    CacheConfig.insertBossList(it)
 
-                        mBossList = if (currentLabel == "-1") {
-                            it
-                        } else {
-                            it.filter {
-                                it.labels.contains(currentLabel)
-                            }.toMutableList()
-                        }
-
-                        mAdapter.setNewData(mBossList)
-
-                        layout_refresh.finishRefresh(true)
-                    },
-                    doFail = {
-                        layout_refresh.finishRefresh(false)
+                    mBossList = if (currentLabel == "-1") {
+                        it
+                    } else {
+                        it.filter {
+                            it.labels.contains(currentLabel)
+                        }.toMutableList()
                     }
-                )
+                    mBossList.sort()
+
+                    mAdapter.setNewData(mBossList)
+
+                    layout_refresh.finishRefresh()
+                }
         }
     }
 
@@ -257,17 +253,18 @@ class HomeBossContentFragment : BaseFragment() {
     }
 
     private fun loginData() {
-        TbsApi.boss().obtainFollowBossList(-1L, false)
+        TbsApi.boss().obtainFollowBossList("-1", false)
             .onErrorReturn { mutableListOf() }
             .bindDefaultSub {
-                it.size.logE(prefix = "size")
-                BossDaoManager.getInstance(mActivity).insertList(it)
+                CacheConfig.insertBossList(it)
+
                 mBossList = it
                 if (currentLabel != "-1") {
                     mBossList = it.filter {
                         it.labels.contains(currentLabel)
                     }.toMutableList()
                 }
+                mBossList.sort()
                 mAdapter.setNewData(mBossList)
             }
     }
@@ -275,14 +272,14 @@ class HomeBossContentFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: BossTackEvent) {
         if (!event.fromBossContent) {
-            mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+            mBossList = CacheConfig.getBossByLabel(currentLabel)
             mAdapter.setNewData(mBossList)
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: BossBatchTackEvent) {
-        mBossList = BossDaoManager.getInstance(mActivity).findByLabel(currentLabel)
+        mBossList = CacheConfig.getBossByLabel(currentLabel)
         mAdapter.setNewData(mBossList)
     }
 

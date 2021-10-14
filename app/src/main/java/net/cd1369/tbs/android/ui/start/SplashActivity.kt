@@ -1,6 +1,5 @@
 package net.cd1369.tbs.android.ui.start
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -8,27 +7,26 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import cn.jpush.android.api.JPushInterface
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.core.PageParam
+import cn.wl.android.lib.data.core.HttpConfig
 import com.advance.AdvanceSplash
 import com.advance.AdvanceSplashListener
 import com.advance.model.AdvanceError
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.Const
-import net.cd1369.tbs.android.config.DataConfig
-import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.config.TbsApp
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.BossDaoManager
-import net.cd1369.tbs.android.data.db.LabelDaoManager
-import net.cd1369.tbs.android.data.model.LabelModel
+import net.cd1369.tbs.android.config.*
+import net.cd1369.tbs.android.config.TbsApp.mContext
+import net.cd1369.tbs.android.data.cache.CacheConfig
+import net.cd1369.tbs.android.data.entity.TokenEntity
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
+import net.cd1369.tbs.android.util.JPushHelper
 import java.util.concurrent.TimeUnit
 
 /**
@@ -38,19 +36,10 @@ import java.util.concurrent.TimeUnit
  * @desc
  */
 class SplashActivity : FragmentActivity(), AdvanceSplashListener {
-
-//    private val rxPermission: RxPermissions by lazy {
-//        RxPermissions(this)
-//    }
     private var sdkId: String = ""
 
     private var hasAdShow = false
     private var hasService = false
-//    private var hasLoadBoss = false
-
-//    private var gotoLock = false
-
-    //    private var bossList: List<BossInfoEntity> = mutableListOf()
     private var advanceSplash: AdvanceSplash? = null
 
     private val serviceDialog by lazy {
@@ -60,16 +49,6 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
     }
 
     companion object {
-
-        /**
-         * 预申请动态权限
-         */
-//        private val mPer = arrayOf(
-//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//            Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.CAMERA
-//        )
-
         /**
          * 启动界面
          * @param context Context?
@@ -98,21 +77,11 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
             hasAdShow = true
 
             serviceDialog.doConfirm = Runnable {
+                hasService = true
                 DataConfig.get().isNeedService = false
                 TbsApp.tryInitThree(applicationContext)
 
-                hasService = true
-
                 doAgreeService()
-
-//                rxPermission.request(*mPer)
-//                    .subscribe({
-//
-//                    }) {
-//                        hasService = true
-//
-//                        HomeActivity.start(this)
-//                    }
             }
         } else {
             TbsApp.tryInitThree(applicationContext)
@@ -135,11 +104,10 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
 
     @SuppressLint("CheckResult")
     private fun doAgreeService() {
-        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
+        TbsApi.boss().obtainBossLabels()
+            .onErrorReturn { mutableListOf() }
             .flatMap {
-                it.add(0, LabelModel.empty)
-                LabelDaoManager.getInstance(this).insertList(it)
-
+                CacheConfig.insertLabelList(it)
                 TbsApi.boss().obtainGuideBoss()
             }
             .observeOn(AndroidSchedulers.mainThread())
@@ -152,22 +120,31 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
 
     @SuppressLint("CheckResult")
     private fun doSecondUse() {
-        TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }
+        TbsApi.boss().obtainBossLabels()
+            .onErrorReturn { mutableListOf() }
             .flatMap {
-                it.add(0, LabelModel.empty)
-                LabelDaoManager.getInstance(this).insertList(it)
+                CacheConfig.insertLabelList(it)
 
-                TbsApi.boss().obtainFollowBossList(-1L, false)
-            }.flatMap {
-                BossDaoManager.getInstance(this).insertList(it)
+                TbsApi.boss().obtainFollowBossList("-1", false)
+            }.onErrorReturn { mutableListOf() }
+            .flatMap {
+                CacheConfig.insertBossList(it)
 
-                TbsApi.boss().obtainTackArticle(-1L, PageParam.create(1, 10))
+                TbsApi.boss().obtainTackArticle("-1", PageParam.create(1, 10))
+            }
+            .onErrorReturn { Page.empty() }
+            .flatMap {
+                CacheConfig.insertArticle(it)
+
+                TbsApi.user().obtainRefreshUser()
+            }
+            .onErrorReturn {
+                TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                DataConfig.get().tackTotalNum = it.total
-                DataConfig.get().hasData = it.hasData()
-                ArticleDaoManager.getInstance(this).insertList(it.records)
+            .subscribe {
+                HttpConfig.saveToken(it.token)
+                UserConfig.get().userEntity = it.userInfo
 
                 if (WelActivity.tempId.isNullOrEmpty()) {
                     HomeActivity.start(this)
@@ -175,14 +152,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
                 } else {
                     doWelcome()
                 }
-            }, {
-                if (WelActivity.tempId.isNullOrEmpty()) {
-                    HomeActivity.start(this)
-                    finish()
-                } else {
-                    doWelcome()
-                }
-            })
+            }
     }
 
     private fun doWelcome() {
@@ -197,75 +167,10 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         finish()
     }
 
-    /**
-     * 尝试加载boss信息
-     */
-//    private fun tryLoadBoos() {
-//        if (bossList.isNullOrEmpty()) {
-//            TbsApi.boss().obtainLabels().onErrorReturn { mutableListOf() }
-//                .flatMap {
-//                    it.add(0, LabelModel.empty)
-//                    LabelDaoManager.getInstance(mContext).insertList(it)
-//
-//                    TbsApi.boss().obtainGuideBoss()
-//                        .onErrorReturn { mutableListOf() }
-//                }.observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    bossList = it
-//                    hasLoadBoss = true
-//
-//                    tryLunchApp()
-//                }) {
-//
-//                }
-//        } else {
-//            hasLoadBoss = true
-//
-//            tryLunchApp()
-//        }
-//    }
-
-    /**
-     * 尝试拉起app
-     */
-//    private fun tryLunchApp() {
-//        if (hasService && hasLoadBoss && hasAdShow) {
-//            if (gotoLock) {
-//                return
-//            }
-//
-//            gotoLock = true
-//
-//            val firstUse = DataConfig.get().firstUse
-//
-//            var tempId = WelActivity.tempId
-//
-//            if (firstUse && !bossList.isNullOrEmpty()) {
-//                val guideBoss = bossList.filter { it.guide }
-//                GuideActivity.start(this, ArrayList(guideBoss))
-//                finish()
-//            } else {
-//                if (tempId.isNullOrEmpty()) {
-//                    HomeActivity.start(this)
-//                    finish()
-//                } else {
-//                    var intentHome = Intent(this, HomeActivity::class.java)
-//                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//
-//                    var intentArticle = Intent(this, ArticleActivity::class.java)
-//                    intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    intentArticle.putExtra("articleId", tempId)
-//
-//                    startActivities(arrayOf(intentHome, intentArticle))
-//                }
-//            }
-//        }
-//    }
-
     override fun onAdFailed(p0: AdvanceError) {
         hasAdShow = true
 
-//        tryLunchApp()
+//        doSecondUse()
 
         Log.e("OkHttp", p0.toString())
     }
@@ -278,7 +183,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         hasAdShow = true
 
         timerDelay(100) {
-//            tryLunchApp()
+//        doSecondUse()
         }
     }
 
@@ -286,7 +191,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         hasAdShow = true
 
         timerDelay(100) {
-//            tryLunchApp()
+//        doSecondUse()
         }
     }
 
@@ -294,7 +199,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         hasAdShow = true
 
         timerDelay(100) {
-//            tryLunchApp()
+//        doSecondUse()
         }
     }
 

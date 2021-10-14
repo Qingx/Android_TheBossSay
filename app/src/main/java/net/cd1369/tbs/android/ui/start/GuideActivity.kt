@@ -6,7 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.core.PageParam
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Toasts
 import kotlinx.android.synthetic.main.activity_guide.*
@@ -14,8 +16,8 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
+import net.cd1369.tbs.android.data.entity.TokenEntity
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.ui.adapter.GuideInfoAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
@@ -51,13 +53,10 @@ class GuideActivity : BaseActivity() {
         text_time.text = "跳过"
 
         val adapter = object : GuideInfoAdapter() {
-            override fun onAddFollow(data: MutableList<Long>) {
+            override fun onAddFollow(data: MutableList<String>) {
                 showLoadingAlert("搜寻并追踪...")
 
-                val select: List<String> = data.map {
-                    it.toString()
-                }
-                TbsApi.boss().obtainGuideFollow(select)
+                TbsApi.boss().obtainGuideFollow(data)
                     .flatMap {
 
                         val tackList = bossList.filter {
@@ -65,24 +64,25 @@ class GuideActivity : BaseActivity() {
                         }.toMutableList()
 
                         if (!tackList.isNullOrEmpty()) {
-                            BossDaoManager.getInstance(mActivity).insertList(tackList)
+                            CacheConfig.insertBossList(tackList)
                         }
 
-                        TbsApi.boss().obtainTackArticle(-1L, PageParam.create(1, 10))
+                        TbsApi.boss().obtainTackArticle("-1", PageParam.create(1, 10))
+                    }
+                    .onErrorReturn { Page.empty() }
+                    .flatMap {
+                        CacheConfig.insertArticle(it)
+
+                        TbsApi.user().obtainRefreshUser()
                     }
                     .bindDefaultSub(doNext = {
                         Toasts.show("追踪成功")
                         hideLoadingAlert()
 
-                        UserConfig.get().updateUser {
-                            it.traceNum = data.size
-                        }
+                        HttpConfig.saveToken(it.token)
+                        UserConfig.get().userEntity = it.userInfo
 
                         DataConfig.get().firstUse = false
-
-                        DataConfig.get().tackTotalNum = it.total
-                        DataConfig.get().hasData = it.hasData()
-                        ArticleDaoManager.getInstance(mActivity).insertList(it.records)
 
                         if (WelActivity.tempId.isNullOrEmpty()) {
                             HomeActivity.start(mActivity)
@@ -131,24 +131,39 @@ class GuideActivity : BaseActivity() {
 
             if (tempId.isNullOrEmpty()) {
                 showLoadingAlert("加载数据...")
-                TbsApi.boss().obtainTackArticle(-1L, PageParam.create(1, 10)).bindDefaultSub {
-                    DataConfig.get().tackTotalNum = it.total
-                    DataConfig.get().hasData = it.hasData()
-                    ArticleDaoManager.getInstance(mActivity).insertList(it.records)
-                    BossDaoManager.getInstance(mActivity).insertList(mutableListOf())
-                    HomeActivity.start(mActivity)
-                    mActivity?.finish()
-                }
+                TbsApi.boss().obtainTackArticle("-1", PageParam.create(1, 10))
+                    .onErrorReturn { Page.empty() }
+                    .flatMap {
+                        CacheConfig.insertBossList(mutableListOf())
+                        CacheConfig.insertArticle(it)
+
+                        TbsApi.user().obtainRefreshUser()
+                    }.onErrorReturn {
+                        TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
+                    }
+                    .bindDefaultSub {
+                        HttpConfig.saveToken(it.token)
+                        UserConfig.get().userEntity = it.userInfo
+
+                        HomeActivity.start(mActivity)
+                        mActivity?.finish()
+                    }
 
             } else {
-                val intentHome = Intent(mActivity, HomeActivity::class.java)
-                intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                TbsApi.user().obtainRefreshUser()
+                    .onErrorReturn {
+                        TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
+                    }.bindDefaultSub {
+                        val intentHome = Intent(mActivity, HomeActivity::class.java)
+                        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                val intentArticle = Intent(mActivity, ArticleActivity::class.java)
-                intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                intentArticle.putExtra("articleId", tempId)
+                        val intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                        intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        intentArticle.putExtra("articleId", tempId)
 
-                mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                        mActivity.startActivities(arrayOf(intentHome, intentArticle))
+                    }
+
             }
         }
     }

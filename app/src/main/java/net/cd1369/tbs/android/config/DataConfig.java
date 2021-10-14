@@ -1,18 +1,11 @@
 package net.cd1369.tbs.android.config;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 import net.cd1369.tbs.android.util.Tools;
-
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 
 import cn.wl.android.lib.config.BaseConfig;
 import cn.wl.android.lib.utils.DateFormat;

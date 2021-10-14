@@ -2,16 +2,7 @@ package net.cd1369.tbs.android.data.model;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
-import net.cd1369.tbs.android.util.StringConvert;
-
-import org.greenrobot.greendao.annotation.Convert;
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Property;
-
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Xiang on 2021/8/26 10:25
@@ -19,41 +10,24 @@ import org.greenrobot.greendao.annotation.Generated;
  * @description
  * @email Cymbidium@outlook.com
  */
-@Entity
 public class ArticleSimpleModel implements MultiItemEntity {
-    @Id
-    private Long id; //id
-    @Property(nameInDb = "TITLE")
+    private String id; //id
     private String title; //标题
-    @Property(nameInDb = "DESCONTENT")
     private String descContent; //摘要
-    @Property(nameInDb = "ISCOLLECT")
     private boolean isCollect; //是否收藏
-    @Property(nameInDb = "ISREAD")
     private boolean isRead; //是否已读
-    @Property(nameInDb = "READCOUNT")
     private int readCount; //阅读数
-    @Property(nameInDb = "COLLECT")
     private int collect; //收藏数
-    @Property(nameInDb = "RELEASETIME")
     private Long releaseTime; //发布时间
-    @Property(nameInDb = "ARTICLETIME")
     private Long articleTime; //文章时间
-    @Convert(columnType = String.class, converter = StringConvert.class)
     private List<String> files; //图片列表
-    @Property(nameInDb = "BOSSID")
     private String bossId; //BOSSNAME
-    @Property(nameInDb = "NAME")
     private String bossName; //boss名
-    @Property(nameInDb = "BOSSHEAD")
     private String bossHead; //boss头像
-    @Property(nameInDb = "BOSSROLE")
     private String bossRole; //boss角色, 职务
-    @Property(nameInDb = "RECOMMENDTYPE")
     private String recommendType; //0:最近更新 1:为你推荐
 
-    @Generated(hash = 487171374)
-    public ArticleSimpleModel(Long id, String title, String descContent, boolean isCollect, boolean isRead, int readCount,
+    public ArticleSimpleModel(String id, String title, String descContent, boolean isCollect, boolean isRead, int readCount,
                               int collect, Long releaseTime, Long articleTime, List<String> files, String bossId, String bossName,
                               String bossHead, String bossRole, String recommendType) {
         this.id = id;
@@ -73,7 +47,7 @@ public class ArticleSimpleModel implements MultiItemEntity {
         this.recommendType = recommendType;
     }
 
-    @Generated(hash = 601260873)
+
     public ArticleSimpleModel() {
     }
 
@@ -96,11 +70,11 @@ public class ArticleSimpleModel implements MultiItemEntity {
         }
     }
 
-    public Long getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

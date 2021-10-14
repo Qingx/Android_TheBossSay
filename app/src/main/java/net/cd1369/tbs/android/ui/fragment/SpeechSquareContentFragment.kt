@@ -32,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class SpeechSquareContentFragment : BaseListFragment() {
-    private var mLabel: Long = -1L
+    private var mLabel: String = "-1"
     private var needLoading = true
 
     private lateinit var mAdapterArticle: ArticleSquareAdapter
@@ -41,10 +41,10 @@ class SpeechSquareContentFragment : BaseListFragment() {
     private lateinit var headerView: View
 
     companion object {
-        fun createFragment(label: Long): SpeechSquareContentFragment {
+        fun createFragment(label: String): SpeechSquareContentFragment {
             return SpeechSquareContentFragment().apply {
                 arguments = Bundle().apply {
-                    putLong("label", label)
+                    putString("label", label)
                 }
             }
         }
@@ -53,7 +53,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        mLabel = arguments?.getLong("label") as Long
+        mLabel = arguments?.getString("label") as String
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {

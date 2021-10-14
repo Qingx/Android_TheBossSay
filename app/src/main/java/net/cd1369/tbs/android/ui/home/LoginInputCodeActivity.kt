@@ -15,9 +15,9 @@ import kotlinx.android.synthetic.main.activity_login_input_code.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.event.LoginEvent
+import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.startShakeAnim
 
@@ -79,20 +79,24 @@ class LoginInputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinish
     }
 
     private fun tryLogin(code: String) {
+        JPushHelper.tryClearTagAlias()
+
         showLoadingAlert("尝试登录...")
 
         TbsApi.user().obtainSignPhone(phoneNumber, code, rnd)
             .bindDefaultSub(doNext = {
                 HttpConfig.saveToken(it.token)
 
-
                 UserConfig.get().loginStatus = true
                 val userInfo = it.userInfo
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.ANONYMOUS, userInfo.nickName)
-                BossDaoManager.getInstance(mActivity).deleteAll()
-                ArticleDaoManager.getInstance(mActivity).deleteAll()
+                CacheConfig.clearBoss()
+                CacheConfig.clearArticle()
+
+                JPushHelper.tryAddTags(it.userInfo.tags)
+                JPushHelper.tryAddAlias(it.userInfo.id)
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()

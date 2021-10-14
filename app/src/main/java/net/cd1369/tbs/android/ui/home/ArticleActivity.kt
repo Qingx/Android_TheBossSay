@@ -21,7 +21,7 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.config.elif
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
@@ -410,10 +410,11 @@ class ArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(BossTackEvent(bossId!!, false, bossEntity!!.labels))
-                BossDaoManager.getInstance(mActivity).delete(bossId!!.toLong())
 
+                CacheConfig.deleteBoss(bossId!!)
                 JPushHelper.tryDelTag(bossId!!)
+
+                eventBus.post(BossTackEvent(bossId!!, false, bossEntity!!.labels))
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doDone = {
@@ -459,9 +460,10 @@ class ArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
-                BossDaoManager.getInstance(mActivity).insert(bossEntity!!.toSimple())
 
+                CacheConfig.insertBoss(bossEntity!!.toSimple())
+
+                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {
@@ -482,5 +484,4 @@ class ArticleActivity : BaseActivity() {
 
             })
     }
-
 }

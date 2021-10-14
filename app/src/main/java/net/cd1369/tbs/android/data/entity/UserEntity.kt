@@ -15,7 +15,7 @@ data class UserEntity(
     val type: String, //0->游客 1->正式
     val wxHead: String,
     val wxName: String,
-    val tags: List<String>?,
+    val tags: MutableList<String>,
     val version: String?
 ) : Serializable {
 
@@ -24,7 +24,7 @@ data class UserEntity(
             "",
             "", "", "", "",
             0, 0, 0, 0, "0",
-            "", "", null, ""
+            "", "", mutableListOf(), ""
         )
     }
 

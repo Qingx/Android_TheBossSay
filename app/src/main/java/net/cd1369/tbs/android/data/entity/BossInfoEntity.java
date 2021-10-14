@@ -250,7 +250,7 @@ public class BossInfoEntity implements Serializable {
     }
 
     public BossSimpleModel toSimple() {
-        return new BossSimpleModel(Long.valueOf(this.id), this.name, this.head, this.role, this.top, this.updateTime, this.labels, this.photoUrl);
+        return new BossSimpleModel(this.id, this.name, this.head, this.role, this.top, this.updateTime, this.labels, this.photoUrl);
     }
 
     @Override

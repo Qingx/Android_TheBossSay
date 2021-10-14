@@ -358,9 +358,9 @@ public class UserRepository extends BaseRepository<UserService> {
      * @return
      */
     public Observable<VersionEntity> obtainCheckUpdate(String version) {
-        if (WLConfig.isDebug()) {
-            version = "1.0.0";
-        }
+//        if (WLConfig.isDebug()) {
+//            version = "1.0.0";
+//        }
         return getService().obtainCheckUpdate(version)
                 .compose(combine())
                 .compose(rebase());

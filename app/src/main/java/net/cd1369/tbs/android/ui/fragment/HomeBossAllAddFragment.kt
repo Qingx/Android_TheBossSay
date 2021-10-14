@@ -20,8 +20,7 @@ import kotlinx.android.synthetic.main.fragment_home_boss_all_add.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.BossDaoManager
-import net.cd1369.tbs.android.data.db.LabelDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.data.entity.OptPicEntity
 import net.cd1369.tbs.android.data.model.BossSimpleModel
@@ -93,7 +92,7 @@ class HomeBossAllAddFragment : BaseFragment() {
                 }
             }
 
-        val labelList = LabelDaoManager.getInstance(mActivity).findAll()
+        val labelList = CacheConfig.getAllLabel()
         tabAdapter.setNewData(labelList)
 
         mAdapter = object : BossAllItemAdapter() {
@@ -176,10 +175,10 @@ class HomeBossAllAddFragment : BaseFragment() {
                     it.toSimple()
                 }.toMutableList()
 
-                BossDaoManager.getInstance(mActivity).insertList(bossList)
-                eventBus.post(BossBatchTackEvent())
+                CacheConfig.insertBatchBoss(bossList)
+                JPushHelper.tryAddTags(idSet.toMutableList())
 
-                JPushHelper.tryAddAllTag(idSet)
+                eventBus.post(BossBatchTackEvent())
             }
     }
 
@@ -222,11 +221,12 @@ class HomeBossAllAddFragment : BaseFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                BossDaoManager.getInstance(mActivity).delete(item.id.toLong())
-                eventBus.post(BossTackEvent(item.id, false, item.labels))
-
-                JPushHelper.tryDelTag(item.id)
                 tryUpdateItem(item.id, false)
+
+                CacheConfig.deleteBoss(item.id)
+                JPushHelper.tryDelTag(item.id)
+
+                eventBus.post(BossTackEvent(item.id, false, item.labels))
 
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
@@ -272,11 +272,11 @@ class HomeBossAllAddFragment : BaseFragment() {
                 }
 
                 mAdapter.doFollowChange(item.id, true)
-                BossDaoManager.getInstance(mActivity).insert(item.toSimple())
-                eventBus.post(BossTackEvent(item.id, true, item.labels))
-
                 tryUpdateItem(item.id, true)
 
+                CacheConfig.insertBoss(item.toSimple())
+
+                eventBus.post(BossTackEvent(item.id, true, item.labels))
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doLast = {
@@ -315,19 +315,19 @@ class HomeBossAllAddFragment : BaseFragment() {
             mOptPic = it
 
             TbsApi.boss().obtainAllBossList()
-        }.bindDefaultSub(doNext = {
-            loadImage(mOptPic!!.pictureLocation)
+        }
+            .onErrorReturn { mutableListOf() }
+            .bindDefaultSub {
+                loadImage(mOptPic!!.pictureLocation)
 
-            mTempBossList = it
+                mTempBossList = it
+                mAdapter.setNewData(filterBossList())
 
-            mAdapter.setNewData(filterBossList())
-            layout_refresh.finishRefresh(true)
-        }, doFail = {
-            layout_refresh.finishRefresh(false)
-        }, doLast = {
-            needLoading = true
-            showContent()
-        })
+                needLoading = true
+
+                showContent()
+                layout_refresh.finishRefresh(true)
+            }
     }
 
     /**

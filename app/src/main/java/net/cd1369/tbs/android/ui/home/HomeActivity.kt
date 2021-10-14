@@ -163,8 +163,6 @@ class HomeActivity : BaseActivity() {
      * 开启极光推送
      */
     private fun tryRegisterJPush() {
-        var user = UserConfig.get().userEntity
-        user.id.logE(prefix = "jiguang->设备别名")
         JPushHelper.tryStartPush()
     }
 
