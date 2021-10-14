@@ -36,7 +36,7 @@ import io.reactivex.disposables.Disposable;
  * @desc:
  */
 public class DownloadUtils {
-    private final com.blankj.utilcode.util.SPUtils mSPName;
+    private final SPUtils mSPName;
 
     //下载器
     private long downloadId;
