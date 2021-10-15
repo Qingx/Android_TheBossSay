@@ -1,5 +1,7 @@
 package net.cd1369.tbs.android.ui.start
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.Observable
@@ -25,7 +27,8 @@ class WelActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        tempId = intent?.data?.getQueryParameter("id") ?: ""
+        tempId =
+            intent?.data?.getQueryParameter("id") ?: intent.getStringExtra("id") as? String ?: ""
         setContentView(R.layout.activity_start)
 
         mDis = Observable.timer(100, TimeUnit.MILLISECONDS)

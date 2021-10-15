@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.wl.android.lib.ui.BaseFragment
-import cn.wl.android.lib.utils.OnClick
 import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
 import com.advance.AdvanceBannerListener
@@ -20,10 +19,10 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.ui.dialog.TestDialog
 import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
@@ -63,7 +62,9 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.History -> onClickHistory()
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
-                    MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
+                    MineItem.Contact -> {
+                        MineContactAuthorActivity.start(mActivity)
+                    }
 //                    MineItem.Score -> testAdd()
 //                    MineItem.Clear -> testGet()
                 }

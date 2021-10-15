@@ -49,6 +49,7 @@ public class DataConfig extends BaseConfig {
     private Long bossTime;
     private int tackTotalNum;
     private boolean hasData;
+    private boolean isRunning = false;
 
     /**
      * 判断是否需要显示服务
@@ -158,4 +159,11 @@ public class DataConfig extends BaseConfig {
         return Math.abs(noticeTime - time) > DateFormat.DAY_1;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
 }

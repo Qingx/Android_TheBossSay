@@ -6,10 +6,8 @@ import cn.jpush.android.api.NotificationMessage
 import cn.jpush.android.service.JPushMessageReceiver
 import com.google.gson.JsonParser
 import net.cd1369.tbs.android.config.DataConfig
-import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.event.HotSearchEvent
 import net.cd1369.tbs.android.event.JpushArticleEvent
-import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.runUiThread
 import net.cd1369.tbs.android.util.showSneaker
@@ -22,23 +20,7 @@ import org.greenrobot.eventbus.EventBus
  * @email Cymbidium@outlook.com
  */
 class PushReceiver : JPushMessageReceiver() {
-    override fun onNotifyMessageOpened(p0: Context?, message: NotificationMessage) {
-        super.onNotifyMessageOpened(p0, message)
-
-        val extras = message.notificationExtras
-
-        if (!extras.isNullOrEmpty()) {
-            message.notificationExtras.logE(prefix = "极光推送:open")
-
-            val jsonElement = JsonParser().parse(extras)
-            val jsonObject = jsonElement.asJsonObject
-
-            if (jsonObject.has("articleId")) {
-                val articleId = jsonObject["articleId"].asString
-
-                ArticleActivity.start(getContext(), articleId)
-            }
-        }
+    override fun onNotifyMessageOpened(context: Context?, message: NotificationMessage) {
 
     }
 
@@ -53,7 +35,7 @@ class PushReceiver : JPushMessageReceiver() {
             val jsonElement = JsonParser().parse(extras)
             val jsonObject = jsonElement.asJsonObject
 
-            if (jsonObject.has("articleId")) {
+            if (jsonObject.has("articleId") && jsonObject.has("bossId") && jsonObject.has("updateTime")) {
                 val articleId = jsonObject["articleId"].asString
                 val title = message.notificationTitle
                 val content = message.notificationContent

@@ -78,6 +78,7 @@ class HomeActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
 
+        DataConfig.get().isRunning = true
         checkUpdate()
         tryRegisterJPush()
 
