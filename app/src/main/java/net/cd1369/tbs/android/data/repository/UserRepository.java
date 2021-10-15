@@ -376,5 +376,4 @@ public class UserRepository extends BaseRepository<UserService> {
                 .compose(combine())
                 .compose(rebase());
     }
-
 }

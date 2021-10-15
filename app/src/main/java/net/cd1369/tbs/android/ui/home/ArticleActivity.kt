@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.webkit.*
 import androidx.core.view.isVisible
+import cn.wl.android.lib.config.BaseConfig
 import cn.wl.android.lib.config.WLConfig
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
@@ -228,24 +230,18 @@ class ArticleActivity : BaseActivity() {
                         cover = articleCover,
                         title = articleTitle!!,
                         des = articleDes!!,
-                        url = pathQuery(Const.SHARE_URL) {
-                            it["id"] = articleId ?: ""
-                            it["type"] = "1"
-                        }
+                        url = articleUrl!!
                     )
                 }
                 onTimeline = Runnable {
                     doShareTimeline(
                         resources, cover = articleCover,
                         title = articleTitle!!,
-                        url = pathQuery(Const.SHARE_URL) {
-                            it["id"] = articleId ?: ""
-                            it["type"] = "1"
-                        }
+                        url = articleUrl!!
                     )
                 }
                 onCopyLink = Runnable {
-                    Tools.copyText(mActivity, Const.SHARE_URL)
+                    Tools.copyText(mActivity, articleUrl!!)
                 }
             }
     }

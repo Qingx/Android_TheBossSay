@@ -173,8 +173,6 @@ class HomeActivity : BaseActivity() {
         TbsApi.user().obtainCheckUpdate(AppUtils.getAppVersionName())
             .bindDefaultSub(
                 doNext = {
-//                    it.forcedUpdating = it.forcedUpdating || WLConfig.isDebug()
-
                     CheckUpdateDialog.showDialog(
                         supportFragmentManager,
                         "checkUpdate",
@@ -193,10 +191,6 @@ class HomeActivity : BaseActivity() {
                                 )
 
                                 downStartStatus()
-
-//                                if (!it.forcedUpdating) {
-//                                    dismiss()
-//                                }
                             }
                         }
                 },

@@ -32,5 +32,4 @@ public class DownloadEvent {
         int i = (int) (current * 1.0 / total * 100);
         return i + "%";
     }
-
 }
