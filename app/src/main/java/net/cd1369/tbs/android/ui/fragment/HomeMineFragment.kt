@@ -207,7 +207,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     //点击历史记录
     private fun onClickPoint() {
         if (UserConfig.get().loginStatus) {
-            PointHistoryActivity.start(mActivity)
+            MinePointActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
             LoginPhoneWechatActivity.start(mActivity)

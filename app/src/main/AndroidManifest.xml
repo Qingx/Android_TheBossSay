@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="net.cd1369.tbs.android">
-    <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加 -->
+    package="net.cd1369.tbs.android"> <!-- 如果引入快手，com.advance.supplier.ks和com.kwad.sdk一定要添加 -->
     <uses-sdk tools:overrideLibrary="com.bun.miitmdid,com.advance.supplier.ks,com.kwad.sdk" />
 
     <permission
@@ -79,7 +78,8 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.DailyPosterActivity"></activity>
+        <activity android:name=".ui.home.MinePointActivity"></activity>
+        <activity android:name=".ui.home.DailyPosterActivity" />
         <activity
             android:name=".ui.home.PointHistoryActivity"
             android:screenOrientation="portrait" />

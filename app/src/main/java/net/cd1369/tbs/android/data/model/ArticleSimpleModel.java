@@ -26,10 +26,11 @@ public class ArticleSimpleModel implements MultiItemEntity {
     private String bossHead; //boss头像
     private String bossRole; //boss角色, 职务
     private String recommendType; //0:最近更新 1:为你推荐
+    private String filterType; //1:言论 3：咨询
 
     public ArticleSimpleModel(String id, String title, String descContent, boolean isCollect, boolean isRead, int readCount,
                               int collect, Long releaseTime, Long articleTime, List<String> files, String bossId, String bossName,
-                              String bossHead, String bossRole, String recommendType) {
+                              String bossHead, String bossRole, String recommendType, String filterType) {
         this.id = id;
         this.title = title;
         this.descContent = descContent;
@@ -45,6 +46,7 @@ public class ArticleSimpleModel implements MultiItemEntity {
         this.bossHead = bossHead;
         this.bossRole = bossRole;
         this.recommendType = recommendType;
+        this.filterType = filterType;
     }
 
 
@@ -188,5 +190,29 @@ public class ArticleSimpleModel implements MultiItemEntity {
 
     public void setRecommendType(String recommendType) {
         this.recommendType = recommendType;
+    }
+
+    public boolean isCollect() {
+        return isCollect;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public String getFilterType() {
+        return filterType;
+    }
+
+    public void setCollect(boolean collect) {
+        isCollect = collect;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public void setFilterType(String filterType) {
+        this.filterType = filterType;
     }
 }
