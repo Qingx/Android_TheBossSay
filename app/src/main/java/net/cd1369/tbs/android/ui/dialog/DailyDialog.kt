@@ -20,6 +20,8 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.entity.DailyEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
+import net.cd1369.tbs.android.event.ArticlePointEvent
+import net.cd1369.tbs.android.event.DailyPointCollectChangedEvent
 import net.cd1369.tbs.android.ui.home.LoginPhoneWechatActivity
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.fullUrl
@@ -120,6 +122,24 @@ class DailyDialog : BottomSheetDialogFragment() {
             .subscribe({
                 entity.isPoint = target
                 view.image_point.isSelected = target
+
+
+                UserConfig.get().updateUser {
+                    val num = if (target) {
+                        (it.pointNum ?: 0) + 1
+                    } else {
+                        (it.pointNum ?: 0) - 1
+                    }
+                    it.pointNum = max(num, 0)
+                }
+
+                EventBus.getDefault().post(
+                    ArticlePointEvent(
+                        entity.id,
+                        doPoint = target,
+                        fromHistory = false
+                    )
+                )
             }, {
                 Toasts.show("操作失败")
             })
@@ -141,6 +161,8 @@ class DailyDialog : BottomSheetDialogFragment() {
                                 max((user.collectNum ?: 0) - 1, 0)
                         }
                         EventBus.getDefault().post(ArticleCollectEvent())
+                        EventBus.getDefault().post(DailyPointCollectChangedEvent(entity.id, false))
+
                     }, {
                         Toasts.show("取消失败")
                     })
@@ -178,6 +200,12 @@ class DailyDialog : BottomSheetDialogFragment() {
                                                             }
                                                             EventBus.getDefault()
                                                                 .post(ArticleCollectEvent())
+                                                            EventBus.getDefault().post(
+                                                                DailyPointCollectChangedEvent(
+                                                                    entity.id,
+                                                                    true
+                                                                )
+                                                            )
 
                                                             this@select.dismiss()
                                                             this@create.dismiss()
@@ -201,6 +229,12 @@ class DailyDialog : BottomSheetDialogFragment() {
                                                         max((user.collectNum ?: 0) + 1, 0)
                                                 }
                                                 EventBus.getDefault().post(ArticleCollectEvent())
+                                                EventBus.getDefault().post(
+                                                    DailyPointCollectChangedEvent(
+                                                        entity.id,
+                                                        true
+                                                    )
+                                                )
 
                                                 this@select.dismiss()
                                             }, {

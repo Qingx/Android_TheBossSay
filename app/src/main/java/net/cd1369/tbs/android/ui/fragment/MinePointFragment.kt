@@ -5,22 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.wl.android.lib.ui.BaseFragment
+import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.ui.BaseListFragment
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import kotlinx.android.synthetic.main.activity_mine_history_all.*
 import kotlinx.android.synthetic.main.empty_follow_article.view.*
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
-import kotlinx.android.synthetic.main.fragment_speech_tack_content.layout_refresh
-import kotlinx.android.synthetic.main.fragment_speech_tack_content.rv_content
 import net.cd1369.tbs.android.R
+import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.TbsApi
+import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.data.entity.DailyEntity
 import net.cd1369.tbs.android.data.entity.HisFavEntity
 import net.cd1369.tbs.android.event.ArticlePointEvent
+import net.cd1369.tbs.android.event.DailyPointCollectChangedEvent
 import net.cd1369.tbs.android.ui.adapter.MinePointAdapter
+import net.cd1369.tbs.android.ui.dialog.DailyDialog
+import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.DailyPosterActivity
+import net.cd1369.tbs.android.util.Tools
+import net.cd1369.tbs.android.util.doShareSession
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.math.max
 
 /**
  * Created by Xiang on 2021/10/21 17:02
@@ -55,14 +63,64 @@ class MinePointFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : MinePointAdapter() {
             override fun onContentClick(entity: HisFavEntity) {
-
+                if (type == "1") {
+                    ArticleActivity.start(mActivity, entity.articleId)
+                } else {
+                    DailyDialog.showDialog(
+                        requireFragmentManager(),
+                        "dailyDialog",
+                        entity.toDaily()
+                    )
+                        .apply {
+                            doShare = Runnable {
+                                ShareDialog.showDialog(
+                                    requireFragmentManager(),
+                                    "shareDialog",
+                                    true
+                                )
+                                    .apply {
+                                        onSession = Runnable {
+                                            doShareWechat(entity.toDaily())
+                                        }
+                                        onTimeline = Runnable {
+                                            doShareTimeline(entity.toDaily())
+                                        }
+                                        onCopyLink = Runnable {
+                                            Tools.copyText(mActivity, Const.SHARE_URL)
+                                        }
+                                        onPoster = Runnable {
+                                            DailyPosterActivity.start(mActivity, entity.toDaily())
+                                            this.dismiss()
+                                        }
+                                    }
+                            }
+                        }
+                }
             }
 
             override fun onContentDelete(entity: HisFavEntity, doRemove: (id: String) -> Unit) {
+                if (type == "1") {
+                    removeArticle(entity, doRemove)
+                } else {
+                    removeDaily(entity, doRemove)
+                }
             }
         }.also {
             mAdapter = it
         }
+    }
+
+    private fun doShareWechat(entity: DailyEntity) {
+        doShareSession(resources, entity.bossHead, title = "分享一段任正非的语录，深有感触", des = entity.content)
+    }
+
+    private fun doShareTimeline(entity: DailyEntity) {
+        net.cd1369.tbs.android.util.doShareTimeline(
+            resources,
+            entity.bossHead,
+            title = "分享一段任正非的语录，深有感触",
+            des = entity.content
+        )
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -90,6 +148,46 @@ class MinePointFragment : BaseListFragment() {
         mAdapter.emptyView = emptyView
     }
 
+    private fun removeArticle(entity: HisFavEntity, doRemove: (id: String) -> Unit) {
+        showLoadingAlert("正在取消...")
+
+        TbsApi.boss().switchPointStatus(entity.articleId, false)
+            .bindToastSub("取消成功") {
+                doRemove.invoke(entity.articleId)
+
+                UserConfig.get().updateUser {
+                    it.pointNum = max((it.pointNum ?: 0) - 1, 0)
+                }
+                eventBus.post(
+                    ArticlePointEvent(
+                        entity.articleId,
+                        doPoint = false,
+                        fromHistory = true
+                    )
+                )
+            }
+    }
+
+    private fun removeDaily(entity: HisFavEntity, doRemove: (id: String) -> Unit) {
+        showLoadingAlert("正在取消...")
+
+        TbsApi.user().obtainDailyPoint(entity.articleId, false)
+            .bindToastSub("取消成功") {
+                doRemove.invoke(entity.articleId)
+
+                UserConfig.get().updateUser {
+                    it.pointNum = max((it.pointNum ?: 0) - 1, 0)
+                }
+                eventBus.post(
+                    ArticlePointEvent(
+                        entity.articleId,
+                        doPoint = false,
+                        fromHistory = true
+                    )
+                )
+            }
+    }
+
     override fun loadData(loadMore: Boolean) {
         super.loadData(loadMore)
 
@@ -98,18 +196,27 @@ class MinePointFragment : BaseListFragment() {
         }
 
         TbsApi.user().obtainPointList(pageParam, type)
-            .bindPageSubscribe(loadMore) {
+            .onErrorReturn { Page.empty() }
+            .bindPageSubscribe(loadMore, null, {
+                showContent()
+
+                if (loadMore) {
+                    layout_refresh.finishLoadMore()
+                } else {
+                    layout_refresh.finishRefresh()
+                }
+            }, {
                 if (loadMore) {
                     mAdapter.addData(it)
                 } else {
                     mAdapter.setNewData(it)
                 }
-            }
+            })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: ArticlePointEvent) {
-        if (!event.fromHistory && type == "1") {
+        if (!event.fromHistory) {
             if (event.doPoint) {
                 layout_refresh.autoRefresh()
             } else {
@@ -122,6 +229,17 @@ class MinePointFragment : BaseListFragment() {
                     mAdapter.notifyDataSetChanged()
                 }
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun eventBus(event: DailyPointCollectChangedEvent) {
+        val index = mAdapter.data.indexOfFirst {
+            it.articleId == event.id
+        }
+
+        if (index != -1) {
+            mAdapter.data[index].isCollect = event.target
         }
     }
 }

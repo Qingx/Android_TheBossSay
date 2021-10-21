@@ -25,7 +25,6 @@ import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
-import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
