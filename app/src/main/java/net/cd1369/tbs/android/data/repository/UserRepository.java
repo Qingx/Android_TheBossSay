@@ -7,7 +7,9 @@ import net.cd1369.tbs.android.config.DataConfig;
 import net.cd1369.tbs.android.config.TbsApi;
 import net.cd1369.tbs.android.config.UserConfig;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
+import net.cd1369.tbs.android.data.entity.DailyEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
+import net.cd1369.tbs.android.data.entity.HisFavEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.PortEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
@@ -373,6 +375,91 @@ public class UserRepository extends BaseRepository<UserService> {
      */
     public Observable<PortEntity> obtainPortStatus() {
         return getService().obtainPortStatus()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取每日一言
+     *
+     * @return
+     */
+    public Observable<DailyEntity> obtainDaily() {
+        return getService().obtainDaily()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 点赞每日一言 true 点赞 false 取消点赞
+     *
+     * @param id
+     * @param target
+     * @return
+     */
+    public Observable<Boolean> obtainDailyPoint(String id, boolean target) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("target", target);
+            jo.put("type", 0);
+        });
+
+        return getService().obtainDailyOption(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 收藏每日一言
+     *
+     * @param id
+     * @param groupId
+     * @return
+     */
+    public Observable<Boolean> obtainDailyCollect(String id, String groupId) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("groupId", groupId);
+            jo.put("target", true);
+            jo.put("type", 1);
+        });
+
+        return getService().obtainDailyOption(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 取消收藏每日一言
+     *
+     * @param id
+     * @return
+     */
+    public Observable<Boolean> obtainDailyNoCollect(String id) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("sourceId", id);
+            jo.put("target", false);
+            jo.put("type", 1);
+        });
+
+        return getService().obtainDailyOption(body)
+                .compose(combine())
+                .compose(success());
+    }
+
+    /**
+     * 获取点赞记录
+     *
+     * @param pageParam
+     * @param type      1：文章 2：每日一言
+     * @return
+     */
+    public Observable<Page<HisFavEntity>> obtainPointList(PageParam pageParam, String type) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            jo.put("type", type);
+        });
+
+        return getService().obtainPointList(body)
                 .compose(combine())
                 .compose(rebase());
     }

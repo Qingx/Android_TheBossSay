@@ -52,9 +52,8 @@ enum class MineItem(val code: String, val itemName: String, @DrawableRes val ico
     History("1", "阅读记录", R.drawable.ic_mine_history),
     Share("2", "推荐给好友", R.drawable.ic_mine_share),
     About("3", "关于boss说", R.drawable.ic_mine_about),
-    Contact("4", "联系我们", R.drawable.ic_mine_contact);
-//    Score("5", "给app评分", R.drawable.ic_mine_score),
-//    Clear("6", "清除缓存", R.drawable.ic_mine_clear);
+    Contact("4", "联系我们", R.drawable.ic_mine_contact),
+    Score("5", "给app评分", R.drawable.ic_mine_score);
 
     companion object {
         fun get(code: String): MineItem {

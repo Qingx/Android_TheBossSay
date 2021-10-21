@@ -39,6 +39,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.google.gson.JsonElement
 import com.irozon.sneaker.Sneaker
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX
+import com.tencent.mm.opensdk.modelmsg.WXImageObject
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject
 import io.reactivex.Observable
@@ -363,7 +364,7 @@ fun pathQuery(url: String, queryCreator: (HashMap<String, String>) -> Unit): Str
  * 分享至微信会话
  * @param resources Resources
  */
-fun doShareSession(
+internal fun doShareSession(
     resources: Resources,
     cover: String = "",
     url: String = Const.SHARE_URL,
@@ -374,7 +375,7 @@ fun doShareSession(
     webPage.webpageUrl = url
 
     if (cover == "") {
-        val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
+        val bmp: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
 
         val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
         bmp.recycle()
@@ -420,7 +421,7 @@ fun doShareSession(
  * 分享至微信朋友圈
  * @param resources Resources
  */
-fun doShareTimeline(
+internal fun doShareTimeline(
     resources: Resources, cover: String = "",
     url: String = Const.SHARE_URL,
     title: String = "Boss说-追踪老板的言论",
@@ -469,6 +470,46 @@ fun doShareTimeline(
             TbsApp.getWeChatApi().sendReq(req)
         }
     }
+}
+
+/**
+ * 分享图片至微信会话
+ * @param bitmap Bitmap
+ */
+internal fun doShareImgSession(bitmap: Bitmap) {
+    val imgObject = WXImageObject(bitmap)
+    val thumbBmp = Bitmap.createScaledBitmap(bitmap, 150, 150, true)
+    bitmap.recycle()
+    val msg = WXMediaMessage(imgObject).apply {
+        this.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+    }
+
+    val req = SendMessageToWX.Req()
+    req.transaction = WeChatUtil.buildTransaction("image")
+    req.message = msg
+    req.scene = SendMessageToWX.Req.WXSceneSession
+
+    TbsApp.getWeChatApi().sendReq(req)
+}
+
+/**
+ * 分享图片至微信会话
+ * @param bitmap Bitmap
+ */
+internal fun doShareImgTimeline(bitmap: Bitmap) {
+    val imgObject = WXImageObject(bitmap)
+    val thumbBmp = Bitmap.createScaledBitmap(bitmap, 150, 150, true)
+    bitmap.recycle()
+    val msg = WXMediaMessage(imgObject).apply {
+        this.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
+    }
+
+    val req = SendMessageToWX.Req()
+    req.transaction = WeChatUtil.buildTransaction("image")
+    req.message = msg
+    req.scene = SendMessageToWX.Req.WXSceneTimeline
+
+    TbsApp.getWeChatApi().sendReq(req)
 }
 
 fun loadBitmap(url: String, call: (Bitmap) -> Unit) {
@@ -878,4 +919,14 @@ fun jumpSysShare(context: Context, content: String) {
     shareIntent.putExtra(Intent.EXTRA_TEXT, content)
 //    shareIntent = Intent.createChooser(shareIntent, "Here is the title of Select box")
     context.startActivity(shareIntent)
+}
+
+internal fun isSameDay(time: Long): Boolean {
+    val last = Calendar.getInstance()
+    last.timeInMillis = time
+    val current = Calendar.getInstance()
+    current.timeInMillis = Times.current()
+
+    return last.get(Calendar.DAY_OF_YEAR) == current.get(Calendar.DAY_OF_YEAR)
+            && last.get(Calendar.YEAR) == current.get(Calendar.YEAR)
 }

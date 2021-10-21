@@ -26,7 +26,11 @@ abstract class GuideInfoAdapter :
         GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
+        if (!item.photoUrl.isNullOrEmpty()) {
+            GlideApp.display(item.photoUrl[0].fullUrl(), helper.V.image_label)
+        }
 
+        helper.V.text_name.paint.isFakeBoldText = true
 
         helper.V doClick {
             if (mSelect.contains(item.id)) {

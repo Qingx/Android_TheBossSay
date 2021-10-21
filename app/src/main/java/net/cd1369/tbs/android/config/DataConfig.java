@@ -40,6 +40,7 @@ public class DataConfig extends BaseConfig {
         String keyBossTime = "keyBossTime";
         String keyTackTotalNum = "keyTackTotalNum";
         String keyHasData = "keyHasData";
+        String keyDailyTime = "KEY_DAILY_TIME";
     }
 
     private boolean firstUse; //是否第一次使用app
@@ -50,6 +51,7 @@ public class DataConfig extends BaseConfig {
     private int tackTotalNum;
     private boolean hasData;
     private boolean isRunning = false;
+    private Long dailyTime;
 
     /**
      * 判断是否需要显示服务
@@ -165,5 +167,13 @@ public class DataConfig extends BaseConfig {
 
     public void setRunning(boolean running) {
         isRunning = running;
+    }
+
+    public void setDailyTime(Long dailyTime) {
+        putLong(KEY.keyDailyTime, dailyTime);
+    }
+
+    public Long getDailyTime() {
+        return getLong(KEY.keyDailyTime, -1L);
     }
 }

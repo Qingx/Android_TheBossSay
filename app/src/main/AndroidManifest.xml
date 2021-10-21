@@ -79,7 +79,7 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-
+        <activity android:name=".ui.home.DailyPosterActivity"></activity>
         <activity
             android:name=".ui.home.PointHistoryActivity"
             android:screenOrientation="portrait" />
@@ -89,7 +89,6 @@
         <activity
             android:name=".ui.test.TestActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.home.MineAboutAppActivity"
             android:screenOrientation="portrait" />
@@ -153,9 +152,8 @@
         <activity
             android:name=".ui.home.MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="net.cd1369.tbs.android.ui.home.ArticleActivity"
+            android:name=".ui.home.ArticleActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -165,7 +163,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.start.StartActivity"
             android:screenOrientation="portrait"
@@ -231,9 +228,7 @@
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
             </intent-filter>
-        </service>
-
-        <!-- Required since 3.0.7 -->
+        </service> <!-- Required since 3.0.7 -->
         <!-- 新的 tag/alias 接口结果返回需要开发者配置一个自定的广播 -->
         <!-- 3.3.0开始所有事件将通过该类回调 -->
         <!-- 该广播需要继承 JPush 提供的 JPushMessageReceiver 类, 并如下新增一个 Intent-Filter -->
@@ -271,8 +266,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="${applicationId}" />
             </intent-filter>
-        </activity>
-        <!-- 若您的业务中有使用极光富媒体功能，或者极光早上好功能，需要把此 Activity 的 exported 修改成 true 覆盖 jcenter 上的组件。 -->
+        </activity> <!-- 若您的业务中有使用极光富媒体功能，或者极光早上好功能，需要把此 Activity 的 exported 修改成 true 覆盖 jcenter 上的组件。 -->
         <activity
             android:name="cn.jpush.android.ui.PopWinActivity"
             android:exported="true"
@@ -285,25 +279,21 @@
 
                 <category android:name="${applicationId}" />
             </intent-filter>
-        </activity>
-
-        <!--华为推送 start-->
+        </activity> <!-- 华为推送 start -->
         <service
             android:name="cn.jpush.android.service.PluginHuaweiPlatformsService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-        <!--华为推送 end-->
-
+        </service> <!-- 华为推送 end -->
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
             android:enabled="true"
             tools:node="replace">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <!--Required  显示通知栏 -->
+                <!-- Required  显示通知栏 -->
                 <category android:name="${applicationId}" />
             </intent-filter>
             <intent-filter>
@@ -318,6 +308,6 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-
     </application>
+
 </manifest>

@@ -17,7 +17,7 @@ public class DirHelper {
     public static final String IMAGE_DIR = "image_dir";
 
     private static String mImagePath = Environment
-            .getExternalStorageDirectory().getAbsolutePath();
+            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
 
     /**
      * 获取当前时间默认图片保存文件夹
