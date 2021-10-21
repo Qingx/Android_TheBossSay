@@ -112,9 +112,26 @@
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
             android:textSize="13dp"
+            android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@id/text_hot"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="2020/03/02" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <include
+                android:id="@+id/view_type_talk"
+                layout="@layout/item_type_talk" />
+
+            <include
+                android:id="@+id/view_type_msg"
+                layout="@layout/item_type_msg" />
+
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
