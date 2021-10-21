@@ -930,3 +930,9 @@ internal fun isSameDay(time: Long): Boolean {
     return last.get(Calendar.DAY_OF_YEAR) == current.get(Calendar.DAY_OF_YEAR)
             && last.get(Calendar.YEAR) == current.get(Calendar.YEAR)
 }
+
+fun inThreeDayTime(time: Long): Boolean {
+    val end = Times.current()
+    val sta = end - 3L * DateFormat.DAY_1
+    return time in sta..end
+}
