@@ -8,6 +8,7 @@ import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_ad_layout.view.*
+import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.image_head
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_hot
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_info
@@ -55,6 +56,7 @@ abstract class ArticleSquareAdapter :
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.getTime())
+
             }
             1 -> {
                 helper.V.text_title.text = item.title

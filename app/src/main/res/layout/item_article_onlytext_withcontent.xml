@@ -137,7 +137,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/tv_update"
+        android:id="@+id/tv_only_update"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/font_16"
         android:layout_marginRight="@dimen/font_16"

@@ -121,9 +121,27 @@
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
             android:textSize="13dp"
+            android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@id/text_hot"
             app:layout_constraintEnd_toStartOf="@id/card_res"
             tools:text="2020/03/02" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding_8"
+            app:layout_constraintBottom_toBottomOf="@id/text_hot"
+            app:layout_constraintEnd_toStartOf="@id/card_res">
+
+            <include
+                android:id="@+id/view_single_talk"
+                layout="@layout/item_type_talk" />
+
+            <include
+                android:id="@+id/view_single_msg"
+                layout="@layout/item_type_msg" />
+
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

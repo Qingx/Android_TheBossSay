@@ -55,6 +55,7 @@ abstract class ArticleTackAdapter :
 
                 helper.V.view_type_msg1.isVisible = item.isMsg
                 helper.V.view_type_talk1.isVisible = item.isTalk
+                helper.V.tv_only_update.isVisible = item.isLatestUpdate
             }
             1 -> {
                 helper.V.text_title.text = item.title
@@ -73,11 +74,17 @@ abstract class ArticleTackAdapter :
                 // 判断言论
                 helper.V.view_type_msg.isVisible = item.isMsg
                 helper.V.view_type_talk.isVisible = item.isTalk
+                helper.V.tv_single_update.isVisible = item.isLatestUpdate
             }
         }
 
         helper.V doClick {
             onClick(item)
+
+            if (!item.isRead) {
+                item.isRead = true
+                notifyItemChanged(helper.layoutPosition)
+            }
         }
     }
 

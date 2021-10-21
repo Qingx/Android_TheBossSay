@@ -57,7 +57,7 @@ public class ArticleSimpleModel implements MultiItemEntity {
 
     public boolean isLatestUpdate() {
         boolean oneDayTime = ToolsKt.inThreeDayTime(releaseTime);
-        return !isRead || oneDayTime;
+        return !isRead && oneDayTime;
     }
 
     public boolean isMsg() {
