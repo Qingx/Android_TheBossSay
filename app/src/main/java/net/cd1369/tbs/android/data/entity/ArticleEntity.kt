@@ -1,6 +1,8 @@
 package net.cd1369.tbs.android.data.entity
 
 import com.chad.library.adapter.base.entity.MultiItemEntity
+import net.cd1369.tbs.android.util.Tools
+import net.cd1369.tbs.android.util.inThreeDayTime
 import java.io.Serializable
 
 data class ArticleEntity(
@@ -21,8 +23,13 @@ data class ArticleEntity(
     val title: String,
     val originLink: String = "暂无",
     var isRead: Boolean = false,
-    val hidden: Boolean
+    val hidden: Boolean,
+    var releaseTime: Long = 0
 ) : MultiItemEntity, Serializable {
+
+    val isInThreeDay: Boolean by lazy {
+        inThreeDayTime(releaseTime)
+    }
 
     fun getTime(): Long = articleTime ?: createTime ?: 0L
 
