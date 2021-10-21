@@ -1,15 +1,21 @@
 package net.cd1369.tbs.android.ui.adapter
 
 import android.annotation.SuppressLint
+import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.image_head
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_content
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_hot
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_name
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_time
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.*
+import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.text_info
+import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.text_title
+import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.view_type_msg
+import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.view_type_talk
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.util.Tools.formatCount
@@ -46,6 +52,9 @@ abstract class ArticleTackAdapter :
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.showTime)
+
+                helper.V.view_type_msg1.isVisible = item.isMsg
+                helper.V.view_type_talk1.isVisible = item.isTalk
             }
             1 -> {
                 helper.V.text_title.text = item.title
@@ -60,6 +69,10 @@ abstract class ArticleTackAdapter :
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.showTime)
+
+                // 判断言论
+                helper.V.view_type_msg.isVisible = item.isMsg
+                helper.V.view_type_talk.isVisible = item.isTalk
             }
         }
 
