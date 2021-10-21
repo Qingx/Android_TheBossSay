@@ -100,6 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@id/image_head"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -111,6 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@id/image_head"
                 app:layout_constraintEnd_toEndOf="parent">
 
