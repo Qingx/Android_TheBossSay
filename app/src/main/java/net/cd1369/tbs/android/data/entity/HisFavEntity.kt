@@ -14,7 +14,8 @@ data class HisFavEntity(
     val hidden: Boolean,
     val bossRole: String,
     val isCollect: Boolean,
-    val isPoint: Boolean
+    val isPoint: Boolean,
+    val cover: String
 ) : MultiItemEntity {
     fun toDaily(): DailyEntity {
         return DailyEntity(
@@ -22,11 +23,11 @@ data class HisFavEntity(
         )
     }
 
-    override fun toString(): String {
-        return "HisFavEntity(id='$id', articleId='$articleId', content='$content', bossHead='$bossHead', bossName='$bossName', createTime=$createTime, articleType='$articleType', type='$type', hidden=$hidden, bossRole='$bossRole', isCollect=$isCollect, isPoint=$isPoint)"
-    }
-
     override fun getItemType(): Int {
         return type.toInt()
+    }
+
+    override fun toString(): String {
+        return "HisFavEntity(id='$id', articleId='$articleId', content='$content', bossHead='$bossHead', bossName='$bossName', createTime=$createTime, articleType='$articleType', type='$type', hidden=$hidden, bossRole='$bossRole', isCollect=$isCollect, isPoint=$isPoint, cover='$cover')"
     }
 }

@@ -1,87 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_content"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_cover"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_content"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="3:2"
+            android:layout_height="120dp"
+            android:padding="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/image_cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_article_cover" />
-        </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_cover"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="3:2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <com.allen.library.CircleImageView
-            android:id="@+id/image_head"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/card_cover"
-            tools:src="@drawable/ic_default_photo" />
+                <ImageView
+                    android:id="@+id/image_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/ic_article_cover" />
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/text_name"
+            <com.allen.library.CircleImageView
+                android:id="@+id/image_head"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toEndOf="@id/card_cover"
+                tools:src="@drawable/ic_default_photo" />
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#7c7c7c"
+                android:textSize="10dp"
+                app:layout_constraintBottom_toBottomOf="@id/image_head"
+                app:layout_constraintEnd_toStartOf="@id/text_time"
+                app:layout_constraintStart_toEndOf="@id/image_head"
+                app:layout_constraintTop_toTopOf="@id/image_head"
+                tools:text="任正非·华为创始人" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#7c7c7c"
+                android:textSize="10dp"
+                app:layout_constraintBaseline_toBaselineOf="@id/text_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="21/10/23" />
+
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:singleLine="false"
+                android:textColor="@color/colorTextDark"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="@id/text_name"
+                app:layout_constraintStart_toStartOf="@id/image_head"
+                app:layout_constraintTop_toTopOf="@id/card_cover"
+                tools:text="企业发展就是要发展一批狼。狼有三大特性：一是敏锐的嗅觉；二是不屈不挠、奋不顾身的进攻精神；三是群体奋斗的意…" />
+
+            <FrameLayout
+                android:id="@+id/layout_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@id/image_head"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <include layout="@layout/item_type_msg" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/layout_talk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@id/image_head"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <include layout="@layout/item_type_talk" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ellipsize="end"
-            android:gravity="start|center_vertical"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="#7c7c7c"
-            android:textSize="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/image_head"
+            android:layout_height="1dp"
+            android:background="#1a979797"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_head"
-            app:layout_constraintTop_toTopOf="@id/image_head"
-            tools:text="任正非·华为创始人" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_content" />
 
-        <TextView
-            android:id="@+id/text_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:singleLine="false"
-            android:textColor="@color/colorTextDark"
-            android:textSize="12dp"
-            app:layout_constraintEnd_toEndOf="@id/text_name"
-            app:layout_constraintStart_toStartOf="@id/image_head"
-            app:layout_constraintTop_toTopOf="@id/card_cover"
-            tools:text="企业发展就是要发展一批狼。狼有三大特性：一是敏锐的嗅觉；二是不屈不挠、奋不顾身的进攻精神；三是群体奋斗的意…" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#1a979797"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_content" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/text_delete"
+        android:layout_width="96dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorRed"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/colorWhite"
+        android:textSize="13dp" />
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

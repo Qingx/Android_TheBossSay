@@ -192,24 +192,8 @@ public class ArticleSimpleModel implements MultiItemEntity {
         this.recommendType = recommendType;
     }
 
-    public boolean isCollect() {
-        return isCollect;
-    }
-
-    public boolean isRead() {
-        return isRead;
-    }
-
     public String getFilterType() {
         return filterType;
-    }
-
-    public void setCollect(boolean collect) {
-        isCollect = collect;
-    }
-
-    public void setRead(boolean read) {
-        isRead = read;
     }
 
     public void setFilterType(String filterType) {
