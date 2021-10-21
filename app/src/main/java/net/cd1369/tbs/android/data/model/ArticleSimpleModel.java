@@ -15,7 +15,7 @@ public class ArticleSimpleModel implements MultiItemEntity {
     private String title; //标题
     private String descContent; //摘要
     private boolean isCollect; //是否收藏
-    private boolean isRead; //是否已读
+    public boolean isRead; //是否已读
     private int readCount; //阅读数
     private int collect; //收藏数
     private Long releaseTime; //发布时间
@@ -196,9 +196,9 @@ public class ArticleSimpleModel implements MultiItemEntity {
         return isCollect;
     }
 
-    public boolean isRead() {
-        return isRead;
-    }
+//    public boolean isRead() {
+//        return isRead;
+//    }
 
     public String getFilterType() {
         return filterType;
@@ -208,11 +208,12 @@ public class ArticleSimpleModel implements MultiItemEntity {
         isCollect = collect;
     }
 
-    public void setRead(boolean read) {
-        isRead = read;
-    }
+//    public void setRead(boolean read) {
+//        isRead = read;
+//    }
 
     public void setFilterType(String filterType) {
         this.filterType = filterType;
     }
+
 }
