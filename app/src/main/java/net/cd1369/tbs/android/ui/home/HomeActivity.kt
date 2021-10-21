@@ -200,7 +200,7 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun doDaily() {
-        if (isSameDay(DataConfig.get().dailyTime) || DataConfig.get().dailyTime == -1L) {
+        if (!isSameDay(DataConfig.get().dailyTime) || DataConfig.get().dailyTime == -1L) {
             TbsApi.user().obtainDaily().bindDefaultSub {
                 DataConfig.get().dailyTime = Times.current()
                 DailyDialog.showDialog(supportFragmentManager, "daily", it)
