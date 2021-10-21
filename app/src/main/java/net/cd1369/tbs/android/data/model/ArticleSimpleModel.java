@@ -55,8 +55,18 @@ public class ArticleSimpleModel implements MultiItemEntity {
     public ArticleSimpleModel() {
     }
 
+    public long getValidTime() {
+        Long time = this.releaseTime;
+        if (time == null)
+            time = this.articleTime;
+        if (time == null)
+            time = 0L;
+
+        return time;
+    }
+
     public boolean isLatestUpdate() {
-        boolean oneDayTime = ToolsKt.inThreeDayTime(releaseTime);
+        boolean oneDayTime = ToolsKt.inThreeDayTime(getValidTime());
         return !isRead && oneDayTime;
     }
 

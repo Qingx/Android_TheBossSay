@@ -24,12 +24,22 @@ data class ArticleEntity(
     val originLink: String = "暂无",
     var isRead: Boolean = false,
     val hidden: Boolean,
-    var releaseTime: Long = 0
+    var releaseTime: Long?,
+    var filterType: String?
 ) : MultiItemEntity, Serializable {
 
-    val isInThreeDay: Boolean by lazy {
-        inThreeDayTime(releaseTime)
-    }
+    val isInThreeDay: Boolean
+        get() = inThreeDayTime(releaseTime ?: articleTime ?: 0L)
+
+    val isMsgType: Boolean
+        get() {
+            return isInThreeDay && (filterType?.let { it == "1" } ?: false)
+        }
+
+    val isTalkType: Boolean
+        get() {
+            return isInThreeDay && (filterType?.let { it == "2" } ?: false)
+        }
 
     fun getTime(): Long = articleTime ?: createTime ?: 0L
 
@@ -81,7 +91,9 @@ data class ArticleEntity(
             title = "",
             originLink = "",
             isRead = false,
-            hidden = false
+            hidden = false,
+            filterType = "",
+            releaseTime = 0
         )
 
         const val AD_TYPE = 100
@@ -105,7 +117,9 @@ data class ArticleEntity(
             title = "",
             originLink = "",
             isRead = false,
-            hidden = false
+            hidden = false,
+            filterType = "",
+            releaseTime = 0,
         )
     }
 

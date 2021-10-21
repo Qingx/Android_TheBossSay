@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.GlideApp
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -57,6 +58,9 @@ abstract class ArticleSquareAdapter :
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.getTime())
 
+                helper.V.view_only_msg.isVisible = item.isMsgType
+                helper.V.view_only_talk.isVisible = item.isTalkType
+                helper.V.text_time.isVisible = !item.isInThreeDay
             }
             1 -> {
                 helper.V.text_title.text = item.title
@@ -67,6 +71,10 @@ abstract class ArticleSquareAdapter :
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.getTime())
+
+                helper.V.view_single_msg.isVisible = item.isMsgType
+                helper.V.view_single_talk.isVisible = item.isTalkType
+                helper.V.text_time.isVisible = !item.isInThreeDay
             }
             ArticleEntity.AD_TYPE -> {
                 if (helper is AdVH) {
