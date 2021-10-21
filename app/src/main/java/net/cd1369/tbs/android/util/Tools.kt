@@ -936,3 +936,9 @@ fun inThreeDayTime(time: Long): Boolean {
     val sta = end - 3L * DateFormat.DAY_1
     return time in sta..end
 }
+
+fun inOneDayTime(time: Long): Boolean {
+    val end = Times.current()
+    val sta = end - DateFormat.DAY_1
+    return time in sta..end
+}

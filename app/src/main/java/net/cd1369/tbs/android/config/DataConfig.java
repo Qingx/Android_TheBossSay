@@ -41,6 +41,7 @@ public class DataConfig extends BaseConfig {
         String keyTackTotalNum = "keyTackTotalNum";
         String keyHasData = "keyHasData";
         String keyDailyTime = "KEY_DAILY_TIME";
+        String KeyLatestTime = "KEY_Latest_Time";
     }
 
     private boolean firstUse; //是否第一次使用app
@@ -176,4 +177,5 @@ public class DataConfig extends BaseConfig {
     public Long getDailyTime() {
         return getLong(KEY.keyDailyTime, -1L);
     }
+
 }

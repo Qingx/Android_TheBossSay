@@ -2,6 +2,9 @@ package net.cd1369.tbs.android.data.model;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
+import net.cd1369.tbs.android.util.Tools;
+import net.cd1369.tbs.android.util.ToolsKt;
+
 import java.util.List;
 
 /**
@@ -26,7 +29,7 @@ public class ArticleSimpleModel implements MultiItemEntity {
     private String bossHead; //boss头像
     private String bossRole; //boss角色, 职务
     private String recommendType; //0:最近更新 1:为你推荐
-    private String filterType; //1:言论 3：咨询
+    private String filterType; //1:言论 2：咨询
 
     public ArticleSimpleModel(String id, String title, String descContent, boolean isCollect, boolean isRead, int readCount,
                               int collect, Long releaseTime, Long articleTime, List<String> files, String bossId, String bossName,
@@ -49,8 +52,20 @@ public class ArticleSimpleModel implements MultiItemEntity {
         this.filterType = filterType;
     }
 
-
     public ArticleSimpleModel() {
+    }
+
+    public boolean isLatestUpdate() {
+        boolean oneDayTime = ToolsKt.inThreeDayTime(releaseTime);
+        return !isRead || oneDayTime;
+    }
+
+    public boolean isMsg() {
+        return "1".equals(filterType);
+    }
+
+    public boolean isTalk() {
+        return "2".equals(filterType);
     }
 
     public Long getShowTime() {
