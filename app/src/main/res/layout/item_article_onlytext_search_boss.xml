@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/draw_white_4"
-        android:padding="18dp"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -56,34 +56,65 @@
             tools:text="莉莉娅" />
 
         <TextView
+            android:id="@+id/text_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/colorTextGray"
+            android:textSize="14dp"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/text_name"
+            tools:text="灵魂莲华" />
+
+        <TextView
+            android:id="@+id/text_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="2"
+            android:singleLine="false"
+            android:textColor="@color/colorTextDarkLight"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_head"
+            tools:text="领效电提算场已将铁存它色置识种是量性传周么名光却次种中节志至或局会点再部技七条先位记建政原…领效电提算场已将铁存它色置识种是量性传周么名光却次种中节志至或局会点再部技七条先位记建政原…" />
+
+        <TextView
+            android:id="@+id/text_hot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="start"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/colorTextGray"
+            android:textSize="13dp"
+            app:layout_constraintEnd_toStartOf="@id/text_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_content"
+            tools:text="8.2k收藏·19.9w人围观" />
+
+        <TextView
             android:id="@+id/text_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
             android:gravity="end"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
             android:textSize="13dp"
-            app:layout_constraintBaseline_toBaselineOf="@id/text_name"
-            app:layout_constraintStart_toEndOf="@id/text_name"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_hot"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="2020/03/02" />
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <include
-                android:id="@+id/view_only_talk"
-                layout="@layout/item_type_talk" />
-
-            <include
-                android:id="@+id/view_only_msg"
-                layout="@layout/item_type_msg" />
-
-        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

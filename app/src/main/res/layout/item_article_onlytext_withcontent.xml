@@ -90,7 +90,7 @@
 
         <TextView
             android:id="@+id/text_hot"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
@@ -99,7 +99,6 @@
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
             android:textSize="13dp"
-            app:layout_constraintEnd_toStartOf="@id/text_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_content"
             tools:text="8.2k收藏·19.9w人围观" />
@@ -121,8 +120,9 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintBottom_toBottomOf="@id/text_hot"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_hot">
 
             <include
                 android:id="@+id/view_type_talk1"
@@ -139,16 +139,17 @@
     <TextView
         android:id="@+id/tv_only_update"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/font_16"
-        android:layout_marginRight="@dimen/font_16"
-        android:background="@drawable/draw_lastest_update"
-        android:paddingHorizontal="@dimen/padding_6"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/draw_update_text"
+        android:gravity="center"
+        android:paddingHorizontal="2dp"
+        android:paddingVertical="1dp"
+        android:singleLine="true"
         android:text="最近更新"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_10"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cl_article"
-        tools:visibility="visible" />
+        android:textColor="@color/colorWhite"
+        android:textSize="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

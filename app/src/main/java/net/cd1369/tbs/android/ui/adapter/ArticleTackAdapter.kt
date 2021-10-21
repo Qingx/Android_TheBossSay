@@ -11,11 +11,10 @@ import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.tex
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_hot
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_name
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_time
+import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.tv_only_update
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.*
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.text_info
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.text_title
-import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.view_type_msg
-import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.view_type_talk
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.util.Tools.formatCount
@@ -65,7 +64,11 @@ abstract class ArticleTackAdapter :
                 )
                 helper.V.text_name.text = item.bossName
                 helper.V.text_info.text = item.bossRole
-                GlideApp.displayHead(item.files!!.getOrNull(0)!!.fullUrl(), helper.V.image_res)
+                GlideApp.display(
+                    item.files!!.getOrNull(0)!!.fullUrl(),
+                    helper.V.image_res,
+                    R.drawable.ic_article_cover
+                )
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
@@ -74,7 +77,7 @@ abstract class ArticleTackAdapter :
                 // 判断言论
                 helper.V.view_type_msg.isVisible = item.isMsg
                 helper.V.view_type_talk.isVisible = item.isTalk
-                helper.V.tv_single_update.isVisible = item.isLatestUpdate
+                helper.V.tv_only_update.isVisible = item.isLatestUpdate
             }
         }
 

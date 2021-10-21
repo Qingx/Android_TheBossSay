@@ -16,7 +16,6 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.event.ArticlePointEvent
-import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.PointHistoryAdapter
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -29,6 +28,7 @@ import kotlin.math.max
  * @time 14:21 2021/9/8
  * @desc 点赞历史界面
  */
+@Deprecated("")
 class PointHistoryActivity : BaseListActivity() {
     private lateinit var mAdapter: PointHistoryAdapter
     private var needLoading = true
@@ -146,5 +146,4 @@ class PointHistoryActivity : BaseListActivity() {
             }
         }
     }
-
 }

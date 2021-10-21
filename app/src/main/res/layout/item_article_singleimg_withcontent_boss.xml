@@ -67,6 +67,7 @@
                 android:id="@+id/image_res"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scaleType="centerCrop"
                 tools:src="@drawable/ic_test_head" />
 
         </androidx.cardview.widget.CardView>

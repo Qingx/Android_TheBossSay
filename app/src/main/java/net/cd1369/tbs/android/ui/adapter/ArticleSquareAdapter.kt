@@ -11,8 +11,6 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_ad_layout.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.*
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.image_head
-import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_hot
-import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_info
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_name
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_time
 import kotlinx.android.synthetic.main.item_article_onlytext_nocontent.view.text_title
@@ -20,7 +18,6 @@ import kotlinx.android.synthetic.main.item_article_singleimg_nocontent.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.util.*
-import net.cd1369.tbs.android.util.Tools.formatCount
 
 
 /**
@@ -38,8 +35,8 @@ abstract class ArticleSquareAdapter :
 
     override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
         if (viewType == ArticleEntity.AD_TYPE) {
-            var inflate = mLayoutInflater.inflate(R.layout.item_ad_layout, parent, false)
-            var adVH = AdVH(inflate)
+            val inflate = mLayoutInflater.inflate(R.layout.item_ad_layout, parent, false)
+            val adVH = AdVH(inflate)
             adVH.ad = AdvanceAD(mContext as Activity?)
             return adVH
         }
@@ -53,28 +50,24 @@ abstract class ArticleSquareAdapter :
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(item.bossVO.head.fullUrl(), helper.V.image_head)
                 helper.V.text_name.text = item.bossVO.name
-                helper.V.text_info.text = item.bossVO.role
-                helper.V.text_hot.text =
-                    "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.getTime())
 
                 helper.V.view_only_msg.isVisible = item.isMsgType
                 helper.V.view_only_talk.isVisible = item.isTalkType
-                helper.V.text_time.isVisible = !item.isInThreeDay
             }
             1 -> {
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(item.bossVO.head.fullUrl(), helper.getView(R.id.image_head))
-                GlideApp.display(item.files?.get(0) ?: "", helper.V.image_res)
+                GlideApp.display(
+                    item.files?.get(0) ?: "",
+                    helper.V.image_res,
+                    R.drawable.ic_article_cover
+                )
                 helper.V.text_name.text = item.bossVO.name
-                helper.V.text_info.text = item.bossVO.role
-                helper.V.text_hot.text =
-                    "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
                 helper.V.text_time.text = getArticleItemTime(item.getTime())
 
                 helper.V.view_single_msg.isVisible = item.isMsgType
                 helper.V.view_single_talk.isVisible = item.isTalkType
-                helper.V.text_time.isVisible = !item.isInThreeDay
             }
             ArticleEntity.AD_TYPE -> {
                 if (helper is AdVH) {

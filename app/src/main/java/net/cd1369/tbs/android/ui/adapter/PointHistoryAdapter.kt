@@ -7,9 +7,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_point_history.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.data.entity.HistoryEntity
 import net.cd1369.tbs.android.data.entity.PointEntity
-import net.cd1369.tbs.android.data.entity.PortEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 
@@ -18,6 +16,7 @@ import net.cd1369.tbs.android.util.doClick
  * @description
  * @email Cymbidium@outlook.com
  */
+@Deprecated("")
 abstract class PointHistoryAdapter() :
     BaseQuickAdapter<PointEntity, BaseViewHolder>(R.layout.item_point_history) {
 
