@@ -68,12 +68,12 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param mustUpdate
      * @return
      */
-    public Observable<List<BossSimpleModel>> obtainFollowBossList(Long label, boolean mustUpdate) {
+    public Observable<List<BossSimpleModel>> obtainFollowBossList(String label, boolean mustUpdate) {
         RequestBody body = bodyFromCreator(jo -> {
             jo.put("mustUpdate", mustUpdate);
 
-            if (!label.equals(-1L)) {
-                List<Long> list = new ArrayList<>();
+            if (!label.equals("-1")) {
+                List<String> list = new ArrayList<>();
                 list.add(label);
                 jo.put("labels", list);
             }
@@ -111,11 +111,11 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param pageParam
      * @return
      */
-    public Observable<Page<ArticleSimpleModel>> obtainTackArticle(Long label, PageParam pageParam) {
+    public Observable<Page<ArticleSimpleModel>> obtainTackArticle(String label, PageParam pageParam) {
         RequestBody body = bodyFromCreator(pageParam, jo -> {
-            if (!label.toString().equals("-1")) {
+            if (!label.equals("-1")) {
                 List<String> list = new ArrayList<>();
-                list.add(label.toString());
+                list.add(label);
                 jo.put("labels", list);
             }
         });

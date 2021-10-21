@@ -17,8 +17,7 @@ import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.RefreshUserEvent
@@ -26,6 +25,7 @@ import net.cd1369.tbs.android.event.WechatLoginCodeEvent
 import net.cd1369.tbs.android.ui.adapter.UserInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.ChangeNameDialog
 import net.cd1369.tbs.android.ui.dialog.ConfirmPhoneDialog
+import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
@@ -154,8 +154,9 @@ class MineChangeUserActivity : BaseActivity() {
             HttpConfig.reset()
             UserConfig.get().userEntity = UserEntity.empty
 
-            BossDaoManager.getInstance(mActivity).deleteAll()
-            ArticleDaoManager.getInstance(mActivity).deleteAll()
+            CacheConfig.clearBoss()
+            CacheConfig.clearArticle()
+            JPushHelper.tryClearTagAlias()
 
             Toasts.show("退出成功")
 
@@ -188,6 +189,12 @@ class MineChangeUserActivity : BaseActivity() {
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                CacheConfig.clearBoss()
+                CacheConfig.clearArticle()
+
+                JPushHelper.tryClearTagAlias()
+                JPushHelper.tryAddAlias(it.userInfo.id)
+                JPushHelper.tryAddTags(it.userInfo.tags)
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()

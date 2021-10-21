@@ -1,18 +1,11 @@
 package net.cd1369.tbs.android.config;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import net.cd1369.tbs.android.data.entity.BossLabelEntity;
 import net.cd1369.tbs.android.util.Tools;
-
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 
 import cn.wl.android.lib.config.BaseConfig;
 import cn.wl.android.lib.utils.DateFormat;
@@ -47,6 +40,7 @@ public class DataConfig extends BaseConfig {
         String keyBossTime = "keyBossTime";
         String keyTackTotalNum = "keyTackTotalNum";
         String keyHasData = "keyHasData";
+        String keyDailyTime = "KEY_DAILY_TIME";
     }
 
     private boolean firstUse; //是否第一次使用app
@@ -56,6 +50,8 @@ public class DataConfig extends BaseConfig {
     private Long bossTime;
     private int tackTotalNum;
     private boolean hasData;
+    private boolean isRunning = false;
+    private Long dailyTime;
 
     /**
      * 判断是否需要显示服务
@@ -165,4 +161,19 @@ public class DataConfig extends BaseConfig {
         return Math.abs(noticeTime - time) > DateFormat.DAY_1;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public void setDailyTime(Long dailyTime) {
+        putLong(KEY.keyDailyTime, dailyTime);
+    }
+
+    public Long getDailyTime() {
+        return getLong(KEY.keyDailyTime, -1L);
+    }
 }

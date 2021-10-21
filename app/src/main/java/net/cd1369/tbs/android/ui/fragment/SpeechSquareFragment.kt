@@ -10,12 +10,10 @@ import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_speech_tack.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.data.db.LabelDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.model.LabelModel
 import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.ui.adapter.HomeTabAdapter
-import net.cd1369.tbs.android.util.Tools.isLabelsEmpty
 
 /**
  * Created by Xiang on 2021/8/11 12:02
@@ -38,6 +36,8 @@ class SpeechSquareFragment : BaseFragment() {
 
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
+
+        mLabels = CacheConfig.getAllLabel()
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -60,6 +60,18 @@ class SpeechSquareFragment : BaseFragment() {
 
         rv_tab.adapter = tabAdapter
 
+        tabAdapter.setNewData(mLabels)
+
+        view_pager.adapter = object : FragmentStateAdapter(mFragment) {
+            override fun getItemCount(): Int {
+                return mLabels.size
+            }
+
+            override fun createFragment(position: Int): Fragment {
+                return SpeechSquareContentFragment.createFragment(mLabels[position].id)
+            }
+        }
+
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -69,47 +81,6 @@ class SpeechSquareFragment : BaseFragment() {
         })
 
         view_pager.isUserInputEnabled = false
-    }
-
-    override fun loadData() {
-        super.loadData()
-
-        mLabels = LabelDaoManager.getInstance(mActivity).findAll()
-
-        if (!mLabels.isLabelsEmpty()) {
-            tabAdapter.setNewData(mLabels)
-
-            view_pager.adapter = object : FragmentStateAdapter(mFragment) {
-                override fun getItemCount(): Int {
-                    return mLabels.size
-                }
-
-                override fun createFragment(position: Int): Fragment {
-                    return SpeechSquareContentFragment.createFragment(mLabels[position].id)
-                }
-            }
-
-            view_pager.offscreenPageLimit = mLabels.size
-        } else {
-            TbsApi.boss().obtainBossLabels().onErrorReturn { mutableListOf() }.bindSubscribe {
-                it.add(0, LabelModel.empty)
-                LabelDaoManager.getInstance(mActivity).insertList(it)
-                mLabels = it
-
-                tabAdapter.setNewData(mLabels)
-
-                view_pager.adapter = object : FragmentStateAdapter(mFragment) {
-                    override fun getItemCount(): Int {
-                        return mLabels.size
-                    }
-
-                    override fun createFragment(position: Int): Fragment {
-                        return SpeechSquareContentFragment.createFragment(mLabels[position].id)
-                    }
-                }
-
-                view_pager.offscreenPageLimit = mLabels.size
-            }
-        }
+        view_pager.offscreenPageLimit = mLabels.size
     }
 }

@@ -1,6 +1,8 @@
 package net.cd1369.tbs.android.data.service;
 
+import net.cd1369.tbs.android.data.entity.DailyEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
+import net.cd1369.tbs.android.data.entity.HisFavEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.PortEntity;
 import net.cd1369.tbs.android.data.entity.TokenEntity;
@@ -200,4 +202,29 @@ public interface UserService {
      */
     @GET("/web/port/find")
     Observable<WLData<PortEntity>> obtainPortStatus();
+
+    /**
+     * 获取每日一言
+     *
+     * @return
+     */
+    @GET("/api/speech/get-speech")
+    Observable<WLData<DailyEntity>> obtainDaily();
+
+    /**
+     * 操作每日一言
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/speech/options")
+    Observable<WLData<Object>> obtainDailyOption(@Body RequestBody body);
+
+    /**
+     * 获取点赞记录列表 分页
+     * @param body
+     * @return
+     */
+    @POST("/api/speech/point-history")
+    Observable<WLPage<HisFavEntity>> obtainPointList(@Body RequestBody body);
 }

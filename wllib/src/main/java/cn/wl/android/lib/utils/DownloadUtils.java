@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
@@ -22,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import cn.wl.android.lib.config.WLConfig;
@@ -50,6 +52,8 @@ public class DownloadUtils {
     private String currentDownloadPath;
     private String currentDownloadName;
 
+    private HashMap<String, Integer> retryCount = new HashMap<>();
+
     public boolean isCompleted() {
         return isCompleted;
     }
@@ -71,6 +75,21 @@ public class DownloadUtils {
         return savePath;
     }
 
+    private boolean checkCount(String vName) {
+        Integer count = retryCount.get(vName);
+        if (count == null) {
+            count = 0;
+            retryCount.put(vName, count);
+        }  else {
+            if (count++ >= 2) {
+                return false;
+            } else {
+                retryCount.put(vName, count);
+            }
+        }
+        return true;
+    }
+
     /**
      * 开始下载apk
      *
@@ -83,9 +102,14 @@ public class DownloadUtils {
 
             // 检测是否下载成功
             if (!TextUtils.isEmpty(savePath)) {
-                if (FileUtils.isFileExists(savePath)) {
-                    installAPK(savePath);
-                    EventBus.getDefault().post(new DownloadStatusEvent(true));
+                if (FileUtils.isFileExists(savePath) && checkCount(name)) {
+                    new Handler().postDelayed(()->{
+                        installAPK(savePath);
+
+                        DownloadStatusEvent statusEvent =
+                                new DownloadStatusEvent(true);
+                        EventBus.getDefault().post(statusEvent);
+                    }, 300);
                     return;
                 }
             }

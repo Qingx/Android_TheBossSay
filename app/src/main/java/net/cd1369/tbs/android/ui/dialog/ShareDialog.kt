@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.dialog_share.*
@@ -20,11 +21,19 @@ class ShareDialog : DialogFragment() {
     var onSession: Runnable? = null
     var onTimeline: Runnable? = null
     var onCopyLink: Runnable? = null
+    var onPoster: Runnable? = null
+
+    private var isPoster = false
 
     companion object {
-        fun showDialog(fragmentManager: FragmentManager, tag: String): ShareDialog {
+        fun showDialog(
+            fragmentManager: FragmentManager,
+            tag: String,
+            poster: Boolean = false
+        ): ShareDialog {
             return ShareDialog().apply {
                 show(fragmentManager, tag)
+                isPoster = poster
             }
         }
     }
@@ -40,6 +49,8 @@ class ShareDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        layout_poster.isInvisible = !isPoster
+
         layout_session doClick {
             onSession?.run()
         }
@@ -54,6 +65,10 @@ class ShareDialog : DialogFragment() {
 
         text_cancel doClick {
             dialog?.dismiss()
+        }
+
+        layout_poster doClick {
+            onPoster?.run()
         }
     }
 

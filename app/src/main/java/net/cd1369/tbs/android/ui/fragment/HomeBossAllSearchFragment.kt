@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_home_boss_all_search.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.event.SearchEvent
@@ -114,10 +114,11 @@ class HomeBossAllSearchFragment : BaseFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                BossDaoManager.getInstance(mActivity).delete(item.id.toLong())
-                eventBus.post(BossTackEvent(item.id, false, item.labels))
 
+                CacheConfig.deleteBoss(item.id)
                 JPushHelper.tryDelTag(item.id)
+
+                eventBus.post(BossTackEvent(item.id, false, item.labels))
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doLast = {
@@ -162,9 +163,10 @@ class HomeBossAllSearchFragment : BaseFragment() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-                BossDaoManager.getInstance(mActivity).insert(item.toSimple())
-                eventBus.post(BossTackEvent(item.id, true, item.labels))
 
+                CacheConfig.insertBoss(item.toSimple())
+
+                eventBus.post(BossTackEvent(item.id, true, item.labels))
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doLast = {
@@ -180,7 +182,7 @@ class HomeBossAllSearchFragment : BaseFragment() {
         TbsApi.boss().obtainAllBossSearchList(searchText)
             .onErrorReturn {
                 mutableListOf()
-            }.bindDefaultSub(doNext = {
+            }.bindDefaultSub {
                 text_num.text = SpanUtils.getBuilder("共找到")
                     .setForegroundColor(ColorUtils.getColor(R.color.colorTextDark))
                     .append(" ${it.size} ")
@@ -189,13 +191,11 @@ class HomeBossAllSearchFragment : BaseFragment() {
                     .setForegroundColor(ColorUtils.getColor(R.color.colorTextDark))
                     .create()
                 mAdapter.setNewData(it)
-                layout_refresh.finishRefresh(true)
-            }, doFail = {
-                layout_refresh.finishRefresh(false)
-            }, doLast = {
+
                 needLoading = true
                 showContent()
-            })
+                layout_refresh.finishRefresh()
+            }
     }
 
     fun eventSearch(content: String) {

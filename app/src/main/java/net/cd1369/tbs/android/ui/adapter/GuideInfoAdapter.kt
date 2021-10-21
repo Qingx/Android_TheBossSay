@@ -18,7 +18,7 @@ import net.cd1369.tbs.android.util.fullUrl
  */
 abstract class GuideInfoAdapter :
     BaseQuickAdapter<BossSimpleModel, BaseViewHolder>(R.layout.item_guide_info) {
-    private val mSelect = HashSet<Long>()
+    private val mSelect = HashSet<String>()
 
     override fun convert(helper: BaseViewHolder, item: BossSimpleModel) {
         helper.V.isSelected = mSelect.contains(item.id)
@@ -26,7 +26,11 @@ abstract class GuideInfoAdapter :
         GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
         helper.V.text_name.text = item.name
         helper.V.text_info.text = item.role
+        if (!item.photoUrl.isNullOrEmpty()) {
+            GlideApp.display(item.photoUrl[0].fullUrl(), helper.V.image_label)
+        }
 
+        helper.V.text_name.paint.isFakeBoldText = true
 
         helper.V doClick {
             if (mSelect.contains(item.id)) {
@@ -64,5 +68,5 @@ abstract class GuideInfoAdapter :
         autoSelectAll()
     }
 
-    abstract fun onAddFollow(data: MutableList<Long>)
+    abstract fun onAddFollow(data: MutableList<String>)
 }

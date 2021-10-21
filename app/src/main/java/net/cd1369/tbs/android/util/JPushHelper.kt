@@ -5,92 +5,53 @@ import cn.wl.android.lib.config.WLConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.util.Tools.logE
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 object JPushHelper {
 
-    private var mRetryTimer: Disposable? = null
+    private var mAddTag: Disposable? = null
+    private var mAddTags: Disposable? = null
+    private var mAddAlias: Disposable? = null
     private val mVersion = AtomicInteger(0)
     private val mContext get() = WLConfig.getContext()
-
-    /**
-     * 尝试听着推送
-     */
-    fun tryClearPush() {
-        if (!JPushInterface.isPushStopped(mContext)) {
-            JPushInterface.stopPush(mContext)
-        }
-
-        JPushInterface.cleanTags(mContext, mVersion.getAndIncrement())
-
-        "停止推送, 清空Tag".logE()
-    }
 
     /**
      * 尝试启动推送
      */
     fun tryStartPush() {
-        var user = UserConfig.get().userEntity
+        JPushInterface.resumePush(TbsApp.mContext)
 
-        if (UserEntity.empty == user) return
-
-        if (JPushInterface.isPushStopped(mContext)) {
-            JPushInterface.resumePush(mContext)
-        }
+        val user = UserConfig.get().userEntity
 
         val userId = user.id
-        val alias = UserConfig.get().alias
-
-        if (alias != userId) {
-            tryRegisterAlias(userId)
-        } else {
-            "已存在推送别名:$alias".logE()
+        if (user.type != "0") {
+            tryAddAlias(userId)
         }
-
-        var tags = user.tags
-        tryRegisterTags(tags)
-    }
-
-    /**
-     * 尝试注册tag
-     * @param tags List<String>?
-     */
-    private fun tryRegisterTags(tags: List<String>?) {
-        if (tags.isNullOrEmpty()) return
-
-        JPushInterface.setTags(
-            mContext,
-            mVersion.getAndIncrement(),
-            tags.toSet()
-        )
+        tryAddTags(user.tags ?: mutableListOf())
     }
 
     /**
      * 尝试注册别名
      * @param userId String
-     * @param tryCount Int
      */
-    private fun tryRegisterAlias(userId: String, tryCount: Int = 6) {
-        mRetryTimer?.dispose()
-        if (tryCount < 0) return
+    fun tryAddAlias(userId: String) {
+        mAddAlias?.dispose()
 
         JPushInterface.setAlias(
             mContext,
             userId
-        ) { i, _, _ ->
-            ("code: $i, id: $userId").logE(prefix = "极光推送注册:")
+        ) { p0, p1, p2 ->
+            "设置极光alias: $p0 ${p1 ?: "null"} $p2".logE()
 
-            if (i == 0) {
-                UserConfig.dataConfig.alias = userId
-            } else if (i == 6002) {
-                mRetryTimer = Observable.timer(1, TimeUnit.SECONDS)
+            if (p0 == 6002) {
+                mAddAlias = Observable.timer(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        tryRegisterAlias(userId, tryCount - 1)
+                        tryAddAlias(userId)
                     }) {
 
                     }
@@ -100,45 +61,62 @@ object JPushHelper {
 
     /**
      * 尝试添加tag
-     * @param tags Array<out String>
+     * @param tag String
      */
     fun tryAddTag(tag: String) {
-        if (tag.isNullOrEmpty()) return
+        mAddTag?.dispose()
 
-        "添加推送Tag:$tag".logE()
-
-        JPushInterface.addTags(
+        JPushInterface.setTags(
             mContext,
-            mVersion.getAndIncrement(),
             setOf(tag)
-        )
+        ) { p0, p1, p2 ->
+            "设置极光tag: $p0 ${p1 ?: "null"} $p2".logE()
+
+            if (p0 == 6002) {
+                mAddTag = Observable.timer(1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        tryAddTag(tag)
+                    }) {
+
+                    }
+            }
+        }
     }
 
     /**
      * 尝试添加tag
-     * @param tags Array<out String>
+     * @param tags MutableList<String>
      */
-    fun tryAddAllTag(tag: Collection<String>) {
-        if (tag.isNullOrEmpty()) return
+    fun tryAddTags(tags: MutableList<String>) {
+        if (tags.isNullOrEmpty()) return
 
-        "添加推送Tag:$tag".logE()
+        mAddTags?.dispose()
 
-        JPushInterface.addTags(
-            mContext,
-            mVersion.getAndIncrement(),
-            tag.toSet()
-        )
+//        val testTag = mutableListOf("0123456789")
+
+        JPushInterface.setTags(
+            mContext, tags.toSet()
+        ) { p0, p1, p2 ->
+            "设置极光tag: $p0 ${p1 ?: "null"} $p2".logE()
+
+            if (p0 == 6002) {
+                mAddTags = Observable.timer(1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        tryAddTags(tags)
+                    }) {
+
+                    }
+            }
+        }
     }
 
     /**
-     * 尝试添加tag
-     * @param tags Array<out String>
+     * 尝试删除tag
+     * @param tag String
      */
     fun tryDelTag(tag: String) {
-        if (tag.isNullOrEmpty()) return
-
-        "移除推送Tag:$tag".logE()
-
         try {
             JPushInterface.deleteTags(
                 mContext,
@@ -149,4 +127,12 @@ object JPushHelper {
         }
     }
 
+
+    /**
+     * 尝试重置推送
+     */
+    fun tryClearTagAlias() {
+//        JPushInterface.deleteAlias(mContext, mVersion.getAndIncrement())
+        JPushInterface.cleanTags(mContext, mVersion.getAndIncrement())
+    }
 }

@@ -16,12 +16,10 @@ import kotlinx.android.synthetic.main.empty_boss_card_view.view.*
 import kotlinx.android.synthetic.main.fragment_speech_tack_content.*
 import kotlinx.android.synthetic.main.header_speech_content.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.PageItem
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.event.*
@@ -30,7 +28,6 @@ import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
-import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -41,7 +38,6 @@ import org.greenrobot.eventbus.ThreadMode
  * @email Cymbidium@outlook.com
  */
 class SpeechTackAllFragment : BaseListFragment() {
-    private var mLabel: Long = -1L
     private var cardEmptyView: View? = null
     private var mRootHeight: Int = 0
     private var headerView: View? = null
@@ -145,13 +141,13 @@ class SpeechTackAllFragment : BaseListFragment() {
     @SuppressLint("SetTextI18n")
     private fun initData() {
         firstInit = false
+        pageParam?.nextPage(1)
 
-        mBossList = BossDaoManager.getInstance(mActivity).findLatest("-1")
+        mBossList = CacheConfig.getBossWithLastByLabel("-1")
         cardAdapter.setNewData(mBossList)
 
-
-        val articleList = ArticleDaoManager.getInstance(mActivity).findAll()
-        mAdapter.setNewData(articleList)
+        val page = CacheConfig.getAllArticle()
+        mAdapter.setNewData(page.records)
 
         val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
@@ -162,14 +158,14 @@ class SpeechTackAllFragment : BaseListFragment() {
         }
 
         headerView?.text_title?.text =
-            if (articleList?.getOrNull(0)?.recommendType ?: "0" == "0") {
+            if (page.records?.getOrNull(0)?.recommendType ?: "0" == "0") {
                 "最近更新"
             } else {
                 "为你推荐"
             }
-        headerView!!.text_num.text = "共${DataConfig.get().tackTotalNum}篇"
+        headerView!!.text_num.text = "共${page.total}篇"
 
-        showContentEmpty(articleList.isNullOrEmpty())
+        showContentEmpty(page.records.isNullOrEmpty())
 
         showContent()
     }
@@ -179,32 +175,30 @@ class SpeechTackAllFragment : BaseListFragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun refreshData() {
-        TbsApi.boss().obtainFollowBossList(-1L, false)
+        pageParam?.resetPage()
+
+        TbsApi.boss().obtainFollowBossList("-1", false)
             .onErrorReturn { mutableListOf() }
             .flatMap {
+                it.sort()
+                CacheConfig.insertBossList(it)
                 mBossList = it
-                BossDaoManager.getInstance(mActivity).insertList(it)
 
-                TbsApi.boss().obtainTackArticle(mLabel, pageParam)
-            }.bindPageSubscribe(loadMore = false, doNext = {
-                try {
-                    ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                    DataConfig.get().tackTotalNum = pageParam!!.total
-                    DataConfig.get().hasData = true
-                } catch (e: Exception) {
-                }
+                TbsApi.boss().obtainTackArticle("-1", pageParam)
+            }
+            .onErrorReturn { Page.empty() }
+            .bindPageSubscribe(false) {
+                val page = Page.empty<ArticleSimpleModel>()
+                page.total = pageParam?.total ?: 0
+                page.pages = pageParam?.totalPage ?: 0
+                page.current = 1
+                page.records = it
+                CacheConfig.insertArticle(page)
 
                 headerView!!.text_num.text = "共${pageParam!!.total}篇"
-
                 cardAdapter.setNewData(mBossList)
                 mAdapter.setNewData(it)
 
-                layout_refresh.finishRefresh(true)
-
-            }, doFail = {
-                layout_refresh.finishRefresh(false)
-
-            }, doDone = {
                 val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
                 if (traceNum > 0) {
@@ -223,22 +217,21 @@ class SpeechTackAllFragment : BaseListFragment() {
                 showContentEmpty(mAdapter.data.isNullOrEmpty())
 
                 showContent()
-            })
+                layout_refresh.finishRefresh()
+            }
     }
 
     /**
      * 加载更多数据
      */
     private fun loadMoreData() {
-        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+        TbsApi.boss().obtainTackArticle("-1", pageParam)
             .onErrorReturn { Page.empty() }
-            .bindPageSubscribe(loadMore = true, doNext = {
+            .bindPageSubscribe(loadMore = true) {
                 mAdapter.addData(it)
 
-                layout_refresh.finishLoadMore(true)
-            }, doFail = {
-                layout_refresh.finishLoadMore(false)
-            })
+                layout_refresh.finishLoadMore()
+            }
     }
 
     @SuppressLint("SetTextI18n")
@@ -261,19 +254,27 @@ class SpeechTackAllFragment : BaseListFragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun eventData() {
-        mBossList = BossDaoManager.getInstance(mActivity).findLatest(mLabel.toString())
+        pageParam?.resetPage()
 
-        TbsApi.boss().obtainTackArticle(mLabel, pageParam)
-            .bindPageSubscribe(loadMore = false, doNext = {
-                ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                DataConfig.get().tackTotalNum = pageParam!!.total
-                DataConfig.get().hasData = true
+        mBossList = CacheConfig.getBossWithLastByLabel("-1")
+
+        TbsApi.boss().obtainTackArticle("-1", pageParam)
+            .onErrorReturn {
+                Page.empty()
+            }
+            .bindPageSubscribe(loadMore = false) {
+                val page = Page.empty<ArticleSimpleModel>()
+                page.total = pageParam?.total ?: 0
+                page.pages = pageParam?.totalPage ?: 0
+                page.current = 1
+                page.records = it
+                CacheConfig.insertArticle(page)
 
                 headerView!!.text_num.text = "共${pageParam!!.total}篇"
 
                 cardAdapter.setNewData(mBossList)
                 mAdapter.setNewData(it)
-            }, doDone = {
+
                 val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
                 if (traceNum > 0) {
@@ -290,7 +291,7 @@ class SpeechTackAllFragment : BaseListFragment() {
                     }
 
                 showContentEmpty(mAdapter.data.isNullOrEmpty())
-            })
+            }
     }
 
     /**
@@ -300,25 +301,27 @@ class SpeechTackAllFragment : BaseListFragment() {
     private fun loginData() {
         pageParam?.resetPage()
 
-        TbsApi.boss().obtainFollowBossList(-1L, false)
+        TbsApi.boss().obtainFollowBossList("-1", false)
             .onErrorReturn { mutableListOf() }
             .flatMap {
                 mBossList = it
-                BossDaoManager.getInstance(mActivity).insertList(it)
+                CacheConfig.insertBossList(it)
 
-                TbsApi.boss().obtainTackArticle(mLabel, pageParam)
+                TbsApi.boss().obtainTackArticle("-1", pageParam)
             }
-            .bindPageSubscribe(loadMore = false, doNext = {
-                ArticleDaoManager.getInstance(mActivity).insertList(it.toMutableList())
-                DataConfig.get().tackTotalNum = pageParam!!.total
-                DataConfig.get().hasData = true
+            .onErrorReturn { Page.empty() }
+            .bindPageSubscribe(loadMore = false) {
+                val page = Page.empty<ArticleSimpleModel>()
+                page.total = pageParam?.total ?: 0
+                page.pages = pageParam?.totalPage ?: 0
+                page.current = 1
+                page.records = it
+                CacheConfig.insertArticle(page)
 
                 headerView!!.text_num.text = "共${pageParam!!.total}篇"
 
                 cardAdapter.setNewData(mBossList)
                 mAdapter.setNewData(it)
-            }, doDone = {
-                showContent()
 
                 val traceNum = UserConfig.get().userEntity.traceNum ?: 0
 
@@ -336,7 +339,8 @@ class SpeechTackAllFragment : BaseListFragment() {
                     }
 
                 showContentEmpty(mAdapter.data.isNullOrEmpty())
-            })
+                showContent()
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

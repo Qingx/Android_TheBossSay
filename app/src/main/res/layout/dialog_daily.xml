@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@drawable/ic_daily_bg">
+
+    <TextView
+        android:id="@+id/text_daily"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:gravity="start|center_vertical"
+        android:singleLine="true"
+        android:text="Boss语录#"
+        android:textColor="#7a7a7a"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.allen.library.CircleImageView
+        android:id="@+id/image_head"
+        android:layout_width="64dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/draw_daily_head"
+        android:padding="4dp"
+        tools:src="@drawable/ic_default_photo"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_daily" />
+
+    <ImageView
+        android:id="@+id/image_marks"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="28dp"
+        android:src="@drawable/ic_daily_marks"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_head" />
+
+    <TextView
+        android:id="@+id/text_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="40dp"
+        android:ellipsize="end"
+        android:lineHeight="28dp"
+        android:maxLines="4"
+        android:singleLine="false"
+        tools:text="企业发展就是要发展一批狼。狼有三大特性：一是敏锐的嗅觉；二是不屈不挠、奋不顾身的进攻精神；三是群体奋斗的意识。"
+        android:textColor="#99000000"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_marks" />
+
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="48dp"
+        android:gravity="end|center_vertical"
+        tools:text="— —  任正非"
+        android:textColor="#7a7a7a"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_content" />
+
+    <TextView
+        android:id="@+id/text_role"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="end|center_vertical"
+        android:singleLine="true"
+        tools:text="华为创始人华为创始人华为创始人"
+        android:textColor="#7a7a7a"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="@id/text_name"
+        app:layout_constraintStart_toStartOf="@id/text_name"
+        app:layout_constraintTop_toBottomOf="@id/text_name" />
+
+    <ImageView
+        android:id="@+id/image_point"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/draw_circle_white"
+        android:padding="14dp"
+        android:src="@drawable/draw_point"
+        app:layout_constraintEnd_toStartOf="@id/image_collect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_role" />
+
+    <ImageView
+        android:id="@+id/image_collect"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/draw_circle_white"
+        android:padding="14dp"
+        android:src="@drawable/ic_article_collect"
+        app:layout_constraintBottom_toBottomOf="@id/image_point"
+        app:layout_constraintEnd_toStartOf="@id/image_share"
+        app:layout_constraintStart_toEndOf="@id/image_point"
+        app:layout_constraintTop_toTopOf="@id/image_point" />
+
+    <ImageView
+        android:id="@+id/image_share"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/draw_circle_white"
+        android:padding="14dp"
+        android:src="@drawable/ic_share_black"
+        app:layout_constraintBottom_toBottomOf="@id/image_point"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_collect"
+        app:layout_constraintTop_toTopOf="@id/image_point" />
+
+    <ImageView
+        android:id="@+id/image_quit"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_daily_quit"
+        app:layout_constraintBottom_toTopOf="@id/text_quit"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_point"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/text_quit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="下滑退出"
+        android:textColor="#7a7a7a"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_quit" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

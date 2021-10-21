@@ -20,7 +20,7 @@ import net.cd1369.tbs.android.util.getBossItemTime
 abstract class BossTackAdapter :
     BaseQuickAdapter<BossSimpleModel, BaseViewHolder>(R.layout.item_boss_info) {
     override fun convert(helper: BaseViewHolder, item: BossSimpleModel) {
-        helper.V.isSelected = item.top
+        helper.V.isSelected = item.isTop
 
         GlideApp.displayHead(item.head.fullUrl(), helper.V.image_head)
 
@@ -33,7 +33,7 @@ abstract class BossTackAdapter :
         helper.V.text_info.text = item.role
         helper.V.text_time.text = getBossItemTime(item.updateTime)
 
-        helper.V.text_top.text = "取消置顶".takeIf { item.top } ?: "置顶"
+        helper.V.text_top.text = "取消置顶".takeIf { item.isTop } ?: "置顶"
 
 
         helper.V.cl_root doClick {

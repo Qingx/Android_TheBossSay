@@ -16,26 +16,25 @@ import com.github.gzuliyujiang.oaid.DeviceID
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.DataConfig
-import net.cd1369.tbs.android.config.PageItem
-import net.cd1369.tbs.android.config.TbsApi
-import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.config.*
+import net.cd1369.tbs.android.data.entity.DailyEntity
 import net.cd1369.tbs.android.data.entity.PortEntity
 import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
+import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.dialog.OpenNoticeDialog
+import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
 import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
-import net.cd1369.tbs.android.util.DownloadHelper
-import net.cd1369.tbs.android.util.JPushHelper
+import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.logE
-import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.fullDownloadUrl
+import net.cd1369.tbs.android.util.isSameDay
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -78,8 +77,11 @@ class HomeActivity : BaseActivity() {
     override fun initViewCreated(savedInstanceState: Bundle?) {
         eventBus.register(this)
 
+        DataConfig.get().isRunning = true
         checkUpdate()
         tryRegisterJPush()
+        checkNoticeEnable()
+        doDaily()
 
         layout_tools.isVisible = isPortStatus && BuildConfig.ENV == "YYB"
 
@@ -141,8 +143,6 @@ class HomeActivity : BaseActivity() {
         layout_tools doClick {
             view_pager.setCurrentItem(2, false)
         }
-
-        checkNoticeEnable()
     }
 
     /**
@@ -163,8 +163,6 @@ class HomeActivity : BaseActivity() {
      * 开启极光推送
      */
     private fun tryRegisterJPush() {
-        var user = UserConfig.get().userEntity
-        user.id.logE(prefix = "jiguang->设备别名")
         JPushHelper.tryStartPush()
     }
 
@@ -175,11 +173,11 @@ class HomeActivity : BaseActivity() {
         TbsApi.user().obtainCheckUpdate(AppUtils.getAppVersionName())
             .bindDefaultSub(
                 doNext = {
-                    it.forcedUpdating = it.forcedUpdating || WLConfig.isDebug()
                     CheckUpdateDialog.showDialog(
                         supportFragmentManager,
                         "checkUpdate",
-                        !it.forcedUpdating
+                        !it.forcedUpdating,
+                        it.versions
                     )
                         .apply {
                             onCancelClick = CheckUpdateDialog.OnCancelClick {
@@ -193,16 +191,49 @@ class HomeActivity : BaseActivity() {
                                 )
 
                                 downStartStatus()
-
-                                if (!it.forcedUpdating) {
-                                    dismiss()
-                                }
                             }
                         }
                 },
                 doFail = {
                 }
             )
+    }
+
+    private fun doDaily() {
+        if (isSameDay(DataConfig.get().dailyTime) || DataConfig.get().dailyTime == -1L) {
+            TbsApi.user().obtainDaily().bindDefaultSub {
+                DataConfig.get().dailyTime = Times.current()
+                DailyDialog.showDialog(supportFragmentManager, "daily", it)
+                    .apply {
+                        doShare = Runnable {
+                            ShareDialog.showDialog(supportFragmentManager, "shareDialog", true)
+                                .apply {
+                                    onSession = Runnable {
+                                        doShareWechat(it)
+                                    }
+                                    onTimeline = Runnable {
+                                        doShareTimeline(it)
+                                    }
+                                    onCopyLink = Runnable {
+                                        Tools.copyText(mActivity, Const.SHARE_URL)
+                                    }
+                                    onPoster = Runnable {
+                                        DailyPosterActivity.start(mActivity, it)
+                                        this.dismiss()
+                                    }
+                                }
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun doShareWechat(entity: DailyEntity) {
+        doShareSession(resources, entity.bossHead, title = "分享一段任正非的语录，深有感触", des = entity.content)
+    }
+
+    private fun doShareTimeline(entity: DailyEntity) {
+        doShareTimeline(resources, entity.bossHead, title = "分享一段任正非的语录，深有感触", des = entity.content)
     }
 
     override fun loadData() {

@@ -1,17 +1,19 @@
 package net.cd1369.tbs.android.ui.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.wl.android.lib.ui.BaseFragment
-import cn.wl.android.lib.utils.OnClick
 import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
 import com.advance.AdvanceBannerListener
 import com.advance.model.AdvanceError
+import com.blankj.utilcode.util.AppUtils
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
@@ -20,10 +22,10 @@ import net.cd1369.tbs.android.config.Const
 import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.MineItem
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.entity.UserEntity
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
+import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
@@ -63,14 +65,26 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                     MineItem.History -> onClickHistory()
                     MineItem.Share -> onShare()
                     MineItem.About -> MineAboutAppActivity.start(mActivity)
-                    MineItem.Contact -> MineContactAuthorActivity.start(mActivity)
-//                    MineItem.Score -> testAdd()
-//                    MineItem.Clear -> testGet()
+                    MineItem.Contact -> {
+                        MineContactAuthorActivity.start(mActivity)
+                    }
+                    MineItem.Score -> {
+                        tryScoreApp()
+//                        doTest()
+                    }
                 }
             }
         }
 
-        rv_content.layoutManager = LinearLayoutManager(mActivity)
+        rv_content.layoutManager = object : LinearLayoutManager(mActivity) {
+            override fun canScrollHorizontally(): Boolean {
+                return false
+            }
+
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
         rv_content.adapter = mAdapter
 
         addHeaderView(mAdapter)
@@ -198,6 +212,22 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
             Toasts.show("请先登录！")
             LoginPhoneWechatActivity.start(mActivity)
         }
+    }
+
+    //尝试跳转应用商店评分
+    private fun tryScoreApp() {
+        val uri: Uri = Uri.parse("market://details?id=" + AppUtils.getAppPackageName())
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        if (intent.resolveActivity(mActivity.packageManager) != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } else {
+            Toasts.show("未检测到应用商店")
+        }
+    }
+
+    private fun doTest() {
+//        DailyDialog.showDialog(requireFragmentManager(),"testDialog")
     }
 
     /**

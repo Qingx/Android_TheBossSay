@@ -9,6 +9,7 @@ import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
+import com.google.gson.JsonParser
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.activity_article.image_back
@@ -17,11 +18,11 @@ import kotlinx.android.synthetic.main.activity_article.text_follow
 import kotlinx.android.synthetic.main.activity_article.text_name
 import kotlinx.android.synthetic.main.activity_boss_home.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.Const
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.config.elif
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
@@ -29,8 +30,11 @@ import net.cd1369.tbs.android.event.ArticlePointEvent
 import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.event.BossTackEvent
 import net.cd1369.tbs.android.ui.dialog.*
+import net.cd1369.tbs.android.ui.start.SplashActivity
+import net.cd1369.tbs.android.ui.start.StartActivity
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.Tools.logE
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import kotlin.math.max
@@ -53,6 +57,8 @@ class ArticleActivity : BaseActivity() {
     private var mLabels: MutableList<String>? = null
 
     private var fromBoss: Boolean = false
+
+    private var fromJpush: Boolean = false
 
     companion object {
         fun start(context: Context?, id: String, fromBoss: Boolean = false) {
@@ -77,7 +83,34 @@ class ArticleActivity : BaseActivity() {
 
         val userEntity = UserConfig.get().userEntity
 
-        articleId = intent.getStringExtra("articleId") as String
+        articleId = when {
+            !intent.getStringExtra("articleId").isNullOrEmpty() -> {
+                intent.getStringExtra("articleId")
+            }
+            !intent.dataString.isNullOrEmpty() -> {
+                fromJpush = true
+
+                val pushMsg = intent.dataString
+                pushMsg.logE(prefix = "JMessageExtra")
+
+                val jsonElement = JsonParser().parse(pushMsg).asJsonObject
+                val pushExtras = jsonElement["n_extras"].asJsonObject
+
+                pushExtras["articleId"].asString.logE()
+            }
+            !intent.extras?.getString("JMessageExtra").isNullOrEmpty() -> {
+                fromJpush = true
+
+                val pushMsg = intent.extras?.getString("JMessageExtra")
+                pushMsg.logE(prefix = "JMessageExtra")
+
+                val jsonElement = JsonParser().parse(pushMsg).asJsonObject
+                val pushExtras = jsonElement["n_extras"].asJsonObject
+
+                pushExtras["articleId"].asString.logE()
+            }
+            else -> ""
+        }
 
 //        if (WLConfig.isDebug()) {
 //            articleUrl = "http://192.168.1.85:9531/#/article?" +
@@ -228,24 +261,18 @@ class ArticleActivity : BaseActivity() {
                         cover = articleCover,
                         title = articleTitle!!,
                         des = articleDes!!,
-                        url = pathQuery(Const.SHARE_URL) {
-                            it["id"] = articleId ?: ""
-                            it["type"] = "1"
-                        }
+                        url = articleUrl!!
                     )
                 }
                 onTimeline = Runnable {
                     doShareTimeline(
                         resources, cover = articleCover,
                         title = articleTitle!!,
-                        url = pathQuery(Const.SHARE_URL) {
-                            it["id"] = articleId ?: ""
-                            it["type"] = "1"
-                        }
+                        url = articleUrl!!
                     )
                 }
                 onCopyLink = Runnable {
-                    Tools.copyText(mActivity, Const.SHARE_URL)
+                    Tools.copyText(mActivity, articleUrl!!)
                 }
             }
     }
@@ -410,10 +437,11 @@ class ArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) - 1, 0)
                 }
-                eventBus.post(BossTackEvent(bossId!!, false, bossEntity!!.labels))
-                BossDaoManager.getInstance(mActivity).delete(bossId!!.toLong())
 
+                CacheConfig.deleteBoss(bossId!!)
                 JPushHelper.tryDelTag(bossId!!)
+
+                eventBus.post(BossTackEvent(bossId!!, false, bossEntity!!.labels))
             }, doFail = {
                 Toasts.show("取消失败，${it.msg}")
             }, doDone = {
@@ -459,9 +487,10 @@ class ArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.traceNum = max((it.traceNum ?: 0) + 1, 0)
                 }
-                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
-                BossDaoManager.getInstance(mActivity).insert(bossEntity!!.toSimple())
 
+                CacheConfig.insertBoss(bossEntity!!.toSimple())
+
+                eventBus.post(BossTackEvent(bossId!!, true, bossEntity!!.labels))
             }, doFail = {
                 Toasts.show("追踪失败，${it.msg}")
             }, doDone = {
@@ -483,4 +512,11 @@ class ArticleActivity : BaseActivity() {
             })
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (fromJpush && !DataConfig.get().isRunning) {
+            SplashActivity.start(mActivity)
+        }
+    }
 }

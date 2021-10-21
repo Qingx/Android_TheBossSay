@@ -26,10 +26,10 @@ import net.cd1369.tbs.android.config.Const.SERVICE_URL
 import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.UserConfig
-import net.cd1369.tbs.android.data.db.ArticleDaoManager
-import net.cd1369.tbs.android.data.db.BossDaoManager
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.event.WechatLoginCodeEvent
+import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.Tools.hideInputMethod
 import net.cd1369.tbs.android.util.Tools.isShouldHideInput
 import net.cd1369.tbs.android.util.doClick
@@ -149,6 +149,8 @@ class LoginPhoneWechatActivity : BaseActivity() {
      * @param code String
      */
     private fun trySignWechat(code: String) {
+        JPushHelper.tryClearTagAlias()
+
         showLoadingAlert("正在尝试登录...")
 
         TbsApi.user().obtainSignWechat(code)
@@ -159,8 +161,11 @@ class LoginPhoneWechatActivity : BaseActivity() {
                 UserConfig.get().userEntity = userInfo
 
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
-                BossDaoManager.getInstance(mActivity).deleteAll()
-                ArticleDaoManager.getInstance(mActivity).deleteAll()
+                CacheConfig.clearBoss()
+                CacheConfig.clearArticle()
+
+                JPushHelper.tryAddTags(it.userInfo.tags)
+                JPushHelper.tryAddAlias(it.userInfo.id)
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()
