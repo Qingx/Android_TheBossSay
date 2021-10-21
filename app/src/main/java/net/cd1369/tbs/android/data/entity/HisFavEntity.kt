@@ -13,8 +13,8 @@ data class HisFavEntity(
     val type: String, //1:文章 2:每日一言
     val hidden: Boolean,
     val bossRole: String,
-    val isCollect: Boolean,
-    val isPoint: Boolean,
+    var isCollect: Boolean,
+    var isPoint: Boolean,
     val cover: String
 ) : MultiItemEntity {
     fun toDaily(): DailyEntity {

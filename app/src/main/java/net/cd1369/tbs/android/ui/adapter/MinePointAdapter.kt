@@ -48,12 +48,25 @@ abstract class MinePointAdapter :
             helper.V.text_name.text = item.bossName
         }
 
+        if (item.hidden) {
+            helper.V.isSelected = true
+            helper.V.text_content.text = "Boss已下架，内容不予显示"
+            GlideApp.display(
+                R.drawable.ic_article_cover,
+                helper.V.image_cover,
+                R.drawable.ic_article_cover
+            )
+            helper.V.text_time.isVisible = false
+        }
+
         helper.V.text_delete doClick {
             onContentDelete(item, ::removeItem)
         }
 
         helper.V.layout_content doClick {
-            onContentClick(item)
+            if (!item.hidden) {
+                onContentClick(item)
+            }
         }
     }
 

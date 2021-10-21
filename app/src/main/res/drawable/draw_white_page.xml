@@ -2,14 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape>
-            <corners android:radius="@dimen/dp_4" />
-            <solid android:color="#1FE02020" />
+            <solid android:color="@color/colorPageBg" />
         </shape>
     </item>
     <item>
         <shape>
-            <corners android:radius="@dimen/dp_4" />
-            <solid android:color="#1FE02020" />
+            <solid android:color="@color/colorWhite" />
         </shape>
     </item>
 </selector>
