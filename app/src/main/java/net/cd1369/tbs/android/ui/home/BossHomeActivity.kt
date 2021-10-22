@@ -266,8 +266,7 @@ class BossHomeActivity : BaseActivity() {
                     override fun createFragment(position: Int): Fragment {
                         return BossHomeFragment.createFragment(
                             bossId,
-                            (position + 1).toString(),
-                            it.totalCount
+                            (position + 1).toString()
                         )
                     }
                 }

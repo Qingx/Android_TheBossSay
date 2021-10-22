@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Times
 import com.blankj.utilcode.util.AppUtils
@@ -32,7 +31,6 @@ import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
 import net.cd1369.tbs.android.util.*
-import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.fullDownloadUrl
 import net.cd1369.tbs.android.util.isSameDay
 import org.greenrobot.eventbus.Subscribe
@@ -81,7 +79,7 @@ class HomeActivity : BaseActivity() {
         checkUpdate()
         tryRegisterJPush()
         checkNoticeEnable()
-        doDaily()
+        doDailyTalk()
 
         layout_tools.isVisible = isPortStatus && BuildConfig.ENV == "YYB"
 
@@ -199,31 +197,33 @@ class HomeActivity : BaseActivity() {
             )
     }
 
-    private fun doDaily() {
-        if (isSameDay(DataConfig.get().dailyTime) || DataConfig.get().dailyTime == -1L) {
-            TbsApi.user().obtainDaily().bindDefaultSub {
-                DataConfig.get().dailyTime = Times.current()
-                DailyDialog.showDialog(supportFragmentManager, "daily", it)
-                    .apply {
-                        doShare = Runnable {
-                            ShareDialog.showDialog(supportFragmentManager, "shareDialog", true)
-                                .apply {
-                                    onSession = Runnable {
-                                        doShareWechat(it)
+    private fun doDailyTalk() {
+        if (UserConfig.get().loginStatus) {
+            if (!isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L) {
+                TbsApi.user().obtainDaily().bindDefaultSub {
+                    UserConfig.get().dailyTime = Times.current()
+                    DailyDialog.showDialog(supportFragmentManager, "daily", it)
+                        .apply {
+                            doShare = Runnable {
+                                ShareDialog.showDialog(supportFragmentManager, "shareDialog", true)
+                                    .apply {
+                                        onSession = Runnable {
+                                            doShareWechat(it)
+                                        }
+                                        onTimeline = Runnable {
+                                            doShareTimeline(it)
+                                        }
+                                        onCopyLink = Runnable {
+                                            Tools.copyText(mActivity, Const.SHARE_URL)
+                                        }
+                                        onPoster = Runnable {
+                                            DailyPosterActivity.start(mActivity, it)
+                                            this.dismiss()
+                                        }
                                     }
-                                    onTimeline = Runnable {
-                                        doShareTimeline(it)
-                                    }
-                                    onCopyLink = Runnable {
-                                        Tools.copyText(mActivity, Const.SHARE_URL)
-                                    }
-                                    onPoster = Runnable {
-                                        DailyPosterActivity.start(mActivity, it)
-                                        this.dismiss()
-                                    }
-                                }
+                            }
                         }
-                    }
+                }
             }
         }
     }

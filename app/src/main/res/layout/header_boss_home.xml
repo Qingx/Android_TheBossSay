@@ -33,6 +33,7 @@
             tools:text="查看全部共12篇" />
 
         <TextView
+            android:id="@+id/text_notice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -40,7 +41,7 @@
             android:gravity="start|center_vertical"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="收录Boss自己言论、演说稿件、采访答录等"
+            tools:text="收录Boss自己言论、演说稿件、采访答录等"
             android:textColor="@color/colorTextDark"
             android:textSize="12dp"
             app:layout_constraintBaseline_toBaselineOf="@id/text_num"

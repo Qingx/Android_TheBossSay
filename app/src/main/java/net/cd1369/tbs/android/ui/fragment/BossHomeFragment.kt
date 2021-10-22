@@ -37,12 +37,11 @@ class BossHomeFragment : BaseListFragment() {
     private var needLoading = true
 
     companion object {
-        fun createFragment(bossId: String, type: String, totalNum: Int): BossHomeFragment {
+        fun createFragment(bossId: String, type: String): BossHomeFragment {
             return BossHomeFragment().apply {
                 arguments = Bundle().apply {
                     putString("bossId", bossId)
                     putString("type", type)
-                    putInt("totalNum", totalNum)
                 }
             }
         }
@@ -52,7 +51,6 @@ class BossHomeFragment : BaseListFragment() {
         super.beforeCreateView(savedInstanceState)
         bossId = arguments!!.getString("bossId") as String
         type = arguments!!.getString("type") as String
-        totalNum = arguments!!.getInt("totalNum")
     }
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
@@ -94,6 +92,11 @@ class BossHomeFragment : BaseListFragment() {
 
         val emptyView = LayoutInflater.from(mActivity).inflate(R.layout.empty_boss_article, null)
         mAdapter.emptyView = emptyView
+        headerView!!.text_notice.text = if (type == "1") {
+            "收录BOSS自己的言论语录及演讲采访等"
+        } else {
+            "收录BOSS相关的评论分析及实时新闻等"
+        }
         headerView!!.text_num.text = "共${totalNum}篇"
     }
 
@@ -118,6 +121,8 @@ class BossHomeFragment : BaseListFragment() {
                         layout_refresh.finishLoadMore()
                     } else {
                         mAdapter.setNewData(it)
+                        totalNum = pageParam?.total ?: 0
+                        headerView!!.text_num.text = "共${totalNum}篇"
                         layout_refresh.finishRefresh()
                     }
                 },

@@ -130,6 +130,13 @@ class ArticleActivity : BaseActivity() {
     }
 
     override fun initViewCreated(savedInstanceState: Bundle?) {
+        articleUrl.logE(prefix = "onPageFinished")
+
+        if (UserConfig.get().userEntity.version != DataConfig.get().lastVersion) {
+            "webView clearCache".logE()
+            web_view.clearCache(true)
+            DataConfig.get().lastVersion = UserConfig.get().userEntity.version
+        }
         web_view.loadUrl(articleUrl!!)
 
         val webSettings = web_view.settings
@@ -143,14 +150,13 @@ class ArticleActivity : BaseActivity() {
         webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
         webSettings.domStorageEnabled = true
         webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        webSettings.defaultTextEncodingName = "UTF-8";
+        webSettings.defaultTextEncodingName = "UTF-8"
 
         val androidCallback = AndroidCallback()
         androidCallback.formBoss = fromBoss
         androidCallback.mAct = WeakReference(this)
 
         val jumpCallback = JumpCallback()
-//        androidCallback.formBoss = fromBoss
         jumpCallback.mAct = WeakReference(this)
 
         web_view.addJavascriptInterface(androidCallback, "RecommendArticle")
@@ -169,6 +175,12 @@ class ArticleActivity : BaseActivity() {
             override fun shouldOverrideUrlLoading(view: WebView?, uri: String?): Boolean {
                 view?.loadUrl(uri!!)
                 return true
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                url.logE(prefix = "onPageFinished")
+
             }
         })
 

@@ -26,6 +26,7 @@ public class UserConfig extends BaseConfig {
         String keyIsLogin = "KEY_IS_LOGIN";
         String keyUser = "KEY_USER";
         String kepLastRead = "KEY_LAST_READ";
+        String keyDailyTime = "KEY_DAILY_TIME";
     }
 
     private boolean loginStatus; //是否登录
@@ -73,6 +74,14 @@ public class UserConfig extends BaseConfig {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setDailyTime(Long dailyTime) {
+        putLong(UserConfig.KEY.keyDailyTime, dailyTime);
+    }
+
+    public Long getDailyTime() {
+        return getLong(UserConfig.KEY.keyDailyTime, -1L);
     }
 
     @Override
