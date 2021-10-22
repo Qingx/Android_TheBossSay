@@ -57,23 +57,27 @@
 
         <TextView
             android:id="@+id/text_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:gravity="end"
+            android:layout_marginEnd="2dp"
+            android:gravity="start|end"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
-            android:textSize="13dp"
+            android:textSize="12dp"
             app:layout_constraintBaseline_toBaselineOf="@id/text_name"
+            app:layout_constraintEnd_toStartOf="@id/layout_include"
             app:layout_constraintStart_toEndOf="@id/text_name"
             tools:text="2020/03/02" />
 
         <FrameLayout
+            android:id="@+id/layout_include"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintBottom_toBottomOf="@id/image_head"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/image_head">
 
             <include
                 android:id="@+id/view_only_talk"

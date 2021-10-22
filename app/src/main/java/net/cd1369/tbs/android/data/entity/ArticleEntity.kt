@@ -41,7 +41,7 @@ data class ArticleEntity(
             return isInThreeDay && (filterType?.let { it == "2" } ?: false)
         }
 
-    fun getTime(): Long = articleTime ?: createTime ?: 0L
+    fun getTime(): Long = releaseTime ?: articleTime ?: 0L
 
     override fun getItemType(): Int {
         return when {

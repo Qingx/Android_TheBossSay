@@ -675,6 +675,33 @@ fun getTimeDifference(startTime: Long, endTime: Long = Times.current()): String 
     }
 }
 
+fun getSquareTime(startTime: Long): String {
+    val endTime = Times.current()
+
+    if (endTime >= startTime) {
+        val diff = endTime - startTime
+        val days =
+            diff / (1000 * 60 * 60 * 24)
+        val hours =
+            (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        val minutes =
+            (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60)) / (1000 * 60)
+        val seconds =
+            (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60) - minutes * (1000 * 60)) / 1000
+
+        return when {
+            days > 2 -> "3天前更新"
+            days > 1 -> "2天前更新"
+            days > 0 -> "昨日更新"
+            hours > 0 -> "${hours}小时前更新"
+            minutes > 0 -> "${minutes}分钟前更新"
+            else -> "${seconds}秒前更新"
+        }
+    } else {
+        return "刚刚"
+    }
+}
+
 fun getArticleItemTime(startTime: Long): String {
     val endTime = Times.current()
 
@@ -704,7 +731,7 @@ fun getArticleItemTime(startTime: Long): String {
             }
         }
     } else {
-        return "时间戳异常"
+        return "刚刚"
     }
 }
 

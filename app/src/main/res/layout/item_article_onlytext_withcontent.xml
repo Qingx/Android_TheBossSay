@@ -90,39 +90,27 @@
 
         <TextView
             android:id="@+id/text_hot"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:gravity="start"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/colorTextGray"
             android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="@id/layout_include"
+            app:layout_constraintEnd_toStartOf="@id/layout_include"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_content"
+            app:layout_constraintTop_toTopOf="@id/layout_include"
             tools:text="8.2k收藏·19.9w人围观" />
 
-        <TextView
-            android:id="@+id/text_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/colorTextGray"
-            android:textSize="13dp"
-            android:visibility="gone"
-            app:layout_constraintBaseline_toBaselineOf="@id/text_hot"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="2020/03/02" />
-
         <FrameLayout
+            android:id="@+id/layout_include"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/text_hot"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_hot">
+            app:layout_constraintTop_toBottomOf="@id/text_content">
 
             <include
                 android:id="@+id/view_type_talk1"

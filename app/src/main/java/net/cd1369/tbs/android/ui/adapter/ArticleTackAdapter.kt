@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.ima
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_content
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_hot
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_name
-import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.text_time
 import kotlinx.android.synthetic.main.item_article_onlytext_withcontent.view.tv_only_update
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.*
 import kotlinx.android.synthetic.main.item_article_singleimg_withcontent.view.text_info
@@ -21,7 +20,6 @@ import net.cd1369.tbs.android.util.Tools.formatCount
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.fullUrl
-import net.cd1369.tbs.android.util.getArticleItemTime
 
 /**
  * Created by Qing on 2021/6/28 5:17 下午
@@ -50,7 +48,6 @@ abstract class ArticleTackAdapter :
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.showTime)
 
                 helper.V.view_type_msg1.isVisible = item.isMsg
                 helper.V.view_type_talk1.isVisible = item.isTalk
@@ -72,7 +69,6 @@ abstract class ArticleTackAdapter :
                 helper.V.text_content.text = item.descContent
                 helper.V.text_hot.text =
                     "${item.collect!!.formatCount()}收藏·${item.readCount!!.formatCount()}人围观"
-                helper.V.text_time.text = getArticleItemTime(item.showTime)
 
                 // 判断言论
                 helper.V.view_type_msg.isVisible = item.isMsg

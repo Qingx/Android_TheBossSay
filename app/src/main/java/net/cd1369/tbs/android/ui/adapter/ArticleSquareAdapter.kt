@@ -50,7 +50,7 @@ abstract class ArticleSquareAdapter :
                 helper.V.text_title.text = item.title
                 GlideApp.displayHead(item.bossVO.head.fullUrl(), helper.V.image_head)
                 helper.V.text_name.text = item.bossVO.name
-                helper.V.text_time.text = getArticleItemTime(item.getTime())
+                helper.V.text_time.text = getSquareTime(item.getTime())
 
                 helper.V.view_only_msg.isVisible = item.isMsgType
                 helper.V.view_only_talk.isVisible = item.isTalkType
@@ -64,7 +64,7 @@ abstract class ArticleSquareAdapter :
                     R.drawable.ic_article_cover
                 )
                 helper.V.text_name.text = item.bossVO.name
-                helper.V.text_time.text = getArticleItemTime(item.getTime())
+                helper.V.text_time.text = getSquareTime(item.getTime())
 
                 helper.V.view_single_msg.isVisible = item.isMsgType
                 helper.V.view_single_talk.isVisible = item.isTalkType
