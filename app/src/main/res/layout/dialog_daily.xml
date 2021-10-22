@@ -27,11 +27,11 @@
         android:layout_marginTop="80dp"
         android:background="@drawable/draw_daily_head"
         android:padding="4dp"
-        tools:src="@drawable/ic_default_photo"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_daily" />
+        app:layout_constraintTop_toBottomOf="@id/text_daily"
+        tools:src="@drawable/ic_default_photo" />
 
     <ImageView
         android:id="@+id/image_marks"
@@ -53,12 +53,12 @@
         android:lineHeight="28dp"
         android:maxLines="4"
         android:singleLine="false"
-        tools:text="企业发展就是要发展一批狼。狼有三大特性：一是敏锐的嗅觉；二是不屈不挠、奋不顾身的进攻精神；三是群体奋斗的意识。"
         android:textColor="#99000000"
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_marks" />
+        app:layout_constraintTop_toBottomOf="@id/image_marks"
+        tools:text="企业发展就是要发展一批狼。狼有三大特性：一是敏锐的嗅觉；二是不屈不挠、奋不顾身的进攻精神；三是群体奋斗的意识。" />
 
     <TextView
         android:id="@+id/text_name"
@@ -67,12 +67,13 @@
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="48dp"
         android:gravity="end|center_vertical"
-        tools:text="— —  任正非"
+        android:singleLine="true"
         android:textColor="#7a7a7a"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_content" />
+        app:layout_constraintTop_toBottomOf="@id/text_content"
+        tools:text="— —  任正非" />
 
     <TextView
         android:id="@+id/text_role"
@@ -80,13 +81,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="end|center_vertical"
-        android:singleLine="true"
-        tools:text="华为创始人华为创始人华为创始人"
+        android:singleLine="false"
         android:textColor="#7a7a7a"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="@id/text_name"
         app:layout_constraintStart_toStartOf="@id/text_name"
-        app:layout_constraintTop_toBottomOf="@id/text_name" />
+        app:layout_constraintTop_toBottomOf="@id/text_name"
+        tools:text="华为创始人华为创始人华为创始人" />
 
     <ImageView
         android:id="@+id/image_point"

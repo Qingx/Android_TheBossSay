@@ -171,7 +171,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="6dp"
                     android:gravity="end|center_vertical"
-                    android:singleLine="true"
+                    android:singleLine="false"
                     android:textColor="#7a7a7a"
                     android:textSize="7dp"
                     app:layout_constraintEnd_toEndOf="parent"
