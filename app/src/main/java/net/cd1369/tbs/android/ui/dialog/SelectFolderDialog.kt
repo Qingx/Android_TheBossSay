@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.dialog_folder.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.FavoriteEntity
+import net.cd1369.tbs.android.data.entity.FolderEntity
 import net.cd1369.tbs.android.ui.adapter.FolderFavoriteAdapter
 import net.cd1369.tbs.android.util.doClick
 
@@ -22,13 +23,13 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 class SelectFolderDialog : DialogFragment() {
-    private lateinit var folderList: MutableList<FavoriteEntity>
+    private lateinit var folderList: MutableList<FolderEntity>
 
     companion object {
         fun showDialog(
             fragmentManager: FragmentManager,
             tag: String,
-            folders: MutableList<FavoriteEntity>
+            folders: MutableList<FolderEntity>
         ): SelectFolderDialog {
             return SelectFolderDialog().apply {
                 show(fragmentManager, tag)

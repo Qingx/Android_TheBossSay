@@ -2,6 +2,7 @@ package net.cd1369.tbs.android.data.service;
 
 import net.cd1369.tbs.android.data.entity.DailyEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
+import net.cd1369.tbs.android.data.entity.FolderEntity;
 import net.cd1369.tbs.android.data.entity.HisFavEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.PortEntity;
@@ -222,9 +223,36 @@ public interface UserService {
 
     /**
      * 获取点赞记录列表 分页
+     *
      * @param body
      * @return
      */
     @POST("/api/speech/point-history")
     Observable<WLPage<HisFavEntity>> obtainPointList(@Body RequestBody body);
+
+    /**
+     * 获取收藏夹列表
+     *
+     * @return
+     */
+    @GET("/api/collect/get-collet")
+    Observable<WLList<FolderEntity>> obtainFolderList();
+
+    /**
+     * 获取收藏夹
+     *
+     * @param id
+     * @return
+     */
+    @GET("/api/collect/get-obj/{groupId}")
+    Observable<WLData<FolderEntity>> obtainGetFolder(@Path("groupId") String id);
+
+    /**
+     * 获取收藏夹内文章
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/collect/list-collet")
+    Observable<WLPage<HisFavEntity>> obtainFolderArticle(@Body RequestBody body);
 }

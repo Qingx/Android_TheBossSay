@@ -23,9 +23,9 @@ ext {
              * 2021-10-21 v1.1.3+3 引导 追踪 广场 每日一言 分享 点赞记录
              */
             versionCode      : 1103,
-            versionName      : "1.1.3+5",
+            versionName      : "1.1.3+6",
             testVersionCode  : 1103,
-            testVersionName  : "1.1.3+5",
+            testVersionName  : "1.1.3+6",
     ]
 
 }

@@ -1,12 +1,17 @@
 package net.cd1369.tbs.android.ui.dialog
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
+import cn.wl.android.lib.ui.common.LoadingDialog
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,20 +40,24 @@ import kotlin.math.max
  */
 class DailyDialog : BottomSheetDialogFragment() {
     private lateinit var entity: DailyEntity
+    private lateinit var context: Activity
 
     var doShare: Runnable? = null
     private var mPoint: Disposable? = null
     private var mCollect: Disposable? = null
+    private var mAlert: LoadingDialog? = null
 
     companion object {
         fun showDialog(
             fragmentManager: FragmentManager,
             tag: String,
-            dailyEntity: DailyEntity
+            dailyEntity: DailyEntity,
+            activity: Activity,
         ): DailyDialog {
             return DailyDialog().apply {
                 show(fragmentManager, tag)
                 entity = dailyEntity
+                context = activity
             }
         }
     }
@@ -111,6 +120,8 @@ class DailyDialog : BottomSheetDialogFragment() {
 
         mPoint?.dispose()
         mCollect?.dispose()
+        mAlert?.dismiss()
+        mAlert = null
     }
 
     private fun doPoint(view: View) {
@@ -148,105 +159,176 @@ class DailyDialog : BottomSheetDialogFragment() {
     private fun onCollect(view: View) {
         if (UserConfig.get().loginStatus) {
             if (entity.isCollect) {
-                mCollect?.dispose()
-
-                mCollect = TbsApi.user().obtainDailyNoCollect(entity.id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        entity.isCollect = false
-                        view.image_collect.isSelected = false
-
-                        UserConfig.get().updateUser { user ->
-                            user.collectNum =
-                                max((user.collectNum ?: 0) - 1, 0)
-                        }
-                        EventBus.getDefault().post(ArticleCollectEvent())
-                        EventBus.getDefault().post(DailyPointCollectChangedEvent(entity.id, false))
-
-                    }, {
-                        Toasts.show("取消失败")
-                    })
+                doCancelCollect(view)
             } else {
-                mCollect = TbsApi.user().obtainFavoriteList()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorReturn { mutableListOf() }
-                    .subscribe {
-                        SelectFolderDialog.showDialog(fragmentManager!!, "selectFolder", it)
-                            .apply select@{
-                                this@select.onCreateClick = SelectFolderDialog.OnCreateClick {
-                                    CreateFolderDialog.showDialog(fragmentManager!!, "createFolder")
-                                        .apply create@{
-                                            this@create.onConfirmClick =
-                                                CreateFolderDialog.OnConfirmClick { name ->
-                                                    TbsApi.user().obtainCreateFavorite(name)
-                                                        .observeOn(AndroidSchedulers.mainThread())
-                                                        .flatMap { folder ->
-                                                            TbsApi.user()
-                                                                .obtainDailyCollect(
-                                                                    entity.id,
-                                                                    folder.id
-                                                                )
-                                                        }
-                                                        .subscribe({
-                                                            entity.isCollect = true
-                                                            view.image_collect.isSelected = true
-
-                                                            UserConfig.get().updateUser { user ->
-                                                                user.collectNum =
-                                                                    max(
-                                                                        (user.collectNum ?: 0) + 1,
-                                                                        0
-                                                                    )
-                                                            }
-                                                            EventBus.getDefault()
-                                                                .post(ArticleCollectEvent())
-                                                            EventBus.getDefault().post(
-                                                                DailyPointCollectChangedEvent(
-                                                                    entity.id,
-                                                                    true
-                                                                )
-                                                            )
-
-                                                            this@select.dismiss()
-                                                            this@create.dismiss()
-
-                                                        }, {
-                                                            Toasts.show("收藏失败")
-                                                        })
-                                                }
-                                        }
-                                }
-                                this@select.onConfirmClick =
-                                    SelectFolderDialog.OnConfirmClick { folderId ->
-                                        TbsApi.user().obtainDailyCollect(entity.id, folderId)
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe({
-                                                entity.isCollect = true
-                                                view.image_collect.isSelected = true
-
-                                                UserConfig.get().updateUser { user ->
-                                                    user.collectNum =
-                                                        max((user.collectNum ?: 0) + 1, 0)
-                                                }
-                                                EventBus.getDefault().post(ArticleCollectEvent())
-                                                EventBus.getDefault().post(
-                                                    DailyPointCollectChangedEvent(
-                                                        entity.id,
-                                                        true
-                                                    )
-                                                )
-
-                                                this@select.dismiss()
-                                            }, {
-                                                Toasts.show("收藏失败")
-                                            })
-                                    }
-                            }
-                    }
+                showFolder(view)
             }
         } else {
             LoginPhoneWechatActivity.start(context)
             Toasts.show("请先登录")
+        }
+    }
+
+    private fun doCancelCollect(view: View) {
+        mCollect?.dispose()
+
+        mCollect = TbsApi.user().obtainDailyNoCollect(entity.id)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                entity.isCollect = false
+                view.image_collect.isSelected = false
+
+                UserConfig.get().updateUser { user ->
+                    user.collectNum =
+                        max((user.collectNum ?: 0) - 1, 0)
+                }
+                EventBus.getDefault()
+                    .post(
+                        ArticleCollectEvent(
+                            fromCollect = false,
+                            fromFolder = false,
+                            articleId = entity.id,
+                            doCollect = false,
+                        )
+                    )
+                EventBus.getDefault().post(DailyPointCollectChangedEvent(entity.id, false))
+
+            }, {
+                Toasts.show("取消失败")
+            })
+    }
+
+    private fun showFolder(view: View) {
+        showLoadingAlert("尝试获取收藏夹")
+        mCollect = TbsApi.user().obtainFolderList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .onErrorReturn { mutableListOf() }
+            .subscribe {
+                hideLoadingAlert()
+                SelectFolderDialog.showDialog(fragmentManager!!, "selectFolder", it)
+                    .apply select@{
+                        this@select.onCreateClick = SelectFolderDialog.OnCreateClick {
+                            doCollectToNewFolder(view, this@select)
+                        }
+                        this@select.onConfirmClick = SelectFolderDialog.OnConfirmClick { folderId ->
+                            doCollectToSelectFolder(view, folderId, this@select)
+                        }
+                    }
+            }
+    }
+
+    private fun doCollectToNewFolder(view: View, select: SelectFolderDialog) {
+        CreateFolderDialog.showDialog(fragmentManager!!, "createFolder")
+            .apply create@{
+                this@create.onConfirmClick =
+                    CreateFolderDialog.OnConfirmClick { name ->
+                        TbsApi.user().obtainCreateFavorite(name)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .flatMap { folder ->
+                                TbsApi.user()
+                                    .obtainDailyCollect(
+                                        entity.id,
+                                        folder.id
+                                    )
+                            }
+                            .subscribe({
+                                entity.isCollect = true
+                                view.image_collect.isSelected = true
+
+                                UserConfig.get().updateUser { user ->
+                                    user.collectNum =
+                                        max(
+                                            (user.collectNum ?: 0) + 1,
+                                            0
+                                        )
+                                }
+                                EventBus.getDefault()
+                                    .post(
+                                        ArticleCollectEvent(
+                                            fromCollect = false,
+                                            fromFolder = false,
+                                            articleId = entity.id,
+                                            doCollect = true,
+                                        )
+                                    )
+                                EventBus.getDefault().post(
+                                    DailyPointCollectChangedEvent(
+                                        entity.id,
+                                        true
+                                    )
+                                )
+
+                                select.dismiss()
+                                this@create.dismiss()
+
+                            }, {
+                                Toasts.show("收藏失败")
+                            })
+                    }
+            }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun doCollectToSelectFolder(view: View, folderId: String, select: SelectFolderDialog) {
+        TbsApi.user().obtainDailyCollect(entity.id, folderId)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                entity.isCollect = true
+                view.image_collect.isSelected = true
+
+                UserConfig.get().updateUser { user ->
+                    user.collectNum =
+                        max((user.collectNum ?: 0) + 1, 0)
+                }
+                EventBus.getDefault()
+                    .post(
+                        ArticleCollectEvent(
+                            fromCollect = false,
+                            fromFolder = false,
+                            articleId = entity.id,
+                            doCollect = true,
+                        )
+                    )
+                EventBus.getDefault().post(
+                    DailyPointCollectChangedEvent(
+                        entity.id,
+                        true
+                    )
+                )
+                select.dismiss()
+            }, {
+                Toasts.show("收藏失败")
+            })
+    }
+
+
+    private fun showLoadingAlert(msg: String) {
+        if (mAlert == null) {
+            mAlert = LoadingDialog(context)
+        }
+        mAlert!!.setMsg(msg)
+        mAlert!!.show()
+
+        val window = mAlert!!.window
+        val dm = DisplayMetrics()
+        context?.windowManager?.defaultDisplay?.getMetrics(dm)
+        val width = dm.widthPixels * 0.8
+        val height: Int = ViewGroup.LayoutParams.WRAP_CONTENT
+        val params = window!!.attributes
+        params.gravity = Gravity.CENTER
+        window.attributes = params
+        window.setLayout(width.toInt(), height)
+        window.attributes = params
+        window.setLayout(width.toInt(), height)
+        window.setBackgroundDrawableResource(cn.wl.android.lib.R.drawable.draw_dialog_loading)
+        mAlert!!.setCanceledOnTouchOutside(false)
+        mAlert!!.setCancelable(false)
+    }
+
+    private fun hideLoadingAlert() {
+        if (mAlert != null) {
+            mAlert?.dismiss()
+            mAlert = null
         }
     }
 }

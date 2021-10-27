@@ -5,4 +5,9 @@ package net.cd1369.tbs.android.event
  * @description
  * @email Cymbidium@outlook.com
  */
-class ArticleCollectEvent(val fromCollect: Boolean = false)
+class ArticleCollectEvent(
+    val articleId: String = "",
+    val doCollect: Boolean = false,
+    val fromFolder: Boolean = false, //来自我的收藏列表
+    val fromCollect: Boolean = false, //来自收藏夹列表
+)

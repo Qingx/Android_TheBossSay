@@ -77,6 +77,7 @@
                 android:singleLine="true"
                 android:textColor="#7c7c7c"
                 android:textSize="10dp"
+                android:visibility="invisible"
                 app:layout_constraintBaseline_toBaselineOf="@id/text_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="21/10/23" />

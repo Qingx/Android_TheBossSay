@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPageBg"
-    tools:context=".ui.home.MineCollectArticleActivity">
+    android:background="@color/colorWhite"
+    tools:context=".ui.home.MineCollectActivity">
 
     <FrameLayout
         android:id="@+id/status_bar"
@@ -43,14 +43,14 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:singleLine="true"
-            tools:text="我的收藏"
             android:textColor="@color/colorTextDark"
             android:textSize="16dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="我的收藏" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -66,7 +66,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:overScrollMode="never" />
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

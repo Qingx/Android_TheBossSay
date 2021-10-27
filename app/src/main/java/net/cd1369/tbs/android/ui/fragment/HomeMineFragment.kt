@@ -186,7 +186,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     //点击我的收藏
     private fun onClickFavorite() {
         if (UserConfig.get().loginStatus) {
-            MineCollectArticleActivity.start(mActivity)
+            MineCollectActivity.start(mActivity)
         } else {
             Toasts.show("请先登录！")
             LoginPhoneWechatActivity.start(mActivity)

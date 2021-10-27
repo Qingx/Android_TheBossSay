@@ -194,7 +194,7 @@ class MineChangeUserActivity : BaseActivity() {
 
                 JPushHelper.tryClearTagAlias()
                 JPushHelper.tryAddAlias(it.userInfo.id)
-                JPushHelper.tryAddTags(it.userInfo.tags)
+                JPushHelper.tryAddTags(it.userInfo.tags?: mutableListOf())
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()

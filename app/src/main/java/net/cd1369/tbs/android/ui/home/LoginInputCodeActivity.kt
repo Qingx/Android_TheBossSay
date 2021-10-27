@@ -95,7 +95,7 @@ class LoginInputCodeActivity : BaseActivity(), VerificationCodeView.OnCodeFinish
                 CacheConfig.clearBoss()
                 CacheConfig.clearArticle()
 
-                JPushHelper.tryAddTags(it.userInfo.tags)
+                JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
                 JPushHelper.tryAddAlias(it.userInfo.id)
 
                 eventBus.post(LoginEvent())

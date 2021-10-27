@@ -9,6 +9,7 @@ import net.cd1369.tbs.android.config.UserConfig;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.DailyEntity;
 import net.cd1369.tbs.android.data.entity.FavoriteEntity;
+import net.cd1369.tbs.android.data.entity.FolderEntity;
 import net.cd1369.tbs.android.data.entity.HisFavEntity;
 import net.cd1369.tbs.android.data.entity.HistoryEntity;
 import net.cd1369.tbs.android.data.entity.PortEntity;
@@ -460,6 +461,48 @@ public class UserRepository extends BaseRepository<UserService> {
         });
 
         return getService().obtainPointList(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取收藏夹列表
+     *
+     * @return
+     */
+    public Observable<List<FolderEntity>> obtainFolderList() {
+        return getService().obtainFolderList()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取收藏夹对象
+     *
+     * @param id
+     * @return
+     */
+    public Observable<FolderEntity> obtainGetFolder(String id) {
+        return getService().obtainGetFolder(id)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取收藏夹文章
+     *
+     * @param pageParam
+     * @param groupId
+     * @param articleId
+     * @return
+     */
+    public Observable<Page<HisFavEntity>> obtainFolderArticle(PageParam pageParam, String groupId, String articleId) {
+        RequestBody body = bodyFromCreator(pageParam, jo -> {
+            jo.put("collectId", groupId);
+            jo.put("articleId", articleId);
+        });
+
+        return getService().obtainFolderArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }

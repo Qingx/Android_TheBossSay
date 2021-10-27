@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_folder_favorite.view.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.FavoriteEntity
+import net.cd1369.tbs.android.data.entity.FolderEntity
 import net.cd1369.tbs.android.util.V
 import net.cd1369.tbs.android.util.doClick
 
@@ -16,17 +17,17 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 abstract class FolderFavoriteAdapter :
-    BaseQuickAdapter<FavoriteEntity, BaseViewHolder>(R.layout.item_folder_favorite) {
+    BaseQuickAdapter<FolderEntity, BaseViewHolder>(R.layout.item_folder_favorite) {
     private var mSelectIndex = 0
 
     @SuppressLint("SetTextI18n")
-    override fun convert(helper: BaseViewHolder, item: FavoriteEntity) {
+    override fun convert(helper: BaseViewHolder, item: FolderEntity) {
         helper.V.isSelected = mSelectIndex == helper.layoutPosition
         helper.V.image_select.isInvisible = mSelectIndex != helper.layoutPosition
 
         helper.V.text_name.text = item.name
 
-        helper.V.text_content.text = "${item.list?.size ?: 0}篇言论"
+        helper.V.text_content.text = "${item.articleCount ?: 0}篇言论"
 
         helper.V doClick {
             if (mSelectIndex != helper.layoutPosition) {

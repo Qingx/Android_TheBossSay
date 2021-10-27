@@ -69,7 +69,8 @@ class MinePointFragment : BaseListFragment() {
                     DailyDialog.showDialog(
                         requireFragmentManager(),
                         "dailyDialog",
-                        entity.toDaily()
+                        entity.toDaily(),
+                        mActivity
                     )
                         .apply {
                             doShare = Runnable {

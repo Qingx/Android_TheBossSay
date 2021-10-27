@@ -202,7 +202,7 @@ class HomeActivity : BaseActivity() {
             if (!isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L) {
                 TbsApi.user().obtainDaily().bindDefaultSub {
                     UserConfig.get().dailyTime = Times.current()
-                    DailyDialog.showDialog(supportFragmentManager, "daily", it)
+                    DailyDialog.showDialog(supportFragmentManager, "daily", it, mActivity)
                         .apply {
                             doShare = Runnable {
                                 ShareDialog.showDialog(supportFragmentManager, "shareDialog", true)
@@ -229,11 +229,21 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun doShareWechat(entity: DailyEntity) {
-        doShareSession(resources, entity.bossHead, title = "分享一段任正非的语录，深有感触", des = entity.content)
+        doShareSession(
+            resources,
+            entity.bossHead,
+            title = "分享一段${entity.bossName}的语录，深有感触",
+            des = entity.content
+        )
     }
 
     private fun doShareTimeline(entity: DailyEntity) {
-        doShareTimeline(resources, entity.bossHead, title = "分享一段任正非的语录，深有感触", des = entity.content)
+        doShareTimeline(
+            resources,
+            entity.bossHead,
+            title = "分享一段${entity.bossName}的语录，深有感触",
+            des = entity.content
+        )
     }
 
     override fun loadData() {

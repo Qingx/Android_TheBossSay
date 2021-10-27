@@ -340,7 +340,14 @@ class ArticleActivity : BaseActivity() {
                 UserConfig.get().updateUser {
                     it.collectNum = max((it.collectNum ?: 0) - 1, 0)
                 }
-                eventBus.post(ArticleCollectEvent())
+                eventBus.post(
+                    ArticleCollectEvent(
+                        fromFolder = false,
+                        fromCollect = false,
+                        articleId = articleId!!,
+                        doCollect = false
+                    )
+                )
 
                 Toasts.show("取消成功")
             }, doFail = {
@@ -353,7 +360,7 @@ class ArticleActivity : BaseActivity() {
     private fun doCollect() {
         showLoadingAlert("获取收藏夹...")
 
-        TbsApi.user().obtainFavoriteList()
+        TbsApi.user().obtainFolderList()
             .onErrorReturn {
                 mutableListOf()
             }.bindDefaultSub(doNext = {
@@ -386,7 +393,14 @@ class ArticleActivity : BaseActivity() {
                                                         it.collectNum =
                                                             max((it.collectNum ?: 0) + 1, 0)
                                                     }
-                                                    eventBus.post(ArticleCollectEvent())
+                                                    eventBus.post(
+                                                        ArticleCollectEvent(
+                                                            fromCollect = false,
+                                                            fromFolder = false,
+                                                            articleId = articleId!!,
+                                                            doCollect = true
+                                                        )
+                                                    )
 
                                                     Toasts.show("收藏成功")
                                                     this@create.dismiss()
@@ -415,7 +429,14 @@ class ArticleActivity : BaseActivity() {
                                         it.collectNum =
                                             max((it.collectNum ?: 0) + 1, 0)
                                     }
-                                    eventBus.post(ArticleCollectEvent())
+                                    eventBus.post(
+                                        ArticleCollectEvent(
+                                            fromCollect = false,
+                                            fromFolder = false,
+                                            articleId = articleId!!,
+                                            doCollect = true
+                                        )
+                                    )
 
                                     Toasts.show("收藏成功")
 

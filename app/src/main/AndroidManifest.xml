@@ -78,7 +78,9 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.MinePointActivity"></activity>
+        <activity android:name=".ui.home.MineCollectContentActivity"></activity>
+        <activity android:name=".ui.home.MineCollectActivity" />
+        <activity android:name=".ui.home.MinePointActivity" />
         <activity android:name=".ui.home.DailyPosterActivity" />
         <activity
             android:name=".ui.home.PointHistoryActivity"

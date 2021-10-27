@@ -13,7 +13,7 @@ public class UserConfig extends BaseConfig {
         super("user");
     }
 
-    public static UserConfig dataConfig;
+    private static UserConfig dataConfig;
 
     public static UserConfig get() {
         if (dataConfig == null) {

@@ -1,8 +1,10 @@
 package net.cd1369.tbs.android.ui.adapter
 
+import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import cn.wl.android.lib.utils.DateFormat
 import cn.wl.android.lib.utils.GlideApp
+import cn.wl.android.lib.utils.Toasts
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.item_point_article.view.*
@@ -29,34 +31,39 @@ abstract class MinePointAdapter :
         addItemType(2, R.layout.item_point_daily)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun convert(helper: BaseViewHolder, item: HisFavEntity) {
-        if (helper.itemViewType == 1) {
-            GlideApp.display(
-                item.cover.fullUrl(),
-                helper.V.image_cover,
-                R.drawable.ic_article_cover
-            )
-            helper.V.text_content.text = item.content
-            GlideApp.displayHead(item.bossHead.fullUrl(), helper.V.image_head)
-            helper.V.text_name.text = item.bossName
-            helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
-            helper.V.layout_talk.isVisible = item.articleType == "1"
-            helper.V.layout_msg.isVisible = item.articleType == "2"
-        } else {
-            helper.V.text_content.text = item.content
-            GlideApp.displayHead(item.bossHead.fullUrl(), helper.V.image_head)
-            helper.V.text_name.text = item.bossName
-        }
+        helper.V.isSelected = item.hidden
 
         if (item.hidden) {
-            helper.V.isSelected = true
-            helper.V.text_content.text = "Boss已下架，内容不予显示"
             GlideApp.display(
                 R.drawable.ic_article_cover,
                 helper.V.image_cover,
                 R.drawable.ic_article_cover
             )
-            helper.V.text_time.isVisible = false
+            helper.V.text_content.text = "Boss已下架，内容不予显示"
+            GlideApp.displayHead(item.bossHead.fullUrl(), helper.V.image_head)
+            helper.V.text_name.text = item.bossName
+        } else {
+            if (helper.itemViewType == 1) {
+                helper.V.text_time.isVisible = true
+
+                GlideApp.display(
+                    item.cover.fullUrl(),
+                    helper.V.image_cover,
+                    R.drawable.ic_article_cover
+                )
+                helper.V.text_content.text = item.content
+                GlideApp.displayHead(item.bossHead.fullUrl(), helper.V.image_head)
+                helper.V.text_name.text = item.bossName
+                helper.V.text_time.text = DateFormat.date2yymmdd(item.createTime)
+                helper.V.layout_talk.isVisible = !item.hidden && item.articleType == "1"
+                helper.V.layout_msg.isVisible = !item.hidden && item.articleType == "2"
+            } else {
+                helper.V.text_content.text = item.content
+                GlideApp.displayHead(item.bossHead.fullUrl(), helper.V.image_head)
+                helper.V.text_name.text = item.bossName
+            }
         }
 
         helper.V.text_delete doClick {
@@ -66,6 +73,8 @@ abstract class MinePointAdapter :
         helper.V.layout_content doClick {
             if (!item.hidden) {
                 onContentClick(item)
+            } else {
+                Toasts.show("Boss已下架，内容不予显示")
             }
         }
     }
