@@ -12,20 +12,22 @@ import cn.jiguang.verifysdk.api.JVerificationInterface
 import cn.jiguang.verifysdk.api.LoginSettings
 import cn.jiguang.verifysdk.api.PreLoginListener
 import cn.jiguang.verifysdk.api.VerifyListener
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
 import com.advance.AdvanceBannerListener
 import com.advance.model.AdvanceError
 import com.blankj.utilcode.util.AppUtils
+import com.tendcloud.tenddata.TCAgent
+import com.tendcloud.tenddata.TDProfile
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.Const
-import net.cd1369.tbs.android.config.DataConfig
-import net.cd1369.tbs.android.config.MineItem
-import net.cd1369.tbs.android.config.UserConfig
+import net.cd1369.tbs.android.config.*
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
@@ -72,8 +74,8 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                         MineContactAuthorActivity.start(mActivity)
                     }
                     MineItem.Score -> {
-//                        tryScoreApp()
-                        doTest()
+                        tryScoreApp()
+//                        doTest()
                     }
                 }
             }
@@ -182,8 +184,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         if (UserConfig.get().loginStatus) {
             MineChangeUserActivity.start(mActivity)
         } else {
-            Toasts.show("请先登录！")
-            LoginPhoneWechatActivity.start(mActivity)
+            doLogin()
         }
     }
 
@@ -192,8 +193,8 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         if (UserConfig.get().loginStatus) {
             MineCollectActivity.start(mActivity)
         } else {
-            Toasts.show("请先登录！")
-            LoginPhoneWechatActivity.start(mActivity)
+            doLogin()
+
         }
     }
 
@@ -202,8 +203,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         if (UserConfig.get().loginStatus) {
             MineHistoryAllActivity.start(mActivity)
         } else {
-            Toasts.show("请先登录！")
-            LoginPhoneWechatActivity.start(mActivity)
+            doLogin()
         }
     }
 
@@ -212,8 +212,7 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         if (UserConfig.get().loginStatus) {
             MinePointActivity.start(mActivity)
         } else {
-            Toasts.show("请先登录！")
-            LoginPhoneWechatActivity.start(mActivity)
+            doLogin()
         }
     }
 
@@ -229,9 +228,54 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
         }
     }
 
+    private fun doLogin() {
+        Toasts.show("请先登录！")
+        JPushHelper.jumpLogin(mActivity) { token ->
+            TbsApi.user().obtainJverifyLogin(token)
+                .bindDefaultSub(doNext = {
+                    HttpConfig.saveToken(it.token)
+                    UserConfig.get().loginStatus = true
+                    val userInfo = it.userInfo
+                    UserConfig.get().userEntity = userInfo
+
+                    TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                    CacheConfig.clearBoss()
+                    CacheConfig.clearArticle()
+
+                    JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
+                    JPushHelper.tryAddAlias(it.userInfo.id)
+
+                    eventBus.post(LoginEvent())
+                }, doFail = {
+                    Toasts.show("登录失败，${it.msg}")
+                }, doLast = {
+                    hideLoadingAlert()
+                })
+        }
+    }
+
     private fun doTest() {
-        JPushHelper.jumpLogin(mActivity){
-            Toasts.show("doLogin")
+        JPushHelper.jumpLogin(mActivity) { token ->
+            TbsApi.user().obtainJverifyLogin(token)
+                .bindDefaultSub(doNext = {
+                    HttpConfig.saveToken(it.token)
+                    UserConfig.get().loginStatus = true
+                    val userInfo = it.userInfo
+                    UserConfig.get().userEntity = userInfo
+
+                    TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                    CacheConfig.clearBoss()
+                    CacheConfig.clearArticle()
+
+                    JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
+                    JPushHelper.tryAddAlias(it.userInfo.id)
+
+                    eventBus.post(LoginEvent())
+                }, doFail = {
+                    Toasts.show("登录失败，${it.msg}")
+                }, doLast = {
+                    hideLoadingAlert()
+                })
         }
     }
 

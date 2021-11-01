@@ -2,7 +2,6 @@ package net.cd1369.tbs.android.ui.dialog
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
@@ -27,7 +26,6 @@ import net.cd1369.tbs.android.data.entity.DailyEntity
 import net.cd1369.tbs.android.event.ArticleCollectEvent
 import net.cd1369.tbs.android.event.ArticlePointEvent
 import net.cd1369.tbs.android.event.DailyPointCollectChangedEvent
-import net.cd1369.tbs.android.ui.home.LoginPhoneWechatActivity
 import net.cd1369.tbs.android.util.doClick
 import net.cd1369.tbs.android.util.fullUrl
 import org.greenrobot.eventbus.EventBus
@@ -43,6 +41,7 @@ class DailyDialog : BottomSheetDialogFragment() {
     private lateinit var context: Activity
 
     var doShare: Runnable? = null
+    var doLogin: Runnable? = null
     private var mPoint: Disposable? = null
     private var mCollect: Disposable? = null
     private var mAlert: LoadingDialog? = null
@@ -164,8 +163,7 @@ class DailyDialog : BottomSheetDialogFragment() {
                 showFolder(view)
             }
         } else {
-            LoginPhoneWechatActivity.start(context)
-            Toasts.show("请先登录")
+            doLogin?.run()
         }
     }
 

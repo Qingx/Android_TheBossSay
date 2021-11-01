@@ -10,14 +10,19 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import cn.jiguang.verifysdk.api.JVerificationInterface
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Times
+import cn.wl.android.lib.utils.Toasts
 import com.blankj.utilcode.util.AppUtils
 import com.github.gzuliyujiang.oaid.DeviceID
+import com.tendcloud.tenddata.TCAgent
+import com.tendcloud.tenddata.TDProfile
 import kotlinx.android.synthetic.main.activity_home.*
 import net.cd1369.tbs.android.BuildConfig
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.*
+import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.DailyEntity
 import net.cd1369.tbs.android.data.entity.PortEntity
 import net.cd1369.tbs.android.event.GlobalScrollEvent
@@ -170,12 +175,7 @@ class HomeActivity : BaseActivity() {
         val result = JVerificationInterface.isInitSuccess()
         result.logE(prefix = "极光认证初始化result")
 
-        //极光认证 预取号
-        JVerificationInterface.preLogin(
-            mActivity, 5000
-        ) { code, content ->
-            Log.e("okhttp", "极光认证预取号code:${code},content:${content}")
-        }
+        JPushHelper.tryPreLogin(mActivity)
     }
 
     /**
@@ -235,6 +235,30 @@ class HomeActivity : BaseActivity() {
                                             this.dismiss()
                                         }
                                     }
+                            }
+                            doLogin= Runnable {
+                                JPushHelper.jumpLogin(mActivity) { token ->
+                                    TbsApi.user().obtainJverifyLogin(token)
+                                        .bindDefaultSub(doNext = {
+                                            HttpConfig.saveToken(it.token)
+                                            UserConfig.get().loginStatus = true
+                                            val userInfo = it.userInfo
+                                            UserConfig.get().userEntity = userInfo
+
+                                            TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                                            CacheConfig.clearBoss()
+                                            CacheConfig.clearArticle()
+
+                                            JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
+                                            JPushHelper.tryAddAlias(it.userInfo.id)
+
+                                            eventBus.post(LoginEvent())
+                                        }, doFail = {
+                                            Toasts.show("登录失败，${it.msg}")
+                                        }, doDone = {
+                                            hideLoadingAlert()
+                                        })
+                                }
                             }
                         }
                 }

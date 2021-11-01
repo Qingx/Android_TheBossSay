@@ -255,4 +255,13 @@ public interface UserService {
      */
     @POST("/api/collect/list-collet")
     Observable<WLPage<HisFavEntity>> obtainFolderArticle(@Body RequestBody body);
+
+    /**
+     * 极光认证一键登录
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/account/sign-token")
+    Observable<WLData<TokenEntity>> obtainJverifyLogin(@Body RequestBody body);
 }

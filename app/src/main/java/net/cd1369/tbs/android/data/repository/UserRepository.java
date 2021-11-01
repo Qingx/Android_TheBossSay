@@ -506,4 +506,21 @@ public class UserRepository extends BaseRepository<UserService> {
                 .compose(combine())
                 .compose(rebase());
     }
+
+    /**
+     * 极光认证
+     *
+     * @param token
+     * @return
+     */
+    public Observable<TokenEntity> obtainJverifyLogin(String token) {
+        RequestBody body = bodyFromCreator(jo -> {
+            jo.put("deviceId", DataConfig.get().getTempId());
+            jo.put("token", token);
+        });
+
+        return getService().obtainJverifyLogin(body)
+                .compose(combine())
+                .compose(rebase());
+    }
 }

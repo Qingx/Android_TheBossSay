@@ -99,7 +99,7 @@ class SearchArticleActivity : BaseListActivity() {
             onBackPressed()
         }
 
-        image_search doClick {
+        text_search doClick {
             if (!edit_input.text.toString().isNullOrEmpty()) {
                 searchText = edit_input.text.toString()
                 layout_refresh.autoRefresh()

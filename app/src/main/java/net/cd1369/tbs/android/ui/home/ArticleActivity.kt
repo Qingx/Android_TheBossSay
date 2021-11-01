@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.webkit.*
 import androidx.core.view.isVisible
 import cn.wl.android.lib.config.WLConfig
+import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.GlideApp
 import cn.wl.android.lib.utils.Toasts
 import com.google.gson.JsonParser
+import com.tendcloud.tenddata.TCAgent
+import com.tendcloud.tenddata.TDProfile
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.activity_article.image_back
@@ -25,10 +28,7 @@ import net.cd1369.tbs.android.config.elif
 import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.ArticleEntity
 import net.cd1369.tbs.android.data.entity.BossInfoEntity
-import net.cd1369.tbs.android.event.ArticleCollectEvent
-import net.cd1369.tbs.android.event.ArticlePointEvent
-import net.cd1369.tbs.android.event.ArticleReadEvent
-import net.cd1369.tbs.android.event.BossTackEvent
+import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.SplashActivity
 import net.cd1369.tbs.android.ui.start.StartActivity
@@ -194,8 +194,7 @@ class ArticleActivity : BaseActivity() {
                     cancelCollect()
                 } else doCollect()
             } else {
-                Toasts.show("请先登录！")
-                LoginPhoneWechatActivity.start(mActivity)
+                doLogin()
             }
         }
 
@@ -230,6 +229,32 @@ class ArticleActivity : BaseActivity() {
 
         image_back doClick {
             onBackPressed()
+        }
+    }
+
+    private fun doLogin() {
+        Toasts.show("请先登录！")
+        JPushHelper.jumpLogin(mActivity) { token ->
+            TbsApi.user().obtainJverifyLogin(token)
+                .bindDefaultSub(doNext = {
+                    HttpConfig.saveToken(it.token)
+                    UserConfig.get().loginStatus = true
+                    val userInfo = it.userInfo
+                    UserConfig.get().userEntity = userInfo
+
+                    TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                    CacheConfig.clearBoss()
+                    CacheConfig.clearArticle()
+
+                    JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
+                    JPushHelper.tryAddAlias(it.userInfo.id)
+
+                    eventBus.post(LoginEvent())
+                }, doFail = {
+                    Toasts.show("登录失败，${it.msg}")
+                }, doDone = {
+                    hideLoadingAlert()
+                })
         }
     }
 

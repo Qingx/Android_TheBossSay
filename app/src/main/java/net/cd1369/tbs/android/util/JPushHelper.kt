@@ -1,11 +1,12 @@
 package net.cd1369.tbs.android.util
 
 import android.app.Activity
-import android.content.Context
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
+import android.widget.RelativeLayout
+import android.widget.TextView
 import cn.jiguang.verifysdk.api.JVerificationInterface
-import cn.jiguang.verifysdk.api.JVerifyUIClickCallback
 import cn.jiguang.verifysdk.api.JVerifyUIConfig
 import cn.jpush.android.api.JPushInterface
 import cn.wl.android.lib.config.WLConfig
@@ -32,8 +33,10 @@ object JPushHelper {
     private var mAddTag: Disposable? = null
     private var mAddTags: Disposable? = null
     private var mAddAlias: Disposable? = null
+    private var mPreLogin: Disposable? = null
     private val mVersion = AtomicInteger(0)
     private val mContext get() = WLConfig.getContext()
+    private var preResult = false
 
     /**
      * 尝试启动推送
@@ -151,10 +154,33 @@ object JPushHelper {
         JPushInterface.cleanTags(mContext, mVersion.getAndIncrement())
     }
 
-    fun jumpLogin(context: Activity, doLogin: () -> Unit) {
+    fun tryPreLogin(context: Activity) {
+        mPreLogin?.dispose()
+
+        //极光认证 预取号
+        JVerificationInterface.preLogin(
+            context, 5000
+        ) { code, content ->
+            if (code.toString() == "7001") {
+                preResult = false
+                mPreLogin = Observable.timer(1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        tryPreLogin(context)
+                    }) {
+
+                    }
+            } else if (code.toString() == "7000") {
+                preResult = true
+                Log.e("okhttp", "极光认证预取号code:${code},content:${content}")
+            }
+        }
+    }
+
+    fun jumpLogin(context: Activity, doLogin: (String) -> Unit) {
         val result = JVerificationInterface.checkVerifyEnable(context)
         result.logE(prefix = "极光认证检测result")
-        if (result) {
+        if (result && preResult) {
             val width = ScreenUtils.getAppScreenWidth()
             val privacyUrl =
                 if (BuildConfig.ENV != "MI") Const.PRIVACY_URL else Const.MI_PRIVACY_URL
@@ -162,8 +188,16 @@ object JPushHelper {
                 .inflate(R.layout.layout_return_back, null, false)
             val title =
                 LayoutInflater.from(context).inflate(R.layout.layout_jverify_title, null, false)
-            val other =
-                LayoutInflater.from(context).inflate(R.layout.layout_jverify_other, null, false)
+
+            val other = TextView(context)
+            other.text = "其他方式登录"
+            val layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.setMargins(0, ConvertUtils.dp2px(320f), 0, 0)
+            other.layoutParams = layoutParams
+            other.gravity = Gravity.CENTER
 
             val uiConfig = JVerifyUIConfig.Builder()
                 .setStatusBarDarkMode(true)
@@ -200,9 +234,8 @@ object JPushHelper {
                 .setPrivacyStatusBarDarkMode(true)
                 .addCustomView(title, false)
                 { context, view ->
-                    Toasts.show("点击title")
                 }
-                .addCustomView(other, true)
+                .addCustomView(other, false)
                 { context, view ->
                     LoginPhoneWechatActivity.start(context)
                 }
@@ -218,7 +251,7 @@ object JPushHelper {
                 operator.logE(prefix = "极光认证登录operator")
 
                 when (code.toString()) {
-                    "6000" -> doLogin.invoke()
+                    "6000" -> doLogin(content)
                     "6002" -> "取消授权".logE(prefix = "")
                     else -> Toasts.show(content)
                 }
