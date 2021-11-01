@@ -7,12 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ListView
 import androidx.recyclerview.widget.LinearLayoutManager
-import cn.jiguang.verifysdk.api.JVerificationInterface
-import cn.jiguang.verifysdk.api.LoginSettings
-import cn.jiguang.verifysdk.api.PreLoginListener
-import cn.jiguang.verifysdk.api.VerifyListener
 import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
@@ -22,7 +17,6 @@ import com.advance.model.AdvanceError
 import com.blankj.utilcode.util.AppUtils
 import com.tendcloud.tenddata.TCAgent
 import com.tendcloud.tenddata.TDProfile
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.layout_mine_ad.view.*
 import kotlinx.android.synthetic.main.layout_mine_head.view.*
@@ -34,9 +28,6 @@ import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
 import net.cd1369.tbs.android.util.*
-import net.cd1369.tbs.android.util.Tools.logE
-import net.cd1369.tbs.android.util.doShareSession
-import net.cd1369.tbs.android.util.doShareTimeline
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
