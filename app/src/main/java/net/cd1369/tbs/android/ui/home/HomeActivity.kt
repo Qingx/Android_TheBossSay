@@ -3,11 +3,13 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import cn.jiguang.verifysdk.api.JVerificationInterface
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Times
 import com.blankj.utilcode.util.AppUtils
@@ -31,6 +33,7 @@ import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
 import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
 import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
 import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.fullDownloadUrl
 import net.cd1369.tbs.android.util.isSameDay
 import org.greenrobot.eventbus.Subscribe
@@ -162,6 +165,17 @@ class HomeActivity : BaseActivity() {
      */
     private fun tryRegisterJPush() {
         JPushHelper.tryStartPush()
+
+        //极光认证
+        val result = JVerificationInterface.isInitSuccess()
+        result.logE(prefix = "极光认证初始化result")
+
+        //极光认证 预取号
+        JVerificationInterface.preLogin(
+            mActivity, 5000
+        ) { code, content ->
+            Log.e("okhttp", "极光认证预取号code:${code},content:${content}")
+        }
     }
 
     /**

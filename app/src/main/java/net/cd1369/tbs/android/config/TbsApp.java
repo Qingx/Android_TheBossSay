@@ -28,6 +28,7 @@ import net.cd1369.tbs.android.util.Tools;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import cn.jiguang.verifysdk.api.JVerificationInterface;
 import cn.jpush.android.api.JPushInterface;
 import cn.wl.android.lib.config.WLConfig;
 import cn.wl.android.lib.data.core.HttpConfig;
@@ -143,8 +144,12 @@ public class TbsApp extends MultiDexApplication {
         //推荐配置：允许Mercury预缓存素材
         MercuryAD.needPreLoadMaterial(true);
 
+        //极光推送
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(mContext);
+        //极光认证
+        JVerificationInterface.setDebugMode(BuildConfig.DEBUG);
+        JVerificationInterface.init(mContext);
 
         TCAgent.LOG_ON = WLConfig.isDebug();
         // App ID: 在TalkingData创建应用后，进入数据报表页中，在“系统设置”-“编辑应用”页面里查看App ID。
@@ -190,7 +195,6 @@ public class TbsApp extends MultiDexApplication {
                 .retry(3)
                 .replay(1)
                 .refCount(16, TimeUnit.SECONDS);
-
     }
 
     /**

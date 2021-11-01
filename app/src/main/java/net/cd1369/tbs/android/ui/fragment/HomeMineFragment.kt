@@ -8,6 +8,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import cn.jiguang.verifysdk.api.JVerificationInterface
+import cn.jiguang.verifysdk.api.LoginSettings
+import cn.jiguang.verifysdk.api.PreLoginListener
+import cn.jiguang.verifysdk.api.VerifyListener
 import cn.wl.android.lib.ui.BaseFragment
 import cn.wl.android.lib.utils.Toasts
 import com.advance.AdvanceBanner
@@ -26,8 +30,8 @@ import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.MineItemAdapter
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.ui.home.*
-import net.cd1369.tbs.android.util.Tools
-import net.cd1369.tbs.android.util.doClick
+import net.cd1369.tbs.android.util.*
+import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doShareSession
 import net.cd1369.tbs.android.util.doShareTimeline
 import org.greenrobot.eventbus.Subscribe
@@ -68,8 +72,8 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
                         MineContactAuthorActivity.start(mActivity)
                     }
                     MineItem.Score -> {
-                        tryScoreApp()
-//                        doTest()
+//                        tryScoreApp()
+                        doTest()
                     }
                 }
             }
@@ -226,7 +230,9 @@ class HomeMineFragment : BaseFragment(), AdvanceBannerListener {
     }
 
     private fun doTest() {
-//        DailyDialog.showDialog(requireFragmentManager(),"testDialog")
+        JPushHelper.jumpLogin(mActivity){
+            Toasts.show("doLogin")
+        }
     }
 
     /**
