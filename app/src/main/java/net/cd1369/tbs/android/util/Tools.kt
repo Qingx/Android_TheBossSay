@@ -443,7 +443,7 @@ internal fun doShareTimeline(
         val req = SendMessageToWX.Req()
         req.transaction = WeChatUtil.buildTransaction("webPage")
         req.message = msg
-        req.scene = SendMessageToWX.Req.WXSceneSession
+        req.scene = SendMessageToWX.Req.WXSceneTimeline
 
         TbsApp.getWeChatApi().sendReq(req)
     } else {
