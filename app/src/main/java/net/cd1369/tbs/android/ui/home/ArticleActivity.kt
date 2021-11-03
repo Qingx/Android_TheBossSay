@@ -298,18 +298,18 @@ class ArticleActivity : BaseActivity() {
                         cover = articleCover,
                         title = articleTitle!!,
                         des = articleDes!!,
-                        url = articleUrl!!
+                        url = "${articleUrl!!}&type=1"
                     )
                 }
                 onTimeline = Runnable {
                     doShareTimeline(
                         resources, cover = articleCover,
                         title = articleTitle!!,
-                        url = articleUrl!!
+                        url = "${articleUrl!!}&type=1"
                     )
                 }
                 onCopyLink = Runnable {
-                    Tools.copyText(mActivity, articleUrl!!)
+                    Tools.copyText(mActivity, "${articleUrl!!}&type=1")
                 }
             }
     }
