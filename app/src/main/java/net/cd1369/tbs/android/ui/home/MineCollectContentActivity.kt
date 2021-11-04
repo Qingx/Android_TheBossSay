@@ -33,7 +33,6 @@ import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.doShareSession
-import net.cd1369.tbs.android.util.doShareTimeline
 import net.cd1369.tbs.android.util.fullUrl
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -160,7 +159,7 @@ class MineCollectContentActivity : BaseListActivity() {
     }
 
     private fun tryClickArticle(item: HisFavEntity) {
-        ArticleActivity.start(mActivity, item.articleId, false)
+        WebArticleActivity.start(mActivity, item.articleId, false)
     }
 
     private fun tryClickDaily(item: HisFavEntity) {

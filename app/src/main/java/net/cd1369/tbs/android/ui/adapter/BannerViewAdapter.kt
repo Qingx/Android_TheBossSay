@@ -9,7 +9,7 @@ import cn.wl.android.lib.utils.GlideApp
 import com.youth.banner.adapter.BannerAdapter
 import com.youth.banner.util.BannerUtils
 import net.cd1369.tbs.android.data.entity.BannerEntity
-import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.WebArticleActivity
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -48,7 +48,7 @@ class BannerViewAdapter(val context: Context, list: List<BannerEntity>) :
         GlideApp.display(data!!.pictureLocation, holder!!.imageView)
 
         holder.imageView doClick {
-            ArticleActivity.start(context, data.resourceId)
+            WebArticleActivity.start(context, data.resourceId)
         }
     }
 }

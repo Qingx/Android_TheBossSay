@@ -20,7 +20,7 @@ import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.TokenEntity
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.ui.adapter.GuideInfoAdapter
-import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.WebArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
@@ -96,7 +96,7 @@ class GuideActivity : BaseActivity() {
                             val intentHome = Intent(mActivity, HomeActivity::class.java)
                             intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                            val intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                            val intentArticle = Intent(mActivity, WebArticleActivity::class.java)
                             intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             intentArticle.putExtra("articleId", WelActivity.tempId)
 
@@ -164,7 +164,7 @@ class GuideActivity : BaseActivity() {
                         val intentHome = Intent(mActivity, HomeActivity::class.java)
                         intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                        val intentArticle = Intent(mActivity, ArticleActivity::class.java)
+                        val intentArticle = Intent(mActivity, WebArticleActivity::class.java)
                         intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         intentArticle.putExtra("articleId", tempId)
 

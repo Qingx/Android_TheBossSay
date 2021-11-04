@@ -22,7 +22,7 @@ import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.adapter.ArticleSquareAdapter
 import net.cd1369.tbs.android.ui.adapter.BannerTitleAdapter
-import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.WebArticleActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -59,7 +59,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : ArticleSquareAdapter() {
             override fun onClick(item: ArticleEntity) {
-                ArticleActivity.start(mActivity, item.id)
+                WebArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapterArticle = it
@@ -148,8 +148,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: PageScrollEvent) {
-        if (GlobalScrollEvent.homePage == PageItem.Talk.code &&
-            GlobalScrollEvent.talkPage == PageItem.Square.code &&
+        if (GlobalScrollEvent.talkPage == PageItem.Square.code &&
             GlobalScrollEvent.squareLabel == mLabel.toString()
         ) {
             rv_content.smoothScrollToPosition(0)

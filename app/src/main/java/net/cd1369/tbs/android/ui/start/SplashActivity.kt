@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
-import cn.jpush.android.api.JPushInterface
 import cn.wl.android.lib.core.Page
 import cn.wl.android.lib.core.PageParam
 import cn.wl.android.lib.data.core.HttpConfig
@@ -20,13 +19,11 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.*
-import net.cd1369.tbs.android.config.TbsApp.mContext
 import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.TokenEntity
 import net.cd1369.tbs.android.ui.dialog.ServicePrivacyDialog
-import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.WebArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
-import net.cd1369.tbs.android.util.JPushHelper
 import java.util.concurrent.TimeUnit
 
 /**
@@ -160,7 +157,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         val intentHome = Intent(this, HomeActivity::class.java)
         intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-        val intentArticle = Intent(this, ArticleActivity::class.java)
+        val intentArticle = Intent(this, WebArticleActivity::class.java)
         intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intentArticle.putExtra("articleId", WelActivity.tempId)
 

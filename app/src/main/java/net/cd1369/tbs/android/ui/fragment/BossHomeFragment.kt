@@ -17,7 +17,7 @@ import net.cd1369.tbs.android.config.TbsApi
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.event.ArticleReadEvent
 import net.cd1369.tbs.android.ui.adapter.BossArticleAdapter
-import net.cd1369.tbs.android.ui.home.ArticleActivity
+import net.cd1369.tbs.android.ui.home.WebArticleActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -56,7 +56,7 @@ class BossHomeFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : BossArticleAdapter() {
             override fun onClick(item: ArticleSimpleModel) {
-                ArticleActivity.start(mActivity, item.id.toString(), true)
+                WebArticleActivity.start(mActivity, item.id.toString(), true)
             }
         }.also {
             mAdapter = it

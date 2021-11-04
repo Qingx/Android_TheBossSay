@@ -73,7 +73,7 @@ class MineHistoryTodayActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : HistoryContentAdapter(false) {
             override fun onContentClick(articleId: String) {
-                ArticleActivity.start(mActivity, articleId)
+                WebArticleActivity.start(mActivity, articleId)
             }
 
             override fun onContentDelete(historyId: String, doRemove: (id: String) -> Unit) {

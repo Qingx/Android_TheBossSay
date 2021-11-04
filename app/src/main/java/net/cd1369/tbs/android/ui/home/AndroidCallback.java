@@ -1,7 +1,6 @@
 package net.cd1369.tbs.android.ui.home;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
 import java.lang.ref.WeakReference;
@@ -15,7 +14,7 @@ public class AndroidCallback {
 
     @JavascriptInterface
     public void postMessage(String articleId) {
-        ArticleActivity.Companion.start(WLConfig.getContext(), articleId, formBoss);
+        WebArticleActivity.Companion.start(WLConfig.getContext(), articleId, formBoss);
 
         Activity activity = mAct.get();
         if (activity != null) {

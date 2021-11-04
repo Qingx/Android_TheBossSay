@@ -31,7 +31,6 @@ import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.SplashActivity
-import net.cd1369.tbs.android.ui.start.StartActivity
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.logE
@@ -39,7 +38,7 @@ import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import kotlin.math.max
 
-class ArticleActivity : BaseActivity() {
+class WebArticleActivity : BaseActivity() {
     private var mPointDis: Disposable? = null
     private var articleId: String? = null
     private var articleUrl: String? = null
@@ -62,7 +61,7 @@ class ArticleActivity : BaseActivity() {
 
     companion object {
         fun start(context: Context?, id: String, fromBoss: Boolean = false) {
-            val intent = Intent(context, ArticleActivity::class.java)
+            val intent = Intent(context, WebArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtras(Bundle().apply {
@@ -356,10 +355,10 @@ class ArticleActivity : BaseActivity() {
         TbsApi.user().obtainCancelFavoriteArticle(articleId)
             .bindDefaultSub(doNext = {
                 isCollect = false
-                this@ArticleActivity.image_collect.isSelected = false
-                this@ArticleActivity.text_collect.isSelected =
+                this@WebArticleActivity.image_collect.isSelected = false
+                this@WebArticleActivity.text_collect.isSelected =
                     false
-                this@ArticleActivity.text_collect.text =
+                this@WebArticleActivity.text_collect.text =
                     (mArticleEntity!!.collect!! - 1).toString()
 
                 UserConfig.get().updateUser {
@@ -407,11 +406,11 @@ class ArticleActivity : BaseActivity() {
                                                         .obtainFavoriteArticle(folder.id, articleId)
                                                 }.bindDefaultSub(doNext = {
                                                     isCollect = true
-                                                    this@ArticleActivity.image_collect.isSelected =
+                                                    this@WebArticleActivity.image_collect.isSelected =
                                                         true
-                                                    this@ArticleActivity.text_collect.isSelected =
+                                                    this@WebArticleActivity.text_collect.isSelected =
                                                         true
-                                                    this@ArticleActivity.text_collect.text =
+                                                    this@WebArticleActivity.text_collect.text =
                                                         (mArticleEntity!!.collect!! + 1).toString()
 
                                                     UserConfig.get().updateUser {
@@ -444,10 +443,10 @@ class ArticleActivity : BaseActivity() {
                             TbsApi.user().obtainFavoriteArticle(folderId, articleId)
                                 .bindDefaultSub(doNext = {
                                     isCollect = true
-                                    this@ArticleActivity.image_collect.isSelected = true
-                                    this@ArticleActivity.text_collect.isSelected =
+                                    this@WebArticleActivity.image_collect.isSelected = true
+                                    this@WebArticleActivity.text_collect.isSelected =
                                         true
-                                    this@ArticleActivity.text_collect.text =
+                                    this@WebArticleActivity.text_collect.text =
                                         (mArticleEntity!!.collect!! + 1).toString()
 
                                     UserConfig.get().updateUser {
