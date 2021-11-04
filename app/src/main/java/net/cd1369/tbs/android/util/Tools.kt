@@ -378,7 +378,6 @@ internal fun doShareSession(
         val bmp: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
 
         val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
-        bmp.recycle()
 
         val msg = WXMediaMessage(webPage)
         msg.title = title
@@ -396,11 +395,6 @@ internal fun doShareSession(
             val bmp = it
 
             val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
-            try {
-                bmp.recycle()
-            } catch (e: java.lang.Exception) {
-
-            }
 
             val msg = WXMediaMessage(webPage)
             msg.title = title
@@ -433,7 +427,6 @@ internal fun doShareTimeline(
         val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_logo)
 
         val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
-        bmp.recycle()
 
         val msg = WXMediaMessage(webPage)
         msg.title = title
@@ -451,11 +444,6 @@ internal fun doShareTimeline(
             val bmp = it
 
             val thumbBmp = Bitmap.createScaledBitmap(bmp!!, 150, 150, true)
-            try {
-                bmp.recycle()
-            } catch (e: java.lang.Exception) {
-
-            }
 
             val msg = WXMediaMessage(webPage)
             msg.title = title
@@ -479,7 +467,6 @@ internal fun doShareTimeline(
 internal fun doShareImgSession(bitmap: Bitmap) {
     val imgObject = WXImageObject(bitmap)
     val thumbBmp = Bitmap.createScaledBitmap(bitmap, 150, 150, true)
-    bitmap.recycle()
     val msg = WXMediaMessage(imgObject).apply {
         this.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
     }
@@ -499,7 +486,6 @@ internal fun doShareImgSession(bitmap: Bitmap) {
 internal fun doShareImgTimeline(bitmap: Bitmap) {
     val imgObject = WXImageObject(bitmap)
     val thumbBmp = Bitmap.createScaledBitmap(bitmap, 150, 150, true)
-    bitmap.recycle()
     val msg = WXMediaMessage(imgObject).apply {
         this.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true)
     }

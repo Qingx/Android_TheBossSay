@@ -108,7 +108,6 @@ class HomeActivity : BaseActivity() {
                 layout_talk.isSelected = position == 0
                 text_talk.text = if (position == 0) "回顶部" else "言论"
                 layout_boss.isSelected = position == 1
-                text_boss.text = if (position == 1) "回顶部" else "老板"
                 layout_mine.isSelected = position == index
                 layout_tools.isSelected = position == 2
             }
