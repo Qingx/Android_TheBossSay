@@ -213,7 +213,7 @@ class HomeActivity : BaseActivity() {
 
     private fun doDailyTalk() {
         if (UserConfig.get().loginStatus) {
-            if (!isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L) {
+            if (isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L) {
                 TbsApi.user().obtainDaily().bindDefaultSub {
                     UserConfig.get().dailyTime = Times.current()
                     DailyDialog.showDialog(supportFragmentManager, "daily", it, mActivity)

@@ -142,6 +142,7 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
                 TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
             }
             .observeOn(AndroidSchedulers.mainThread())
+            .timeout(8, TimeUnit.SECONDS)
             .subscribe {
                 HttpConfig.saveToken(it.token)
                 UserConfig.get().userEntity = it.userInfo

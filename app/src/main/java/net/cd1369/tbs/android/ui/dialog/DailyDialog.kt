@@ -75,7 +75,7 @@ class DailyDialog : BottomSheetDialogFragment() {
 
         GlideApp.displayHead(entity.bossHead.fullUrl(), image_head)
         text_content.text = entity.content
-        text_name.text = "— —  ${entity.bossName}"
+        text_name.text = entity.bossName
         text_role.text = entity.bossRole
 
         image_point.isSelected = entity.isPoint
