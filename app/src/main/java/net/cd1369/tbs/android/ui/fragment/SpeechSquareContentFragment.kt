@@ -113,7 +113,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
             }.flatMap {
                 mBanners = it
 
-                return@flatMap TbsApi.boss().obtainAllArticle(pageParam, mLabel.toString())
+                return@flatMap TbsApi.boss().obtainSquareArticle(pageParam, mLabel.toString())
             }.onErrorReturn {
                 Page.empty()
             }.bindPageSubscribe(
@@ -132,7 +132,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
                     layout_refresh.finishRefresh()
                 })
         } else {
-            TbsApi.boss().obtainAllArticle(pageParam, mLabel.toString())
+            TbsApi.boss().obtainSquareArticle(pageParam, mLabel.toString())
                 .onErrorReturn { Page.empty() }
                 .bindPageSubscribe(
                     loadMore = true,

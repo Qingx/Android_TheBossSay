@@ -17,7 +17,6 @@ import java.util.List;
 
 import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
-import cn.wl.android.lib.core.WLPage;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -132,7 +131,7 @@ public class BossRepository extends BaseRepository<BossService> {
      * @param label
      * @return
      */
-    public Observable<Page<ArticleEntity>> obtainAllArticle(PageParam pageParam, String label) {
+    public Observable<Page<ArticleEntity>> obtainSquareArticle(PageParam pageParam, String label) {
         RequestBody body = bodyFromCreator(pageParam, jo -> {
             if (!label.equals("-1")) {
                 List<String> list = new ArrayList<>();
@@ -141,7 +140,7 @@ public class BossRepository extends BaseRepository<BossService> {
             }
         });
 
-        return getService().obtainAllArticle(body)
+        return getService().obtainSquareArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }
@@ -203,7 +202,7 @@ public class BossRepository extends BaseRepository<BossService> {
             }
         });
 
-        return getService().obtainAllArticle(body)
+        return getService().obtainSearchArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }
@@ -221,23 +220,6 @@ public class BossRepository extends BaseRepository<BossService> {
         });
 
         return getService().obtainBossArticle(body)
-                .compose(combine())
-                .compose(rebase());
-    }
-
-    /**
-     * 获取boss全部文章
-     *
-     * @param pageParam
-     * @param bossId
-     * @return
-     */
-    public Observable<Page<ArticleEntity>> obtainBossAllArticle(PageParam pageParam, String bossId) {
-        RequestBody body = bodyFromCreator(pageParam, jo -> {
-            jo.put("bossId", bossId);
-        });
-
-        return getService().obtainAllArticle(body)
                 .compose(combine())
                 .compose(rebase());
     }
