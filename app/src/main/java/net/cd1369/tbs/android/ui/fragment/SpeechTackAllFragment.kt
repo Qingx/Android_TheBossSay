@@ -28,6 +28,7 @@ import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
 import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
+import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -182,7 +183,9 @@ class SpeechTackAllFragment : BaseListFragment() {
             .flatMap {
                 it.sort()
                 CacheConfig.insertBossList(it)
-                mBossList = it
+                mBossList = it.filter { model ->
+                    model.isLatest && Tools.showRedDots(model.id, model.updateTime)
+                }.toMutableList()
 
                 TbsApi.boss().obtainTackArticle("-1", pageParam)
             }
@@ -304,8 +307,10 @@ class SpeechTackAllFragment : BaseListFragment() {
         TbsApi.boss().obtainFollowBossList("-1", false)
             .onErrorReturn { mutableListOf() }
             .flatMap {
-                mBossList = it
                 CacheConfig.insertBossList(it)
+                mBossList = it.filter { model ->
+                    model.isLatest && Tools.showRedDots(model.id, model.updateTime)
+                }.toMutableList()
 
                 TbsApi.boss().obtainTackArticle("-1", pageParam)
             }
@@ -364,7 +369,7 @@ class SpeechTackAllFragment : BaseListFragment() {
             it.id.toString() == event.id
         }
         if (index != -1) {
-            cardAdapter.notifyItemChanged(index)
+            cardAdapter.remove(index)
         }
     }
 

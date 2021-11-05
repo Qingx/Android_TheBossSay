@@ -1,9 +1,11 @@
 package net.cd1369.tbs.android.data.cache
 
 import cn.wl.android.lib.core.Page
+import net.cd1369.tbs.android.config.DataConfig
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel
 import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.data.model.LabelModel
+import net.cd1369.tbs.android.util.Tools
 
 /**
  * Created by Xiang on 2021/10/14 9:40
@@ -61,7 +63,7 @@ object CacheConfig {
 
         if (!list.isNullOrEmpty()) {
             list = list.filter {
-                it.isLatest
+                it.isLatest && Tools.showRedDots(it.id, it.updateTime)
             }.toMutableList()
         }
 
@@ -77,6 +79,18 @@ object CacheConfig {
 
             if (index != -1) {
                 mBoss[index] = entity
+            }
+        }
+    }
+
+    fun updateBossTime(id: String, time: Long) {
+        if (!mBoss.isNullOrEmpty()) {
+            val index = mBoss.indexOfFirst {
+                it.id == id
+            }
+
+            if (index != -1) {
+                mBoss[index].updateTime = time
             }
         }
     }
