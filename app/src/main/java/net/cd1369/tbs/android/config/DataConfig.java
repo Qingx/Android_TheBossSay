@@ -2,6 +2,7 @@ package net.cd1369.tbs.android.config;
 
 import com.google.gson.reflect.TypeToken;
 
+import net.cd1369.tbs.android.data.cache.CacheConfig;
 import net.cd1369.tbs.android.util.Tools;
 
 import java.lang.reflect.Type;
