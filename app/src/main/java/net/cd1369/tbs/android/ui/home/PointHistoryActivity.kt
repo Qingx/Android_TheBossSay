@@ -47,7 +47,7 @@ class PointHistoryActivity : BaseListActivity() {
 
     override fun createAdapter(): BaseQuickAdapter<*, *>? = object : PointHistoryAdapter() {
         override fun onContentClick(articleId: String) {
-            WebArticleActivity.start(mActivity, articleId)
+            ArticleActivity.start(mActivity, articleId)
         }
 
         override fun onContentDelete(articleId: String, doRemove: (id: String) -> Unit) {

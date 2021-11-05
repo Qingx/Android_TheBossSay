@@ -12,7 +12,7 @@ import cn.wl.android.lib.utils.GlideApp
 import com.youth.banner.adapter.BannerAdapter
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.BannerEntity
-import net.cd1369.tbs.android.ui.home.WebArticleActivity
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -44,7 +44,7 @@ class BannerTitleAdapter(val context: Context, list: List<BannerEntity>) :
         holder.titleView.text = data.content
 
         holder.imageView doClick {
-            WebArticleActivity.start(context, data.resourceId)
+            ArticleActivity.start(context, data.resourceId)
         }
     }
 }

@@ -53,7 +53,7 @@ import net.cd1369.tbs.android.config.TbsApp
 import net.cd1369.tbs.android.config.TbsApp.getContext
 import net.cd1369.tbs.android.config.UserConfig
 import net.cd1369.tbs.android.data.model.LabelModel
-import net.cd1369.tbs.android.ui.home.WebArticleActivity
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -813,7 +813,7 @@ fun showSneaker(title: CharSequence, content: CharSequence, articleId: String) {
     view.text_content.text = content
 
     view.layout_card doClick {
-        WebArticleActivity.start(getContext(), articleId)
+        ArticleActivity.start(getContext(), articleId)
     }
 
     sneaker.setDuration(3500)

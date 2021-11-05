@@ -22,7 +22,7 @@ import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.adapter.ArticleSquareAdapter
 import net.cd1369.tbs.android.ui.adapter.BannerTitleAdapter
-import net.cd1369.tbs.android.ui.home.WebArticleActivity
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -59,7 +59,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : ArticleSquareAdapter() {
             override fun onClick(item: ArticleEntity) {
-                WebArticleActivity.start(mActivity, item.id)
+                ArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapterArticle = it

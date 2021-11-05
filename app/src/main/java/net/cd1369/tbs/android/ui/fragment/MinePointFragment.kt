@@ -28,7 +28,7 @@ import net.cd1369.tbs.android.event.LoginEvent
 import net.cd1369.tbs.android.ui.adapter.MinePointAdapter
 import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
-import net.cd1369.tbs.android.ui.home.WebArticleActivity
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.DailyPosterActivity
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.Tools
@@ -71,7 +71,7 @@ class MinePointFragment : BaseListFragment() {
         return object : MinePointAdapter() {
             override fun onContentClick(entity: HisFavEntity) {
                 if (type == "1") {
-                    WebArticleActivity.start(mActivity, entity.articleId)
+                    ArticleActivity.start(mActivity, entity.articleId)
                 } else {
                     DailyDialog.showDialog(
                         requireFragmentManager(),

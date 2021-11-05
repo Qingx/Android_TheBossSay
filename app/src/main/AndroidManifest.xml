@@ -155,7 +155,7 @@
             android:name=".ui.home.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.home.WebArticleActivity"
+            android:name=".ui.home.ArticleActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

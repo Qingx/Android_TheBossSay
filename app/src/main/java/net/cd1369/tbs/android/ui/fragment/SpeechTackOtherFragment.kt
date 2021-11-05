@@ -25,7 +25,7 @@ import net.cd1369.tbs.android.data.model.BossSimpleModel
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.adapter.ArticleTackAdapter
 import net.cd1369.tbs.android.ui.adapter.FollowCardAdapter
-import net.cd1369.tbs.android.ui.home.WebArticleActivity
+import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.BossHomeActivity
 import net.cd1369.tbs.android.ui.home.HomeBossAllActivity
 import net.cd1369.tbs.android.util.doClick
@@ -69,7 +69,7 @@ class SpeechTackOtherFragment : BaseListFragment() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : ArticleTackAdapter() {
             override fun onClick(item: ArticleSimpleModel) {
-                WebArticleActivity.start(mActivity, item.id.toString())
+                ArticleActivity.start(mActivity, item.id.toString())
             }
         }.also {
             mAdapter = it

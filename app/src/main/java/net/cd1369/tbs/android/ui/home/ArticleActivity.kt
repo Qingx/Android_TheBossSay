@@ -38,7 +38,7 @@ import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import kotlin.math.max
 
-class WebArticleActivity : BaseActivity() {
+class ArticleActivity : BaseActivity() {
     private var mPointDis: Disposable? = null
     private var articleId: String? = null
     private var articleUrl: String? = null
@@ -61,7 +61,7 @@ class WebArticleActivity : BaseActivity() {
 
     companion object {
         fun start(context: Context?, id: String, fromBoss: Boolean = false) {
-            val intent = Intent(context, WebArticleActivity::class.java)
+            val intent = Intent(context, ArticleActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtras(Bundle().apply {
@@ -355,10 +355,10 @@ class WebArticleActivity : BaseActivity() {
         TbsApi.user().obtainCancelFavoriteArticle(articleId)
             .bindDefaultSub(doNext = {
                 isCollect = false
-                this@WebArticleActivity.image_collect.isSelected = false
-                this@WebArticleActivity.text_collect.isSelected =
+                this@ArticleActivity.image_collect.isSelected = false
+                this@ArticleActivity.text_collect.isSelected =
                     false
-                this@WebArticleActivity.text_collect.text =
+                this@ArticleActivity.text_collect.text =
                     (mArticleEntity!!.collect!! - 1).toString()
 
                 UserConfig.get().updateUser {
@@ -406,11 +406,11 @@ class WebArticleActivity : BaseActivity() {
                                                         .obtainFavoriteArticle(folder.id, articleId)
                                                 }.bindDefaultSub(doNext = {
                                                     isCollect = true
-                                                    this@WebArticleActivity.image_collect.isSelected =
+                                                    this@ArticleActivity.image_collect.isSelected =
                                                         true
-                                                    this@WebArticleActivity.text_collect.isSelected =
+                                                    this@ArticleActivity.text_collect.isSelected =
                                                         true
-                                                    this@WebArticleActivity.text_collect.text =
+                                                    this@ArticleActivity.text_collect.text =
                                                         (mArticleEntity!!.collect!! + 1).toString()
 
                                                     UserConfig.get().updateUser {
@@ -443,10 +443,10 @@ class WebArticleActivity : BaseActivity() {
                             TbsApi.user().obtainFavoriteArticle(folderId, articleId)
                                 .bindDefaultSub(doNext = {
                                     isCollect = true
-                                    this@WebArticleActivity.image_collect.isSelected = true
-                                    this@WebArticleActivity.text_collect.isSelected =
+                                    this@ArticleActivity.image_collect.isSelected = true
+                                    this@ArticleActivity.text_collect.isSelected =
                                         true
-                                    this@WebArticleActivity.text_collect.text =
+                                    this@ArticleActivity.text_collect.text =
                                         (mArticleEntity!!.collect!! + 1).toString()
 
                                     UserConfig.get().updateUser {

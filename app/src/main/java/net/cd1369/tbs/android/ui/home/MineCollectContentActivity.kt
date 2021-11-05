@@ -159,7 +159,7 @@ class MineCollectContentActivity : BaseListActivity() {
     }
 
     private fun tryClickArticle(item: HisFavEntity) {
-        WebArticleActivity.start(mActivity, item.articleId, false)
+        ArticleActivity.start(mActivity, item.articleId, false)
     }
 
     private fun tryClickDaily(item: HisFavEntity) {

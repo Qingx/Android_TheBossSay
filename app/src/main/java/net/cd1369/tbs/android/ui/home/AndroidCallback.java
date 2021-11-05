@@ -14,7 +14,7 @@ public class AndroidCallback {
 
     @JavascriptInterface
     public void postMessage(String articleId) {
-        WebArticleActivity.Companion.start(WLConfig.getContext(), articleId, formBoss);
+        ArticleActivity.Companion.start(WLConfig.getContext(), articleId, formBoss);
 
         Activity activity = mAct.get();
         if (activity != null) {

@@ -44,7 +44,7 @@ class SearchArticleActivity : BaseListActivity() {
     override fun createAdapter(): BaseQuickAdapter<*, *>? {
         return object : ArticleSearchAdapter() {
             override fun onClick(item: ArticleEntity) {
-                WebArticleActivity.start(mActivity, item.id)
+                ArticleActivity.start(mActivity, item.id)
             }
         }.also {
             mAdapter = it
