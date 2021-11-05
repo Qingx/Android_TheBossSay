@@ -220,7 +220,7 @@
             android:value="016127D4E3C844CCAB7BF4EE55D88CFE" />
         <meta-data
             android:name="TD_CHANNEL_ID"
-            android:value="Android-Boss" />
+            android:value="${TD_CHANNEL_ID}" />
 
         <service
             android:name=".push.PushService"

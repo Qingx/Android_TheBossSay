@@ -1,5 +1,8 @@
 package net.cd1369.tbs.android.config;
 
+import com.tendcloud.tenddata.TCAgent;
+import com.tendcloud.tenddata.TDProfile;
+
 import net.cd1369.tbs.android.data.entity.UserEntity;
 import net.cd1369.tbs.android.util.JPushHelper;
 
@@ -51,6 +54,12 @@ public class UserConfig extends BaseConfig {
 
     public void setUserEntity(UserEntity entity) {
         putObject(KEY.keyUser, entity);
+
+        if (entity != null && !UserEntity.Companion.getEmpty().equals(entity)) {
+            TCAgent.onRegister(entity.getId(),
+                    TDProfile.ProfileType.ANONYMOUS,
+                    entity.getNickName());
+        }
     }
 
     public UserEntity getUserEntity() {

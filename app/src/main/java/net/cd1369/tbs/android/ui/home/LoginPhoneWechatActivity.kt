@@ -160,6 +160,7 @@ class LoginPhoneWechatActivity : BaseActivity() {
                 val userInfo = it.userInfo
                 UserConfig.get().userEntity = userInfo
 
+//                TCAgent.onRegister(userInfo.id, TDProfile.ProfileType.ANONYMOUS, userInfo.nickName)
                 TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
                 CacheConfig.clearBoss()
                 CacheConfig.clearArticle()

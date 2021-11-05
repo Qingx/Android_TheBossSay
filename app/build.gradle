@@ -19,7 +19,7 @@ android {
         targetSdkVersion 30
         versionCode rootAndroid.versionCode
         versionName rootAndroid.versionName
-        flavorDimensions "1.2"
+        flavorDimensions "1.3"
 
         multiDexEnabled true
 
@@ -51,6 +51,12 @@ android {
             signingConfig signingConfigs.release
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue "string", "app_name_env", "Boss说"
+
+            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
+            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
         }
 
         debug {
@@ -58,6 +64,12 @@ android {
             debuggable true
             zipAlignEnabled true
             signingConfig signingConfigs.release
+
+            resValue "string", "app_name_env", "Boss说"
+
+            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
+            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
+            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
         }
     }
 
@@ -72,108 +84,50 @@ android {
 
     productFlavors {
         DEV {
-            resValue "string", "app_name_env", "Boss说-测试"
-
             versionCode rootAndroid.testVersionCode
             versionName "${rootAndroid.testVersionName}.${releaseTime()}"
-
-            buildConfigField("String", "FILE_URL", "\"http://file-tr.hii-m.net/\"")
-            buildConfigField("String", "FILE_URL", "\"http://192.168.1.142:8087/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
-            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
-//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.142:8087/\"") //阿里云
-            buildConfigField("String", "ENV", "\"DEV\"")
-
-            manifestPlaceholders = [
-                    APP_Channel   : "DEV",
-                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
-                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
-                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
-                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
-                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
-                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
-                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
-                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
-                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
-            ]
-        }
-        UAT {
-            resValue "string", "app_name_env", "Boss说"
-
-            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
-            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
-            buildConfigField("String", "ENV", "\"UAT\"")
-
-            manifestPlaceholders = [
-                    APP_Channel   : "UAT",
-                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
-                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
-                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
-                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
-                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
-                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
-                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
-                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
-                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
-            ]
         }
 
-        MI {
-            resValue "string", "app_name_env", "Boss说"
+        UAT {} // 普通打包
+        MI {}  // 小米
+        YYB {} // 应用宝
+        OPPO {} // oppo渠道
+        VIVO {} // vivo渠道
+        C360 {} // 360渠道
+        BaiDu {} // 百度渠道
+        HuaWei {} // 华为应用市场渠道
+        SouGou {} // 搜狗应用市场
+        MeiZu {} // 魅族应用市场
+    }
 
-            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
-            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
-            buildConfigField("String", "ENV", "\"MI\"")
+    //如果需要在不同渠道统一配置，使用productFlavors.all字段
+    productFlavors.all { flavor ->
+        flavor.buildConfigField("String", "ENV", "\"$name\"")
 
-            manifestPlaceholders = [
-                    APP_Channel   : "UAT",
-                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
-                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
-                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
-                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
-                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
-                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
-                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
-                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
-                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
-            ]
-        }
+        println flavor
 
-        YYB {
-            resValue "string", "app_name_env", "Boss说"
+        flavor.manifestPlaceholders = [
+                APP_Channel   : name,
+                TD_CHANNEL_ID : name,
+                JPUSH_PKGNAME : "net.cd1369.tbs.android",
+                JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 
-            buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
-            buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
-            buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
-            buildConfigField("String", "ENV", "\"YYB\"")
+                XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
+                XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
 
-            manifestPlaceholders = [
-                    APP_Channel   : "UAT",
-                    JPUSH_PKGNAME : "net.cd1369.tbs.android",
-                    JPUSH_APPKEY  : "f98cfa8459c6510944ebbefd", //JPush 上注册的包名对应的 Appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-                    XIAOMI_APPKEY : "MI-5252001773328", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
-                    XIAOMI_APPID  : "MI-2882303761520017328", // 小米平台注册的appid
-                    VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
-                    VIVO_APPID    : "105499023", // VIVO平台注册的appid
-                    OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
-                    OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
-                    OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
-                    MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
-                    MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
-            ]
-        }
+                VIVO_APPKEY   : "79a0cd7a4bbd0ea9a98caf938a690bcf", // VIVO平台注册的appkey
+                VIVO_APPID    : "105499023", // VIVO平台注册的appid
+
+                OPPO_APPKEY   : "OP-29f55d122cf1499e8261fce388d56892", // OPPO平台注册的appkey
+                OPPO_APPID    : "OP-30592681", // OPPO平台注册的appid
+                OPPO_APPSECRET: "OP-7bb887f022184320bf0e1c0c3cad6c2b",//OPPO平台注册的appsecret
+
+                MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
+                MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
+        ]
+
+        println flavor
     }
 
     repositories {
