@@ -1,7 +1,6 @@
 package net.cd1369.tbs.android.ui.home;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
 import java.lang.ref.WeakReference;

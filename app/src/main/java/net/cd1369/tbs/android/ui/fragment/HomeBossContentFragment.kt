@@ -99,8 +99,6 @@ class HomeBossContentFragment : BaseFragment() {
 
                 mBossList = CacheConfig.getBossByLabel(currentLabel)
                 mAdapter.setNewData(mBossList)
-
-                GlobalScrollEvent.bossLabel = currentLabel
             }
         }
 
@@ -286,12 +284,5 @@ class HomeBossContentFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
         loginData()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun eventBus(event: PageScrollEvent) {
-        if (GlobalScrollEvent.homePage == PageItem.Boss.code && GlobalScrollEvent.bossLabel == currentLabel) {
-            rv_content.smoothScrollToPosition(0)
-        }
     }
 }

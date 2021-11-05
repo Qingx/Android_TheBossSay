@@ -79,11 +79,6 @@ abstract class ArticleTackAdapter :
 
         helper.V doClick {
             onClick(item)
-
-            if (!item.isRead) {
-                item.isRead = true
-                notifyItemChanged(helper.layoutPosition)
-            }
         }
     }
 

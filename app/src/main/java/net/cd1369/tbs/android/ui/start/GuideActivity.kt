@@ -24,6 +24,7 @@ import net.cd1369.tbs.android.ui.home.ArticleActivity
 import net.cd1369.tbs.android.ui.home.HomeActivity
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.doClick
+import java.util.concurrent.TimeUnit
 
 class GuideActivity : BaseActivity() {
 
@@ -75,6 +76,10 @@ class GuideActivity : BaseActivity() {
 
                         TbsApi.user().obtainRefreshUser()
                     }
+                    .onErrorReturn {
+                        TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
+                    }
+                    .timeout(8, TimeUnit.SECONDS)
                     .bindDefaultSub(doNext = {
                         Toasts.show("追踪成功")
                         hideLoadingAlert()
@@ -141,6 +146,7 @@ class GuideActivity : BaseActivity() {
                     }.onErrorReturn {
                         TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
                     }
+                    .timeout(8, TimeUnit.SECONDS)
                     .bindDefaultSub {
                         HttpConfig.saveToken(it.token)
                         UserConfig.get().userEntity = it.userInfo
@@ -153,7 +159,8 @@ class GuideActivity : BaseActivity() {
                 TbsApi.user().obtainRefreshUser()
                     .onErrorReturn {
                         TokenEntity(HttpConfig.getToken(), UserConfig.get().userEntity)
-                    }.bindDefaultSub {
+                    }.timeout(8, TimeUnit.SECONDS)
+                    .bindDefaultSub {
                         val intentHome = Intent(mActivity, HomeActivity::class.java)
                         intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 

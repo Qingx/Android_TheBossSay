@@ -33,7 +33,6 @@ import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.doShareSession
-import net.cd1369.tbs.android.util.doShareTimeline
 import net.cd1369.tbs.android.util.fullUrl
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

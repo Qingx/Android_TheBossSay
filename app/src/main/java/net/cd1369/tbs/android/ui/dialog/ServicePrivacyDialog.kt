@@ -20,7 +20,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.config.Const.MI_PRIVACY_URL
 import net.cd1369.tbs.android.config.Const.PRIVACY_URL
 import net.cd1369.tbs.android.config.Const.SERVICE_URL
-import net.cd1369.tbs.android.ui.home.WebActivity
+import net.cd1369.tbs.android.ui.home.WebDocActivity
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -66,7 +66,7 @@ class ServicePrivacyDialog : DialogFragment() {
                     }
 
                     override fun onClick(widget: View) {
-                        WebActivity.start(
+                        WebDocActivity.start(
                             context,
                             "服务条款",
                             SERVICE_URL
@@ -84,7 +84,7 @@ class ServicePrivacyDialog : DialogFragment() {
                     }
 
                     override fun onClick(widget: View) {
-                        WebActivity.start(
+                        WebDocActivity.start(
                             context,
                             "隐私政策",
                             privacyUrl

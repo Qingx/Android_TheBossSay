@@ -95,7 +95,7 @@
             android:name=".ui.home.MineAboutAppActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.home.WebActivity"
+            android:name=".ui.home.WebDocActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.MineHistoryTodayActivity"

@@ -385,8 +385,7 @@ class SpeechTackAllFragment : BaseListFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: PageScrollEvent) {
 
-        if (GlobalScrollEvent.homePage == PageItem.Talk.code &&
-            GlobalScrollEvent.talkPage == PageItem.Tack.code &&
+        if (GlobalScrollEvent.talkPage == PageItem.Tack.code &&
             GlobalScrollEvent.tackLabel == "-1"
         ) {
             rv_content.smoothScrollToPosition(0)

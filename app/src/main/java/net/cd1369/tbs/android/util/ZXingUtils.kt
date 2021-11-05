@@ -42,7 +42,6 @@ class ZXingUtils {
                     Bitmap.createBitmap(logo, 0, 0, logo.getWidth(), logo.getHeight(), matrix, true)
             }
 
-
             /*如果log不为null,重新计算偏移量*/
 
 

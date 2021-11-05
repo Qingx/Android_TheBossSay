@@ -113,7 +113,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
             }.flatMap {
                 mBanners = it
 
-                return@flatMap TbsApi.boss().obtainAllArticle(pageParam, mLabel.toString())
+                return@flatMap TbsApi.boss().obtainSquareArticle(pageParam, mLabel.toString())
             }.onErrorReturn {
                 Page.empty()
             }.bindPageSubscribe(
@@ -132,7 +132,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
                     layout_refresh.finishRefresh()
                 })
         } else {
-            TbsApi.boss().obtainAllArticle(pageParam, mLabel.toString())
+            TbsApi.boss().obtainSquareArticle(pageParam, mLabel.toString())
                 .onErrorReturn { Page.empty() }
                 .bindPageSubscribe(
                     loadMore = true,
@@ -148,8 +148,7 @@ class SpeechSquareContentFragment : BaseListFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: PageScrollEvent) {
-        if (GlobalScrollEvent.homePage == PageItem.Talk.code &&
-            GlobalScrollEvent.talkPage == PageItem.Square.code &&
+        if (GlobalScrollEvent.talkPage == PageItem.Square.code &&
             GlobalScrollEvent.squareLabel == mLabel.toString()
         ) {
             rv_content.smoothScrollToPosition(0)

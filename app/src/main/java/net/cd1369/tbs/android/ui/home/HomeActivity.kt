@@ -108,17 +108,8 @@ class HomeActivity : BaseActivity() {
                 layout_talk.isSelected = position == 0
                 text_talk.text = if (position == 0) "回顶部" else "言论"
                 layout_boss.isSelected = position == 1
-                text_boss.text = if (position == 1) "回顶部" else "老板"
                 layout_mine.isSelected = position == index
                 layout_tools.isSelected = position == 2
-
-                if (layout_talk.isSelected) {
-                    GlobalScrollEvent.homePage = PageItem.Talk.code
-                }
-
-                if (layout_boss.isSelected) {
-                    GlobalScrollEvent.homePage = PageItem.Boss.code
-                }
             }
         })
 
@@ -236,7 +227,7 @@ class HomeActivity : BaseActivity() {
                                         }
                                     }
                             }
-                            doLogin= Runnable {
+                            doLogin = Runnable {
                                 JPushHelper.jumpLogin(mActivity) { token ->
                                     TbsApi.user().obtainJverifyLogin(token)
                                         .bindDefaultSub(doNext = {
@@ -245,11 +236,17 @@ class HomeActivity : BaseActivity() {
                                             val userInfo = it.userInfo
                                             UserConfig.get().userEntity = userInfo
 
-                                            TCAgent.onLogin(userInfo.id, TDProfile.ProfileType.WEIXIN, userInfo.nickName)
+                                            TCAgent.onLogin(
+                                                userInfo.id,
+                                                TDProfile.ProfileType.WEIXIN,
+                                                userInfo.nickName
+                                            )
                                             CacheConfig.clearBoss()
                                             CacheConfig.clearArticle()
 
-                                            JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
+                                            JPushHelper.tryAddTags(
+                                                it.userInfo.tags ?: mutableListOf()
+                                            )
                                             JPushHelper.tryAddAlias(it.userInfo.id)
 
                                             eventBus.post(LoginEvent())

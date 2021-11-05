@@ -52,7 +52,7 @@ class MineAboutAppActivity : BaseActivity() {
                 }
 
                 override fun onClick(widget: View) {
-                    WebActivity.start(
+                    WebDocActivity.start(
                         mActivity,
                         "服务条款",
                         SERVICE_URL
@@ -70,7 +70,7 @@ class MineAboutAppActivity : BaseActivity() {
                 }
 
                 override fun onClick(widget: View) {
-                    WebActivity.start(
+                    WebDocActivity.start(
                         mActivity,
                         "隐私政策",
                         privacyUrl

@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.activity_web.*
 import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.util.doClick
 
-class WebActivity : BaseActivity() {
+class WebDocActivity : BaseActivity() {
     private lateinit var title: String
     private lateinit var url: String
 
     companion object {
         fun start(context: Context?, title: String, url: String) {
-            val intent = Intent(context, WebActivity::class.java)
+            val intent = Intent(context, WebDocActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra("title", title)

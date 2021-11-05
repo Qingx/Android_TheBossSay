@@ -31,7 +31,6 @@ import net.cd1369.tbs.android.data.entity.BossInfoEntity
 import net.cd1369.tbs.android.event.*
 import net.cd1369.tbs.android.ui.dialog.*
 import net.cd1369.tbs.android.ui.start.SplashActivity
-import net.cd1369.tbs.android.ui.start.StartActivity
 import net.cd1369.tbs.android.ui.start.WelActivity
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.logE
@@ -298,18 +297,18 @@ class ArticleActivity : BaseActivity() {
                         cover = articleCover,
                         title = articleTitle!!,
                         des = articleDes!!,
-                        url = articleUrl!!
+                        url = "${articleUrl!!}&type=1"
                     )
                 }
                 onTimeline = Runnable {
                     doShareTimeline(
                         resources, cover = articleCover,
                         title = articleTitle!!,
-                        url = articleUrl!!
+                        url = "${articleUrl!!}&type=1"
                     )
                 }
                 onCopyLink = Runnable {
-                    Tools.copyText(mActivity, articleUrl!!)
+                    Tools.copyText(mActivity, "${articleUrl!!}&type=1")
                 }
             }
     }
