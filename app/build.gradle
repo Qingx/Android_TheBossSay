@@ -127,7 +127,6 @@ android {
                 MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
         ]
 
-        println flavor
     }
 
     repositories {
