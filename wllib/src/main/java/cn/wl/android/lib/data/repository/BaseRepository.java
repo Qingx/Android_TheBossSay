@@ -83,7 +83,7 @@ public class BaseRepository<Ser> {
      * @return
      */
     protected Ser createService(Class<Ser> clazz) {
-        return RetrofitHelper.getIns().getUpload(clazz);
+        return RetrofitHelper.getIns().getService(clazz);
     }
 
     /**

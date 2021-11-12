@@ -1,6 +1,8 @@
 package net.cd1369.tbs.android.data.repository;
 
 
+import com.qq.e.comm.util.Md5Util;
+
 import net.cd1369.tbs.android.BuildConfig;
 import net.cd1369.tbs.android.data.entity.ArticleEntity;
 import net.cd1369.tbs.android.data.entity.BannerEntity;
@@ -218,6 +220,8 @@ public class BossRepository extends BaseRepository<BossService> {
             jo.put("bossId", bossId);
             jo.put("filterType", type);
         });
+
+//        Md5Util.encode()
 
         return getService().obtainBossArticle(body)
                 .compose(combine())

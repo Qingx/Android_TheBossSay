@@ -103,9 +103,6 @@ android {
     //如果需要在不同渠道统一配置，使用productFlavors.all字段
     productFlavors.all { flavor ->
         flavor.buildConfigField("String", "ENV", "\"$name\"")
-
-        println flavor
-
         flavor.manifestPlaceholders = [
                 APP_Channel   : name,
                 TD_CHANNEL_ID : name,
@@ -126,7 +123,6 @@ android {
                 MEIZU_APPKEY  : "MZ-1d17422e92fd446f94c177512b68df13", // 魅族平台注册的appkey
                 MEIZU_APPID   : "MZ-144452", // 魅族平台注册的appid
         ]
-
     }
 
     repositories {
