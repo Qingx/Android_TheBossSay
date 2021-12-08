@@ -25,6 +25,7 @@ import net.cd1369.tbs.android.event.WechatLoginCodeEvent
 import net.cd1369.tbs.android.ui.adapter.UserInfoAdapter
 import net.cd1369.tbs.android.ui.dialog.ChangeNameDialog
 import net.cd1369.tbs.android.ui.dialog.ConfirmPhoneDialog
+import net.cd1369.tbs.android.ui.dialog.FollowAskLogoffDialog
 import net.cd1369.tbs.android.util.JPushHelper
 import net.cd1369.tbs.android.util.Tools
 import net.cd1369.tbs.android.util.doClick
@@ -148,21 +149,52 @@ class MineChangeUserActivity : BaseActivity() {
         }
 
         text_logout doClick {
-            DataConfig.get().tempId = Tools.createTempId()
-            UserConfig.get().clear()
-
-            HttpConfig.reset()
-            UserConfig.get().userEntity = UserEntity.empty
-
-            CacheConfig.clearBoss()
-            CacheConfig.clearArticle()
-            JPushHelper.tryClearTagAlias()
-
             Toasts.show("退出成功")
 
-            eventBus.post(LoginEvent())
-            mActivity?.finish()
+            logout()
         }
+
+        text_logoff doClick {
+            tryLogoff()
+        }
+    }
+
+    /**
+     * 尝试注销账号
+     */
+    private fun tryLogoff() {
+
+        FollowAskLogoffDialog.showDialog(supportFragmentManager, "ffd")
+            .also { it ->
+                it.onConfirmClick = FollowAskLogoffDialog.OnConfirmClick {
+                    showLoadingAlert("正在注销")
+
+                    TbsApi.user().logoff()
+                        .bindDefaultSub {
+                            if (it) {
+                                Toasts.show("注销成功")
+                                logout()
+                            } else {
+                                Toasts.show("注销失败")
+                            }
+                        }
+                }
+            }
+    }
+
+    private fun logout() {
+        DataConfig.get().tempId = Tools.createTempId()
+        UserConfig.get().clear()
+
+        HttpConfig.reset()
+        UserConfig.get().userEntity = UserEntity.empty
+
+        CacheConfig.clearBoss()
+        CacheConfig.clearArticle()
+        JPushHelper.tryClearTagAlias()
+
+        eventBus.post(LoginEvent())
+        mActivity?.finish()
     }
 
     /**
@@ -195,7 +227,7 @@ class MineChangeUserActivity : BaseActivity() {
 
                 JPushHelper.tryClearTagAlias()
                 JPushHelper.tryAddAlias(it.userInfo.id)
-                JPushHelper.tryAddTags(it.userInfo.tags?: mutableListOf())
+                JPushHelper.tryAddTags(it.userInfo.tags ?: mutableListOf())
 
                 eventBus.post(LoginEvent())
                 mActivity?.finish()

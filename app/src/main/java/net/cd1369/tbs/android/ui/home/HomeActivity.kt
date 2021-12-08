@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import cn.jiguang.verifysdk.api.JVerificationInterface
+import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.data.core.HttpConfig
 import cn.wl.android.lib.ui.BaseActivity
 import cn.wl.android.lib.utils.Times
@@ -204,7 +205,7 @@ class HomeActivity : BaseActivity() {
 
     private fun doDailyTalk() {
         if (UserConfig.get().loginStatus) {
-            if (!isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L) {
+            if (!isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L || WLConfig.isDebug()) {
                 TbsApi.user().obtainDaily().bindDefaultSub {
                     UserConfig.get().dailyTime = Times.current()
                     DailyDialog.showDialog(supportFragmentManager, "daily", it, mActivity)

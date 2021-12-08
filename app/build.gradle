@@ -70,6 +70,7 @@ android {
             buildConfigField("String", "FILE_URL", "\"http://192.144.169.58:9999/\"")
             buildConfigField("String", "DOWN_URL", "\"http://file.tianjiemedia.com/\"")
             buildConfigField("String", "BASE_URL", "\"http://api.tianjiemedia.com/\"") //阿里云
+//            buildConfigField("String", "BASE_URL", "\"http://182.92.221.30:8086/\"") //阿里云
         }
     }
 
@@ -102,6 +103,8 @@ android {
 
     //如果需要在不同渠道统一配置，使用productFlavors.all字段
     productFlavors.all { flavor ->
+        def name = flavor.name
+
         flavor.buildConfigField("String", "ENV", "\"$name\"")
         flavor.manifestPlaceholders = [
                 APP_Channel   : name,
@@ -201,4 +204,14 @@ dependencies {
     implementation 'cn.jiguang.sdk.plugin:vivo:4.3.0' //VIVO推送
     implementation 'cn.jiguang.sdk.plugin:oppo:4.3.0' //OPPO推送
     implementation 'cn.jiguang.sdk.plugin:meizu:4.3.0' //魅族推送
+
+    implementation 'com.tencent.map:sdk-utilities:1.0.6'
+
+    // 在dependencies中添加，版本号以赋能平台生成的maven命令为准
+    implementation ('com.pangle.cn:pangrowth-sdk:2.9.1.8'){
+        exclude group: 'com.pangle.cn', module: 'pangrowth-dpsdk-live'
+        exclude group: 'com.pangle.cn', module: 'pangrowth-novel-sdk'
+        exclude group: 'com.pangle.cn', module: 'pangrowth-game-sdk'
+        exclude group: 'com.pangle.cn', module: 'pangrowth-luckycat-sdk'
+    }
 }

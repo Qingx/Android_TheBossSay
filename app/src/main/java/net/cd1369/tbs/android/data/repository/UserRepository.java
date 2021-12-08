@@ -523,4 +523,14 @@ public class UserRepository extends BaseRepository<UserService> {
                 .compose(combine())
                 .compose(rebase());
     }
+
+    public Observable<Boolean> logoff() {
+        UserEntity entity = UserConfig.get().getUserEntity();
+        if (entity == null) return Observable.just(false);
+
+        return getService().logoff(entity.getId())
+                .compose(combine())
+                .compose(success());
+    }
+
 }

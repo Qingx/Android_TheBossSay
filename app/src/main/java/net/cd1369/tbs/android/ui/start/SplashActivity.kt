@@ -63,6 +63,8 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        Log.e("getQueryParameter", WelActivity.tempId)
+
         tryShowService()
     }
 

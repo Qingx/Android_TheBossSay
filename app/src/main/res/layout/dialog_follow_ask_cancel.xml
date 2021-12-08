@@ -31,13 +31,13 @@
 
     <TextView
         android:id="@+id/text_notice"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:singleLine="true"
+        android:maxLines="2"
+        app:layout_constrainedWidth="true"
+        android:paddingHorizontal="@dimen/padding_32"
         android:text="取消追踪后将不再关注该boss"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"

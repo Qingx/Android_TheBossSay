@@ -264,4 +264,14 @@ public interface UserService {
      */
     @POST("/api/account/sign-token")
     Observable<WLData<TokenEntity>> obtainJverifyLogin(@Body RequestBody body);
+
+    /**
+     * 移除用户
+     *
+     * @param userId
+     * @return
+     */
+    @GET("api/user/remove/{id}")
+    Observable<WLData<Object>> logoff(@Path("id") String userId);
+
 }

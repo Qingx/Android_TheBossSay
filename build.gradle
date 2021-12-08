@@ -29,6 +29,15 @@ allprojects {
         mavenCentral() { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url "https://jitpack.io" }
         maven { url 'https://developer.huawei.com/repo/' }
+        maven{
+            url "https://oss.sonatype.org/content/groups/public"
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/Volcengine/"
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/pangle/"
+        }
 
         flatDir {
             dirs 'libs'
