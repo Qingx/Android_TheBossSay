@@ -41,8 +41,8 @@ import kotlin.math.max
 
 class MineCollectContentActivity : BaseListActivity() {
     private var needLoading: Boolean = true
-    private lateinit var mAdapter: FolderContentAdapter
     private lateinit var folderEntity: FolderEntity
+    private lateinit var mAdapter: FolderContentAdapter
 
     companion object {
         fun start(context: Context?, entity: FolderEntity) {

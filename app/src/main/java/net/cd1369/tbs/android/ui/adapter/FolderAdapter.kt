@@ -33,7 +33,7 @@ abstract class FolderAdapter :
         }
     }
 
-    abstract fun onItemClick(item: FolderEntity)
+    abstract fun onItemClick(item: FolderEntity?)
 
     abstract fun onDeleteClick(item: FolderEntity)
 }

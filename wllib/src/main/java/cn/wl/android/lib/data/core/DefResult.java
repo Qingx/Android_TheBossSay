@@ -2,6 +2,8 @@ package cn.wl.android.lib.data.core;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.io.FileNotFoundException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
@@ -81,6 +83,8 @@ public abstract class DefResult<T> implements Observer<T>, Disposable {
         try {
             doError(bean);
             doFinally(true);
+
+            CrashReport.postCatchedException(error);
         } catch (Exception ex) {
             ex.printStackTrace();
             RxJavaPlugins.onError(ex);

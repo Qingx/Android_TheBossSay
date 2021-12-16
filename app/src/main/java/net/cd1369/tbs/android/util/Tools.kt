@@ -574,6 +574,21 @@ infix fun View?.doClick(doClick: ((v: View) -> Unit)?) {
     }
 }
 
+infix fun View?.doClick(doClick: View.OnClickListener?) {
+    if (doClick != null) {
+        this?.setOnClickListener {
+            val current = Times.current()
+            if (current - lastClickTime >= 400L) {
+                lastClickTime = current
+
+                doClick.onClick(it)
+            }
+        }
+    } else {
+        this?.setOnClickListener(null)
+    }
+}
+
 infix fun View?.doubleClick(doDown: ((v: View) -> Unit)?) {
     if (doDown != null) {
         this?.setOnClickListener(object : DoubleClickListener() {

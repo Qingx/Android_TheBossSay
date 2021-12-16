@@ -177,7 +177,7 @@ dependencies {
     implementation 'cn.jiguang.sdk:jverification:2.7.1'
     implementation 'cn.jiguang.sdk:jcore:2.9.0'
 
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.4.0'
 
     def advanceVersion = "3.5.1"
     //必须，Advance聚合SDK 引入。如果gradle引入异常，请参考根目录gradle进行配置，如果依然无法引入，请联系我们使用本地aar引入。
@@ -208,7 +208,7 @@ dependencies {
     implementation 'com.tencent.map:sdk-utilities:1.0.6'
 
     // 在dependencies中添加，版本号以赋能平台生成的maven命令为准
-    implementation ('com.pangle.cn:pangrowth-sdk:2.9.1.8'){
+    implementation ('com.pangle.cn:pangrowth-sdk:1.6.1.0'){
         exclude group: 'com.pangle.cn', module: 'pangrowth-dpsdk-live'
         exclude group: 'com.pangle.cn', module: 'pangrowth-novel-sdk'
         exclude group: 'com.pangle.cn', module: 'pangrowth-game-sdk'

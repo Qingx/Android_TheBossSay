@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_rec_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_44"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="4dp"
+            android:layout_marginLeft="@dimen/padding_16"
+            android:src="@mipmap/ic_ind_line" />
+
+        <TextView
+            android:id="@+id/tv_rec_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_12"
+            android:layout_marginRight="@dimen/padding_12"
+            android:singleLine="true"
+            android:textColor="@color/text_title"
+            android:textSize="@dimen/font_18"
+            android:textStyle="bold"
+            tools:text="@string/app_name" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="4dp"
+            android:layout_marginRight="@dimen/padding_16"
+            android:rotation="180"
+            android:src="@mipmap/ic_ind_line" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_16"
+        android:layout_marginRight="@dimen/padding_16"
+        android:layout_marginBottom="@dimen/padding_8"
+        app:cardCornerRadius="@dimen/padding_8"
+        app:cardElevation="@dimen/padding_4">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_rec_img"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_none"
+                app:layout_constraintDimensionRatio="345:140"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:background="@color/md_blue_500" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_8"
+                android:layout_marginBottom="@dimen/padding_8"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_rec_img" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -66,8 +66,12 @@ class MineCollectActivity : BaseActivity() {
             }
         }
         mAdapter = object : FolderAdapter() {
-            override fun onItemClick(item: FolderEntity) {
-                MineCollectContentActivity.start(mActivity, item)
+            override fun onItemClick(item: FolderEntity?) {
+                if (item != null) {
+                    MineCollectContentActivity.start(mActivity, item)
+                } else {
+                    Toasts.show("收藏夹为空")
+                }
             }
 
             override fun onDeleteClick(item: FolderEntity) {
@@ -111,7 +115,7 @@ class MineCollectActivity : BaseActivity() {
                     it.id == item.id
                 }
 
-                if (index != 1) {
+                if (index > -1) {
                     mAdapter.remove(index)
 
                     UserConfig.get().updateUser {

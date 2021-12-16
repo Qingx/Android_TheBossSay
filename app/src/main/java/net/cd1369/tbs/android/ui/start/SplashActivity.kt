@@ -63,8 +63,6 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        Log.e("getQueryParameter", WelActivity.tempId)
-
         tryShowService()
     }
 
@@ -142,10 +140,17 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
             }
             .observeOn(AndroidSchedulers.mainThread())
             .timeout(8, TimeUnit.SECONDS)
-            .subscribe {
+            .subscribe({
                 HttpConfig.saveToken(it.token)
                 UserConfig.get().userEntity = it.userInfo
 
+                if (WelActivity.tempId.isNullOrEmpty()) {
+                    HomeActivity.start(this)
+                    finish()
+                } else {
+                    doWelcome()
+                }
+            }) {
                 if (WelActivity.tempId.isNullOrEmpty()) {
                     HomeActivity.start(this)
                     finish()
@@ -162,6 +167,8 @@ class SplashActivity : FragmentActivity(), AdvanceSplashListener {
         val intentArticle = Intent(this, ArticleActivity::class.java)
         intentArticle.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intentArticle.putExtra("articleId", WelActivity.tempId)
+
+        Log.e("getQueryParameter", WelActivity.tempId)
 
         startActivities(arrayOf(intentHome, intentArticle))
         finish()

@@ -2,15 +2,15 @@ package net.cd1369.tbs.android.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import cn.wl.android.lib.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_home_speech.*
 import net.cd1369.tbs.android.R
-import net.cd1369.tbs.android.config.PageItem
-import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.ui.home.SearchArticleActivity
+import net.cd1369.tbs.android.ui.recommend.HomeRecommendFrag
 import net.cd1369.tbs.android.util.doClick
 
 /**
@@ -19,7 +19,11 @@ import net.cd1369.tbs.android.util.doClick
  * @email Cymbidium@outlook.com
  */
 class HomeSpeechFragment : BaseFragment() {
-    val fragments = mutableListOf<Fragment>()
+
+    private var mSelectView: TextView? = null
+
+    private val tabViews = mutableListOf<View>()
+    private val fragments = mutableListOf<Fragment>()
 
     companion object {
         fun createFragment(): HomeSpeechFragment {
@@ -36,15 +40,37 @@ class HomeSpeechFragment : BaseFragment() {
 
         fragments.add(SpeechTackFragment.createFragment())
         fragments.add(SpeechSquareFragment.createFragment())
+        fragments.add(HomeRecommendFrag.newIns())
+        fragments.add(SpeechSquareFragment.createFragment())
     }
 
     override fun initViewCreated(view: View?, savedInstanceState: Bundle?) {
-        text_follow.text = "追踪"
-        text_square.text = "广场"
-        text_follow.isSelected = true
-        text_follow.textSize = 24f
-        text_follow.paint.isFakeBoldText = true
+        tabViews.addAll(mutableListOf(
+            text_follow,
+            text_hot,
+            text_recommend,
+            text_square,
+        ).onEachIndexed { index, tabView ->
+            tabView.tag = index
+            tabView.textSize = 18F
 
+            tabView doClick {
+                switchTabShow(it as TextView)
+
+                val index = it.tag as Int
+                view_pager.currentItem = index
+            }
+        })
+
+        image_search doClick {
+            SearchArticleActivity.start(mActivity)
+        }
+
+        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                switchTabShow(tabViews[position] as TextView)
+            }
+        })
         view_pager.adapter = object : FragmentStateAdapter(mFragment) {
             override fun getItemCount(): Int {
                 return fragments.size
@@ -55,42 +81,32 @@ class HomeSpeechFragment : BaseFragment() {
             }
         }
 
-        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                text_follow.paint.isFakeBoldText = position == 0
-                text_square.paint.isFakeBoldText = position == 1
-
-                if (position == 0) {
-                    text_follow.isSelected = true
-                    text_follow.textSize = 24f
-                    text_square.isSelected = false
-                    text_square.textSize = 16f
-
-                    GlobalScrollEvent.talkPage = PageItem.Tack.code
-                } else {
-                    text_square.isSelected = true
-                    text_square.textSize = 24f
-                    text_follow.isSelected = false
-                    text_follow.textSize = 16f
-
-                    GlobalScrollEvent.talkPage = PageItem.Square.code
-                }
-            }
-        })
-
         view_pager.currentItem = 0
         view_pager.isUserInputEnabled = true
+        view_pager.offscreenPageLimit = fragments.size
 
-        text_follow doClick {
-            view_pager.currentItem = 0
-        }
-
-        text_square doClick {
-            view_pager.currentItem = 1
-        }
-
-        image_search doClick {
-            SearchArticleActivity.start(mActivity)
-        }
+        switchTabShow(text_follow)
     }
+
+    /**
+     * 切换tab显示逻辑
+     * @param tvSelect TextView
+     */
+    private fun switchTabShow(tvSelect: TextView) {
+        val lastView = mSelectView
+        if (tvSelect == lastView) {
+            return
+        }
+
+        lastView?.textSize = 18F
+        lastView?.isSelected = false
+        lastView?.paint?.isFakeBoldText = false
+
+        tvSelect.textSize = 22f
+        tvSelect.isSelected = true
+        tvSelect.paint.isFakeBoldText = true
+
+        mSelectView = tvSelect
+    }
+
 }

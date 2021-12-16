@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -34,10 +35,7 @@ import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
 import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.dialog.OpenNoticeDialog
 import net.cd1369.tbs.android.ui.dialog.ShareDialog
-import net.cd1369.tbs.android.ui.fragment.HomeBossContentFragment
-import net.cd1369.tbs.android.ui.fragment.HomeMineFragment
-import net.cd1369.tbs.android.ui.fragment.HomeSpeechFragment
-import net.cd1369.tbs.android.ui.fragment.HomeToolFragment
+import net.cd1369.tbs.android.ui.fragment.*
 import net.cd1369.tbs.android.util.*
 import net.cd1369.tbs.android.util.Tools.logE
 import net.cd1369.tbs.android.util.fullDownloadUrl
@@ -52,8 +50,13 @@ import org.greenrobot.eventbus.ThreadMode
  * @desc
  */
 class HomeActivity : BaseActivity() {
-    private val fragments = mutableListOf<Fragment>()
+    private var mCurrentFragment: Fragment? = null
     private var isPortStatus = false
+    private val views = mutableListOf<View>()
+
+    private val mListener = View.OnClickListener {
+        switchFragment(it.tag.toString())
+    }
 
     companion object {
         fun start(context: Context?) {
@@ -72,10 +75,6 @@ class HomeActivity : BaseActivity() {
     override fun beforeCreateView(savedInstanceState: Bundle?) {
         super.beforeCreateView(savedInstanceState)
 
-        fragments.add(HomeSpeechFragment.createFragment())
-        fragments.add(HomeBossContentFragment.createFragment())
-        fragments.add(HomeMineFragment.createFragment())
-
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
         // 在 Application#onCreate 里调用预取。注意：如果不需要调用`getClientId()`及`getOAID()`，请不要调用这个方法
         DeviceID.register(this.application)
@@ -92,54 +91,90 @@ class HomeActivity : BaseActivity() {
 
         layout_tools.isVisible = isPortStatus && BuildConfig.ENV == "YYB"
 
-        view_pager.adapter = object : FragmentStateAdapter(mActivity) {
-            override fun getItemCount(): Int {
-                return fragments.size
-            }
+        layout_talk doClick mListener
+        layout_boss doClick mListener
+        layout_mine doClick mListener
+        layout_tools doClick mListener
+        layout_video doClick mListener
 
-            override fun createFragment(position: Int): Fragment {
-                return fragments[position]
-            }
-        }
-
-        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                val index = if (BuildConfig.ENV == "YYB" || isPortStatus) 3 else 2
-
-                layout_talk.isSelected = position == 0
-                text_talk.text = if (position == 0) "回顶部" else "言论"
-                layout_boss.isSelected = position == 1
-                layout_mine.isSelected = position == index
-                layout_tools.isSelected = position == 2
-            }
+        views.addAll(arrayOf(
+            layout_talk,
+            layout_boss,
+            layout_mine,
+            layout_tools,
+            layout_video
+        ).onEach {
+            it doClick mListener
         })
 
-        view_pager.currentItem = 0
-        view_pager.isUserInputEnabled = false
+        switchFragment("home")
+    }
 
-        layout_talk doClick {
-            if (view_pager.currentItem == 0) {
-                eventBus.post(PageScrollEvent())
-            } else {
-                view_pager.setCurrentItem(0, false)
-            }
+    private var initFragment = false
+
+    /**
+     * 切换界面
+     * @param name String
+     */
+    private fun switchFragment(name: String) {
+        if (name.isNullOrEmpty()) return
+        if (name == (mCurrentFragment?.tag ?: "")) {
+            return
         }
 
-        layout_boss doClick {
-            if (view_pager.currentItem == 1) {
-                eventBus.post(PageScrollEvent())
-            } else {
-                view_pager.setCurrentItem(1, false)
-            }
+        val fm = supportFragmentManager
+
+//        if (!initFragment) {
+//            initFragment = true
+//
+//            val videoFragment = VideoFragment.newIns()
+//            fm.beginTransaction()
+//                .add(R.id.fl_position, videoFragment, "video")
+//                .hide(videoFragment)
+//                .commitAllowingStateLoss()
+//        }
+
+        views.forEach {
+            it.isSelected = name == it.tag.toString()
         }
 
-        layout_mine doClick {
-            val index = if (BuildConfig.ENV == "YYB" || isPortStatus) 3 else 2
-            view_pager.setCurrentItem(index, false)
+
+        var fragment = fm.findFragmentByTag(name)
+        val current = mCurrentFragment
+        if (fragment != null) {
+            fm.beginTransaction()
+                .also {
+                    if (current != null) {
+                        it.hide(current)
+                    }
+                }
+                .show(fragment)
+                .commitAllowingStateLoss()
+        } else {
+            fragment = createFragment(name)
+
+            fm.beginTransaction()
+                .also {
+                    if (current != null) {
+                        it.hide(current)
+                    }
+                }
+                .add(R.id.fl_position, fragment, name)
+                .show(fragment)
+                .commitAllowingStateLoss()
         }
 
-        layout_tools doClick {
-            view_pager.setCurrentItem(2, false)
+        mCurrentFragment = fragment
+    }
+
+    private fun createFragment(name: String): Fragment {
+        return when (name) {
+            "home" -> HomeSpeechFragment.createFragment()
+            "mine" -> HomeMineFragment.createFragment()
+            "boss" -> HomeBossContentFragment.createFragment()
+            "tool" -> HomeToolFragment.createFragment()
+            "video" -> VideoFragment.newIns()
+            else -> Fragment()
         }
     }
 
@@ -291,23 +326,20 @@ class HomeActivity : BaseActivity() {
                 if (it.groundingStatus && BuildConfig.ENV == "YYB") {
                     isPortStatus = true
                     layout_tools.isVisible = true
-                    fragments.add(2, HomeToolFragment.createFragment())
-                    view_pager.adapter?.notifyDataSetChanged()
-                }
-
-                timerDelay(300) {
-                    view_pager.offscreenPageLimit = fragments.size
                 }
             }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: JumpBossEvent) {
-        view_pager.setCurrentItem(1, true)
+//        view_pager.setCurrentItem(1, true)
+        switchFragment("boss")
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun eventBus(event: LoginEvent) {
-        view_pager.setCurrentItem(0, true)
+//        view_pager.setCurrentItem(0, true)
+        switchFragment("home")
     }
+
 }

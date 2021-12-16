@@ -35,7 +35,12 @@ class DailyPosterActivity : BaseActivity() {
     private lateinit var entity: DailyEntity
 
     companion object {
-        fun start(context: Context?, dailyEntity: DailyEntity) {
+        fun start(context: Context?, dailyEntity: DailyEntity?) {
+            if (dailyEntity == null) {
+                Toasts.show("数据不能为空")
+                return
+            }
+
             val intent = Intent(context, DailyPosterActivity::class.java)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK

@@ -121,7 +121,7 @@ class ArticleActivity : BaseActivity() {
 //                    "&version=${userEntity?.version ?: "1000"}"
 //        }
 
-        articleUrl = "${WLConfig.getBaseUrl()}#/article?" +
+        articleUrl = "${WLConfig.getBaseUrl()}#/v2/article?" +
                 "id=$articleId" +
                 "&version=${userEntity?.version ?: "1000"}"
 
@@ -262,16 +262,23 @@ class ArticleActivity : BaseActivity() {
      */
     private fun switchPointStatus() {
         isPoint = !isPoint
+
         image_point.isSelected = isPoint
-        if (isPoint) {
-            mArticleEntity!!.point = mArticleEntity!!.point!! + 1
-        } else {
-            mArticleEntity!!.point = mArticleEntity!!.point!! - 1
+
+        val tempArticle = mArticleEntity ?: run {
+            Toasts.show("正在加载数据...")
+            return
         }
-        text_point.text = mArticleEntity!!.point!!.toString()
+
+        if (isPoint) {
+            tempArticle.point = tempArticle.point + 1
+        } else {
+            tempArticle.point = tempArticle.point - 1
+        }
+        text_point.text = tempArticle.point.toString()
 
         mPointDis?.dispose() // 快速操作取消上一次的操作
-        mPointDis = TbsApi.boss().switchPointStatus(mArticleEntity?.id, isPoint)
+        mPointDis = TbsApi.boss().switchPointStatus(mArticleEntity?.id ?: "", isPoint)
             .bindDefaultSub({
 
             }, {

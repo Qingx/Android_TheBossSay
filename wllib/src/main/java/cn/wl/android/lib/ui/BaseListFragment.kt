@@ -349,7 +349,7 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
         }
     }
 
-    protected fun tryFinishRefresh() {
+    protected open fun tryFinishRefresh() {
         if (refLayout != null && refLayout!!.isRefreshing) {
             refLayout!!.isRefreshing = false
         }

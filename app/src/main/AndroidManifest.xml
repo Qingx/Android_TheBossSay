@@ -310,6 +310,10 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+        <provider
+            android:name="com.bytedance.sdk.dp.act.DPProvider"
+            android:authorities="${applicationId}.BDDPProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

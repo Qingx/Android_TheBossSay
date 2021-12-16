@@ -12,6 +12,8 @@ import androidx.multidex.MultiDexApplication;
 import com.advance.AdvanceSDK;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.Utils;
+import com.bytedance.sdk.dp.DPSdk;
+import com.bytedance.sdk.dp.DPSdkConfig;
 import com.github.gzuliyujiang.oaid.DeviceID;
 import com.mercury.sdk.core.config.MercuryAD;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -41,6 +43,7 @@ import io.reactivex.ObservableSource;
 
 public class TbsApp extends MultiDexApplication {
     public static TbsApp mContext;
+    private static boolean isDPInited;
 
     public static TbsApp getContext() {
         return mContext;
@@ -128,6 +131,38 @@ public class TbsApp extends MultiDexApplication {
 
         if (hasInitThree) return;
         hasInitThree = true;
+
+        //1. 初始化，最好放到application.onCreate()执行
+//2. 【重要】如果needInitAppLog=false，请确保AppLog初始化一定要在内容合作sdk初始化前
+//        val configBuilder = DPSdkConfig.Builder()
+//                .debug(true)
+//                .needInitAppLog(false)
+//                .initListener { isSuccess -> //注意：1如果您的初始化没有放到application，请确保使用时初始化已经成功
+//                //     2如果您的初始化在application
+//                //isSuccess=true表示初始化成功
+//                //初始化失败，可以再次调用初始化接口（建议最多不要超过3次)
+//                isDPInited = isSuccess
+//            Log.e(TAG, "init result=$isSuccess")
+//        } //接入了红包功能需要传入的参数，没有接入的话可以忽略该配置
+//            .luckConfig(DPSdkConfig.LuckConfig().application(application).enableLuck(false))
+//                .liveConfig(LiveConfig())//若您需要接入直播，参考「直播接入文档」；否则可忽略此参数。
+//        DPSdk.init(application, "SDK_Setting_5175152.json", configBuilder.build())
+
+        DPSdkConfig.Builder liveConfig = new DPSdkConfig.Builder()
+                .debug(WLConfig.isDebug())
+                .needInitAppLog(false)
+                .initListener(isSuccess -> {
+                    //     2如果您的初始化在application
+                    //isSuccess=true表示初始化成功
+                    //初始化失败，可以再次调用初始化接口（建议最多不要超过3次)
+                    isDPInited = isSuccess;
+                })
+                .luckConfig(new DPSdkConfig.LuckConfig()
+                        .application(mContext)
+                        .enableLuck(false))
+                .liveConfig(new DPSdkConfig.LiveConfig());
+
+        DPSdk.init(mContext, "SDK_Setting_5200329.json", liveConfig.build());
 
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(mContext);
         strategy.setAppChannel(BuildConfig.ENV);
