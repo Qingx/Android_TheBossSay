@@ -107,8 +107,8 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
      *
      * @return
      */
-    protected val isEmptyAdapter: Boolean
-        protected get() {
+    val isEmptyAdapter: Boolean
+        get() {
             val adapter = mAdapter
             if (adapter != null) {
                 val data = adapter.data
@@ -349,7 +349,7 @@ abstract class BaseListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshLi
         }
     }
 
-    protected open fun tryFinishRefresh() {
+    open fun tryFinishRefresh() {
         if (refLayout != null && refLayout!!.isRefreshing) {
             refLayout!!.isRefreshing = false
         }

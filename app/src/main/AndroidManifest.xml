@@ -78,7 +78,13 @@
         android:supportsRtl="true"
         android:theme="@style/UniversalTheme"
         tools:replace="android:label">
-        <activity android:name=".ui.home.MineCollectContentActivity"></activity>
+        <activity
+            android:name=".ui.recommend.PrintSubActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.recommend.PrintActivity"
+            android:exported="false" />
+        <activity android:name=".ui.home.MineCollectContentActivity" />
         <activity android:name=".ui.home.MineCollectActivity" />
         <activity android:name=".ui.home.MinePointActivity" />
         <activity android:name=".ui.home.DailyPosterActivity" />
@@ -310,6 +316,7 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+
         <provider
             android:name="com.bytedance.sdk.dp.act.DPProvider"
             android:authorities="${applicationId}.BDDPProvider"

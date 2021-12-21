@@ -9,6 +9,10 @@ import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
 import net.cd1369.tbs.android.data.entity.PointEntity;
+import net.cd1369.tbs.android.data.entity.PrintEntity;
+import net.cd1369.tbs.android.data.entity.PrintSubEntity;
+import net.cd1369.tbs.android.data.entity.PrintSubModel;
+import net.cd1369.tbs.android.data.entity.RecommendEntity;
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel;
 import net.cd1369.tbs.android.data.model.BossSimpleModel;
 import net.cd1369.tbs.android.data.model.LabelModel;
@@ -21,6 +25,7 @@ import cn.wl.android.lib.core.Page;
 import cn.wl.android.lib.core.PageParam;
 import cn.wl.android.lib.data.repository.BaseRepository;
 import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 import okhttp3.RequestBody;
 
 /**
@@ -380,6 +385,46 @@ public class BossRepository extends BaseRepository<BossService> {
         });
 
         return getService().obtainPointList(body)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取首页推荐数据
+     *
+     * @return
+     */
+    public Observable<List<RecommendEntity>> obtainHomeRecommend() {
+        return getService().obtainHomeRecommend()
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取专栏详情
+     *
+     * @param id
+     * @return
+     */
+    public Observable<PrintEntity> obtainPrintDetails(String id) {
+        return getService().obtainPrintDetails(id)
+                .compose(combine())
+                .compose(rebase());
+    }
+
+    /**
+     * 获取专栏子项
+     *
+     * @param subjectId
+     * @param pageParam
+     * @return
+     */
+    public Observable<PrintSubModel> obtainPrintSub(String subjectId, PageParam pageParam) {
+        RequestBody body = bodyFromCreator(pageParam, stringObjectMap -> {
+            stringObjectMap.put("subjectId", subjectId);
+        });
+
+        return getService().obtainPrintSub(body)
                 .compose(combine())
                 .compose(rebase());
     }

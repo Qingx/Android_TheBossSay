@@ -1,6 +1,7 @@
 package net.cd1369.tbs.android.ui.fragment
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -20,10 +21,12 @@ import net.cd1369.tbs.android.util.doClick
  */
 class HomeSpeechFragment : BaseFragment() {
 
+    private var mSelectIndex: Int = 0
     private var mSelectView: TextView? = null
 
     private val tabViews = mutableListOf<View>()
     private val fragments = mutableListOf<Fragment>()
+    private var mRecommendFragment: HomeRecommendFrag? = null
 
     companion object {
         fun createFragment(): HomeSpeechFragment {
@@ -40,7 +43,9 @@ class HomeSpeechFragment : BaseFragment() {
 
         fragments.add(SpeechTackFragment.createFragment())
         fragments.add(SpeechSquareFragment.createFragment())
-        fragments.add(HomeRecommendFrag.newIns())
+        fragments.add(HomeRecommendFrag.newIns().also {
+            mRecommendFragment = it
+        })
         fragments.add(SpeechSquareFragment.createFragment())
     }
 
@@ -68,6 +73,7 @@ class HomeSpeechFragment : BaseFragment() {
 
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                mSelectIndex = 0
                 switchTabShow(tabViews[position] as TextView)
             }
         })
@@ -81,6 +87,7 @@ class HomeSpeechFragment : BaseFragment() {
             }
         }
 
+        mSelectIndex = 0
         view_pager.currentItem = 0
         view_pager.isUserInputEnabled = true
         view_pager.offscreenPageLimit = fragments.size
@@ -107,6 +114,12 @@ class HomeSpeechFragment : BaseFragment() {
         tvSelect.paint.isFakeBoldText = true
 
         mSelectView = tvSelect
+    }
+
+    fun tryDispatchTouchEvent(ev: MotionEvent) {
+        if (mSelectIndex == (text_recommend?.tag as? Int ?: -1)) {
+            mRecommendFragment?.tryDispatchTouchEvent(ev)
+        }
     }
 
 }

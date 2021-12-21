@@ -12,6 +12,9 @@ import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
+import cn.wl.android.lib.R;
 
 /**
  * Created by JustBlue on 2019-08-26.
@@ -28,6 +31,31 @@ public abstract class BaseHolder {
 
     private final int statusCode;
     private final SparseArray<View> mViewCache;
+
+    public static HashMap<String, Integer> offsetRegisters = new HashMap<>();
+
+    public static void registerOffset(Context context, int offsetHeight) {
+        if (context != null) {
+            try {
+                String name = context.getClass().getName();
+                offsetRegisters.put(name, offsetHeight);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static int getOffsetHeight(Context context) {
+        try {
+            String name = context.getClass().getName();
+            Integer integer = offsetRegisters.get(name);
+
+            if (integer != null) return integer;
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
 
     public BaseHolder(int statusCode) {
         this.statusCode = statusCode;
@@ -47,7 +75,36 @@ public abstract class BaseHolder {
             initContentView(contentView);
         }
 
+        Context context = contentView.getContext();
+        int offsetHeight = getOffsetHeight(context);
+
+        if (offsetHeight > 10) {
+            try {
+                tryUpdateSpaceHeight(contentView, offsetHeight);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return contentView;
+    }
+
+    /**
+     * 尝试
+     *
+     * @param contentView
+     * @param offsetHeight
+     */
+    private void tryUpdateSpaceHeight(View contentView, int offsetHeight) {
+        View view = contentView.findViewById(R.id.space_holder);
+
+        if (view != null) {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            if (layoutParams.height != offsetHeight) {
+                layoutParams.height = offsetHeight;
+                view.setLayoutParams(layoutParams);
+            }
+        }
     }
 
     /**

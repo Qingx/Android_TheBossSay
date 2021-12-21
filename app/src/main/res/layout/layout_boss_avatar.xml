@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.allen.library.CircleImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/civ_boss"
+    android:layout_width="@dimen/font_24"
+    android:layout_height="@dimen/font_24"
+    app:civ_border_color="@color/white"
+    app:civ_border_width="@dimen/padding_2" />

@@ -48,4 +48,6 @@ public class LoadingVH extends BaseHolder implements IAinmHolder {
 
         getContentView().setAlpha(1 - fraction);
     }
+
+
 }

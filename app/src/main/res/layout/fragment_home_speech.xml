@@ -29,7 +29,8 @@
         <TextView
             android:id="@+id/text_follow"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/padding_32"
+            android:layout_height="@dimen/font_44"
+            android:paddingVertical="@dimen/padding_6"
             android:gravity="bottom"
             android:paddingHorizontal="@dimen/padding_10"
             android:singleLine="true"
@@ -41,7 +42,8 @@
         <TextView
             android:id="@+id/text_hot"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/padding_32"
+            android:layout_height="@dimen/font_44"
+            android:paddingVertical="@dimen/padding_6"
             android:gravity="bottom"
             android:paddingHorizontal="@dimen/padding_10"
             android:text="热门"
@@ -51,7 +53,8 @@
         <TextView
             android:id="@+id/text_recommend"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/padding_32"
+            android:layout_height="@dimen/font_44"
+            android:paddingVertical="@dimen/padding_6"
             android:gravity="bottom"
             android:paddingHorizontal="@dimen/padding_10"
             android:text="推荐"
@@ -61,7 +64,8 @@
         <TextView
             android:id="@+id/text_square"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/padding_32"
+            android:layout_height="@dimen/font_44"
+            android:paddingVertical="@dimen/padding_6"
             android:gravity="bottom"
             android:paddingHorizontal="@dimen/padding_10"
             android:text="广场"

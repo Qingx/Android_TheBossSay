@@ -3,13 +3,11 @@ package net.cd1369.tbs.android.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import cn.jiguang.verifysdk.api.JVerificationInterface
 import cn.wl.android.lib.config.WLConfig
 import cn.wl.android.lib.data.core.HttpConfig
@@ -27,10 +25,8 @@ import net.cd1369.tbs.android.config.*
 import net.cd1369.tbs.android.data.cache.CacheConfig
 import net.cd1369.tbs.android.data.entity.DailyEntity
 import net.cd1369.tbs.android.data.entity.PortEntity
-import net.cd1369.tbs.android.event.GlobalScrollEvent
 import net.cd1369.tbs.android.event.JumpBossEvent
 import net.cd1369.tbs.android.event.LoginEvent
-import net.cd1369.tbs.android.event.PageScrollEvent
 import net.cd1369.tbs.android.ui.dialog.CheckUpdateDialog
 import net.cd1369.tbs.android.ui.dialog.DailyDialog
 import net.cd1369.tbs.android.ui.dialog.OpenNoticeDialog
@@ -50,6 +46,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @desc
  */
 class HomeActivity : BaseActivity() {
+    private var mHomeTempFragment: HomeSpeechFragment? = null
     private var mCurrentFragment: Fragment? = null
     private var isPortStatus = false
     private val views = mutableListOf<View>()
@@ -110,8 +107,6 @@ class HomeActivity : BaseActivity() {
         switchFragment("home")
     }
 
-    private var initFragment = false
-
     /**
      * 切换界面
      * @param name String
@@ -124,20 +119,9 @@ class HomeActivity : BaseActivity() {
 
         val fm = supportFragmentManager
 
-//        if (!initFragment) {
-//            initFragment = true
-//
-//            val videoFragment = VideoFragment.newIns()
-//            fm.beginTransaction()
-//                .add(R.id.fl_position, videoFragment, "video")
-//                .hide(videoFragment)
-//                .commitAllowingStateLoss()
-//        }
-
         views.forEach {
             it.isSelected = name == it.tag.toString()
         }
-
 
         var fragment = fm.findFragmentByTag(name)
         val current = mCurrentFragment
@@ -169,13 +153,20 @@ class HomeActivity : BaseActivity() {
 
     private fun createFragment(name: String): Fragment {
         return when (name) {
-            "home" -> HomeSpeechFragment.createFragment()
+            "home" -> HomeSpeechFragment.createFragment().also {
+                mHomeTempFragment = it
+            }
             "mine" -> HomeMineFragment.createFragment()
             "boss" -> HomeBossContentFragment.createFragment()
             "tool" -> HomeToolFragment.createFragment()
             "video" -> VideoFragment.newIns()
             else -> Fragment()
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        mHomeTempFragment?.tryDispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
     }
 
     /**
@@ -238,6 +229,9 @@ class HomeActivity : BaseActivity() {
             )
     }
 
+    /**
+     * 显示每日一言
+     */
     private fun doDailyTalk() {
         if (UserConfig.get().loginStatus) {
             if (!isSameDay(UserConfig.get().dailyTime) || UserConfig.get().dailyTime == -1L || WLConfig.isDebug()) {

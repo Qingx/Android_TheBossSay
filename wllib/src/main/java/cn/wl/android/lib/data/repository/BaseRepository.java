@@ -271,7 +271,7 @@ public class BaseRepository<Ser> {
      * @param <T> IDSource<T> 包装的实际数据类型
      * @return
      */
-    protected <T> ObservableTransformer<IDataSource<T>, T> rebase() {
+    public  <T> ObservableTransformer<IDataSource<T>, T> rebase() {
         return upstream -> upstream.flatMap(source -> {
             if (source.isSuccess()) {
                 if (source.isDataEmpty()) {

@@ -11,6 +11,7 @@ import net.cd1369.tbs.android.R
 import net.cd1369.tbs.android.data.entity.RecommendEntity
 import net.cd1369.tbs.android.data.entity.RecommendItemEntity
 import net.cd1369.tbs.android.util.V
+import net.cd1369.tbs.android.util.fullUrl
 
 class RecommendRootAdapter() :
     BaseQuickAdapter<RecommendEntity, RootVH>(R.layout.item_recommend_root) {
@@ -21,13 +22,11 @@ class RecommendRootAdapter() :
 
     override fun convert(helper: RootVH, item: RecommendEntity) {
         GlideApp.display(
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile02.16sucai.com%2Fd%2Ffile%2F2014%2F0829%2F372edfeb74c3119b666237bd4af92be5.jpg&refer=http%3A%2F%2Ffile02.16sucai.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642163406&t=1a2873b7a292a9f9076a14aaf5c7bd64",
+            item.cover.fullUrl(),
             helper.V.iv_rec_img
         )
-        helper.V.tv_rec_title.text = "标题${helper.layoutPosition}"
-        helper.mAdapter.setNewData(MutableList(5) {
-            RecommendItemEntity()
-        })
+        helper.V.tv_rec_title.text = item.subjectName
+        helper.mAdapter.setNewData(item.subjectRecommend)
     }
 
 }

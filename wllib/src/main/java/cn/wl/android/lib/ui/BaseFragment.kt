@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import cn.wl.android.lib.core.ErrorBean
 import cn.wl.android.lib.data.core.DefResult
 import cn.wl.android.lib.miss.EmptyMiss
@@ -89,6 +90,10 @@ abstract class BaseFragment : BaseCommonFragment() {
 
     override fun showViewByStatus(status: Int) {
         mHolderProxy!!.showViewByStatus(status)
+    }
+
+    protected fun setHolderBackgroundColor(@ColorRes colorRes: Int) {
+        mHolderProxy?.setBackgroundColor(colorRes)
     }
 
     override fun dispatchDataMiss(error: ErrorBean) {

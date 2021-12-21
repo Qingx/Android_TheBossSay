@@ -17,6 +17,7 @@
             android:layout_width="80dp"
             android:layout_height="4dp"
             android:layout_marginLeft="@dimen/padding_16"
+            android:layout_marginTop="@dimen/padding_2"
             android:src="@mipmap/ic_ind_line" />
 
         <TextView
@@ -34,6 +35,7 @@
         <ImageView
             android:layout_width="80dp"
             android:layout_height="4dp"
+            android:layout_marginTop="@dimen/padding_2"
             android:layout_marginRight="@dimen/padding_16"
             android:rotation="180"
             android:src="@mipmap/ic_ind_line" />

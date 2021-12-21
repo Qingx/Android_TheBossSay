@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/padding_16"
+        android:layout_marginTop="@dimen/padding_8"
+        android:layout_marginRight="@dimen/padding_16"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="@dimen/dp_4"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/padding_2"
+            android:background="@drawable/draw_blue_line" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="@dimen/size_none"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/padding_12"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_root_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/text_title"
+                android:textSize="@dimen/font_16"
+                android:textStyle="bold"
+                tools:text="@string/app_name" />
+
+            <Space
+                android:layout_width="@dimen/size_none"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_root_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/text_minor"
+                android:textSize="@dimen/font_14"
+                tools:text="@string/app_name" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_8"
+        android:layout_marginLeft="@dimen/padding_16"
+        android:layout_marginTop="@dimen/padding_8"
+        android:layout_marginRight="@dimen/padding_16"
+        android:layout_marginBottom="@dimen/padding_8"
+        android:background="@drawable/draw_blue_bg" />
+
+</LinearLayout>

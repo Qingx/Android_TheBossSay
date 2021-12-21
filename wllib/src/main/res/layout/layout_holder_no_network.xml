@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -42,5 +43,11 @@
         android:text="去网络设置"
         android:textColor="@color/text_minor"
         android:textSize="12dp" />
+
+    <Space
+        android:id="@+id/space_holder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_none"
+        tools:layout_height="100dp" />
 
 </LinearLayout>

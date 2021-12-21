@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/md_green_500">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/size_none"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding_16"
+        android:layout_marginBottom="@dimen/padding_8"
+        app:cardBackgroundColor="#F7F7F7"
+        app:cardCornerRadius="@dimen/padding_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_12"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_sub_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_minor"
+                android:textSize="@dimen/font_14"
+                android:minLines="3"
+                tools:text="脑袋您发送那是带你翻那是带你翻暗示都放假啊睡你的觉那就是都能发时间内缴纳时间段内发十几年健康那就是DNF三大健康爱上你的法姬娜山东济南" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/font_28"
+                android:layout_marginTop="@dimen/padding_12"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_sub_count"
+                    style="@style/text_minor"
+                    android:singleLine="true"
+                    android:textSize="@dimen/font_12"
+                    tools:text="收录36篇文章" />
+
+                <Space
+                    android:layout_width="@dimen/size_none"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_sub_boss"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/padding_8">
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    android:id="@+id/tv_sub_desc"
+                    style="@style/text_minor"
+                    android:singleLine="true"
+                    android:textSize="@dimen/font_12"
+                    tools:text="收录36篇文章" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

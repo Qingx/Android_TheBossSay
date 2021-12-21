@@ -5,6 +5,10 @@ import net.cd1369.tbs.android.data.entity.BannerEntity;
 import net.cd1369.tbs.android.data.entity.BossInfoEntity;
 import net.cd1369.tbs.android.data.entity.OptPicEntity;
 import net.cd1369.tbs.android.data.entity.PointEntity;
+import net.cd1369.tbs.android.data.entity.PrintEntity;
+import net.cd1369.tbs.android.data.entity.PrintSubEntity;
+import net.cd1369.tbs.android.data.entity.PrintSubModel;
+import net.cd1369.tbs.android.data.entity.RecommendEntity;
 import net.cd1369.tbs.android.data.model.ArticleSimpleModel;
 import net.cd1369.tbs.android.data.model.BossSimpleModel;
 import net.cd1369.tbs.android.data.model.LabelModel;
@@ -198,5 +202,31 @@ public interface BossService {
      */
     @POST("/api/article/point-history")
     Observable<WLPage<PointEntity>> obtainPointList(@Body RequestBody body);
+
+    /**
+     * 获取首页推荐列表
+     *
+     * @return
+     */
+    @GET("/api/subject/list-home")
+    Observable<WLList<RecommendEntity>> obtainHomeRecommend();
+
+    /**
+     * 获取专题详情
+     *
+     * @param subjectId
+     * @return
+     */
+    @GET("/api/subject/home/introduction/{subjectId}")
+    Observable<WLData<PrintEntity>> obtainPrintDetails(@Path("subjectId") String subjectId);
+
+    /**
+     * 获取专栏子项
+     *
+     * @param body
+     * @return
+     */
+    @POST("/api/subject/details")
+    Observable<WLData<PrintSubModel>> obtainPrintSub(@Body RequestBody body);
 
 }

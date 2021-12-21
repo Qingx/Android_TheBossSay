@@ -12,6 +12,12 @@
         android:id="@+id/iv_loading"
         android:layout_width="148dp"
         android:layout_height="148dp"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter" />
+
+    <Space
+        android:id="@+id/space_holder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_none"
+        tools:layout_height="100dp" />
 
 </LinearLayout>

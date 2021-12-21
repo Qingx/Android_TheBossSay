@@ -20,4 +20,6 @@
     <color name="colorLoadBg">#e8e8e8</color>
     <color name="colorLoadBg_trans">#00e8e8e8</color>
     <color name="main_blue_color">#2343C2</color>
+    <color name="label_color1">#F28464</color>
+    <color name="label_color2">#ED3A20</color>
 </resources>
